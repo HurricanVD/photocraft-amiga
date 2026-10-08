@@ -23,6 +23,7 @@ int main(void)
     uint8_t dst[32];
     uint8_t tile[2 * 16];
     uint8_t invalid[4];
+    static uint8_t full_tile[256U * 256U * 4U];
     static const uint8_t expected_top[12] = {
         0x11, 0x22, 0x33, 0x00, 0x40, 0x50, 0x60, 0x80,
         0xCC, 0xDD, 0x00, 0x00
@@ -76,6 +77,18 @@ int main(void)
     check(!pc_fill_rgba8_test_tile(invalid, 4, SIZE_MAX, 1),
           "test tile rejects oversized width");
 
+    check(pc_fill_rgba8_test_tile(full_tile, 256U * 4U, 256U, 256U),
+          "full 256x256 tile");
+    check(full_tile[(8U * 256U + 8U) * 4U] == 24U &&
+          full_tile[(8U * 256U + 8U) * 4U + 1U] == 180U &&
+          full_tile[(8U * 256U + 8U) * 4U + 2U] == 220U,
+          "tile dark pixel");
+    check(full_tile[(8U * 256U + 24U) * 4U] == 220U &&
+          full_tile[(8U * 256U + 24U) * 4U + 1U] == 70U,
+          "tile bright pixel");
+    check(full_tile[(129U * 256U + 129U) * 4U + 3U] == 128U &&
+          full_tile[(8U * 256U + 8U) * 4U + 3U] == 255U,
+          "tile alpha");
     if (failures) {
         fprintf(stderr, "FAIL: %d portable checks\n", failures);
         return 1;

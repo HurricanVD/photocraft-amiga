@@ -7,7 +7,7 @@ Process baseline proposed: `HurricanVD/vd-amiga-dev-process` 0.2.1
 
 This is **manual pre-bootstrap scaffolding**, not a completed canonical VD process bootstrap. Existing root PhotoCraft documentation and Rust AGENTS rules are maintained. C99 exceptions are strictly isolated in `ports/amigaos3`.
 
-Prefix: `PF` **reserved** in the shared registry on 2026-10-08 (VD process commit `07be242b760e81c2fc3ae1b4fbcac6d3031489b0`). Project metadata sets `STORY_ID_PREFIX=PF` and `TEST_ID_PREFIX=PF`. No canonical story/test IDs allocated yet. Prefix activation: `follow_up_required` until canonical bootstrap evidence has been reviewed.
+Prefix: `PF` **reserved** in the shared registry on 2026-10-08 (VD process commit `07be242b760e81c2fc3ae1b4fbcac6d3031489b0`). Project metadata sets `STORY_ID_PREFIX=PF` and `TEST_ID_PREFIX=PF`. Canonical spike PF-SP-001 and test evidence PF-TN-001 allocated after PF reservation. Prefix activation: `follow_up_required` until canonical bootstrap evidence has been reviewed.
 
 Implemented in this scaffold: testable C99 RGBA staging utility, its host test suite, standalone MiniGL smoke source and make targets, architecture proposal (ADR-0001 accepted for architectural direction on 2026-10-08), IP provenance register and test plan.
 
