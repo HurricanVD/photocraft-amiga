@@ -8,6 +8,8 @@
 </p>
 
 <h1 align="center">PhotoCraft</h1>
+> **Experimental AmigaOS 3.2 port:** This fork maintains an isolated [AmigaOS port workspace](ports/amigaos3/README.md) on the `amigaos32` branch. It is not yet a working PhotoCraft editor, and the upstream Rust desktop/web code remains unchanged.
+
 
 <p align="center">
   <b>Image editing; an open-source, clean-room reimplementation of Adobe Photoshop, rebuilt in pure Rust.</b><br>
