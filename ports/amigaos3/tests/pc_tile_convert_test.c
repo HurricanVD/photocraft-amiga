@@ -54,6 +54,8 @@ int main(void)
           "short destination stride rejected");
     check(!pc_argb32_to_rgba8(argb, SIZE_MAX, dst, 8, 2, 3),
           "source pointer arithmetic overflow rejected");
+    check(!pc_argb32_to_rgba8(argb, SIZE_MAX / 2, dst, 8, 2, 2),
+          "source byte offset overflow rejected");
     check(!pc_argb32_to_rgba8(argb, 2, dst, SIZE_MAX, 2, 3),
           "destination pointer arithmetic overflow rejected");
     check(!pc_argb32_to_rgba8(argb, 2, dst, 8, SIZE_MAX, 1),

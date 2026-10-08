@@ -4,10 +4,13 @@
 
 /* Bounds arithmetic is checked before forming row pointers. */
 static int pc_checked_rows(size_t row_stride, size_t min_row,
-                           size_t height)
+                           size_t height, size_t elem_bytes)
 {
-    if (height == 0 || row_stride < min_row) return 0;
-    if (height > 1 && row_stride > (SIZE_MAX - min_row) / (height - 1))
+    size_t limit;
+    if (elem_bytes == 0) return 0;
+    limit = SIZE_MAX / elem_bytes;
+    if (height == 0 || min_row > limit || row_stride < min_row) return 0;
+    if (height > 1 && row_stride > (limit - min_row) / (height - 1))
         return 0;
     return 1;
 }
@@ -20,8 +23,8 @@ int pc_argb32_to_rgba8(const uint32_t *src, size_t src_stride_pixels,
     if (!src || !dst || width == 0 || height == 0 || width > SIZE_MAX / 4)
         return 0;
     row_bytes = width * 4;
-    if (!pc_checked_rows(src_stride_pixels, width, height) ||
-        !pc_checked_rows(dst_stride_bytes, row_bytes, height))
+    if (!pc_checked_rows(src_stride_pixels, width, height, sizeof(*src)) ||
+        !pc_checked_rows(dst_stride_bytes, row_bytes, height, 1))
         return 0;
 
     for (y = 0; y < height; ++y) {
@@ -45,7 +48,7 @@ int pc_fill_rgba8_test_tile(uint8_t *dst, size_t dst_stride_bytes,
     if (!dst || width == 0 || height == 0 || width > SIZE_MAX / 4)
         return 0;
     row_bytes = width * 4;
-    if (!pc_checked_rows(dst_stride_bytes, row_bytes, height))
+    if (!pc_checked_rows(dst_stride_bytes, row_bytes, height, 1))
         return 0;
 
     for (y = 0; y < height; ++y) {
