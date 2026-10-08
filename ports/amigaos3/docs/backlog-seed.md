@@ -1,6 +1,6 @@
 # Pre-bootstrap backlog seed (no canonical IDs)
 
-Do NOT issue formal VD story or test IDs until the proposed `PF` prefix is reserved in the private process repository.
+The `PF` prefix is now **reserved** in the private VD process registry, so formal `PF-*` story/test IDs may be allocated when these draft items are refined. No canonical IDs are allocated in this seed; completion of the process bootstrap and its reviews is still pending.
 
 1. Review the port seam and select the m68k-core strategy (Rust target feasibility vs C implementation checked against original PhotoCraft reference).
 2. Run portable C99 staging test; compile a real Amiga HUNK with the project GCC/Bebbo SDK lane.

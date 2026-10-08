@@ -1,7 +1,7 @@
-# AmigaOS port architecture (draft, 2026-10-08)
+# AmigaOS port architecture (accepted direction, 2026-10-08; runtime unverified)
 
 Upstream architecture: [PhotoCraft docs/architecture.md](../../../docs/architecture.md).
-Fork decision draft: [ADR-0001](../../../docs/adr/ADR-0001-amigaos3-port-seam.md).
+Fork decision: [ADR-0001](../../../docs/adr/ADR-0001-amigaos3-port-seam.md).
 
 ## Ownership boundaries
 

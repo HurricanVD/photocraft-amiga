@@ -48,7 +48,7 @@ Install a matching QuarkTex NG host DLL and `LIBS:minigl.library` on WinUAE (plu
 
 For physical hardware, test separately against [PiStorm3D](https://github.com/SteffenHaeuser/MiniGL_Library_68k), whose documented GPU backend requires a Pi 4/CM4-class PiStorm setup.
 
-See [the MiniGL spike](docs/miniGL-spike.md) and [the architecture draft](../../docs/adr/ADR-0001-amigaos3-port-seam.md).
+See [the MiniGL spike](docs/miniGL-spike.md) and [the accepted architecture decision](../../docs/adr/ADR-0001-amigaos3-port-seam.md).
 
 ## Current non-goals
 
