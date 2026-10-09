@@ -1,12 +1,12 @@
 # Backlog
 
-ID-Konvention: `PF-(PO|BG|SP|LL|PR|TD)-NNN`, z. B. `VC-PO-001`.
+ID-Konvention: `PF-(PO|BG|SP|LL|PR|TD)-NNN` (Formatbeispiel, **keine zugeteilte Story**: `PF-PO-001`).
 Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 
 ## Aktuelle Phase
 
-- Phase:
-- Ziel:
+- Phase: Erste technische AmigaOS-Portphase (C99-Kern, Rust-Parität, m68k-HUNK, danach Grafik-Spike)
+- Ziel: Nachweisbare Portgrundlagen ohne Behauptung eines vollständigen AmigaOS-Editors
 
 ## Bereit
 
