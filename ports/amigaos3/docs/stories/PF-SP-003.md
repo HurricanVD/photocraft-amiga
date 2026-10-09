@@ -36,3 +36,13 @@ Runtime comparison in vamos does not verify real PiStorm3D, QuarkTex NG, FPU or 
 ## First CI test finding (2026-10-09)
 
 Run 37910690849 built all 6 HUNK binaries successfully and installed pinned vamos, but stopped before the first test due to its own 16 MiB machine68k memory-map configuration (`Too much RAM allocated with hw access enabled`). This is an emulator setup defect, not an observed application failure. The runtime runner now requests 8 MiB; target evidence remains pending.
+
+## Runtime-Befund und gezielte Testreparatur (2026-10-09)
+
+Bei 8 MiB `vamos`-Speicher beanspruchte der monolithische Boundary-Test mit
+13 x 13 Koordinaten 36 verschiedene Tiles, d.h. 9 MiB reine Pixelpuffer.
+Die Reparatur ändert **nur die Lebensdauer der Test-Surfaces**, nicht die
+PhotoCraft-Kernimplementierung: 13 Testzeilen mit je 13 Schreib-/Lesepaaren,
+sechs X-Tiles pro Zeile, Freigabe nach jeder Zeile. Alle ursprünglichen 169
+Koordinatenpaare werden weiterhin geprüft. Das ist ein Memory-Budget-Fix der
+Regressionstests, keine Anpassung des Produktcodes an Testfehler.

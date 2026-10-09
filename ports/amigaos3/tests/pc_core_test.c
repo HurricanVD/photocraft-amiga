@@ -107,16 +107,28 @@ static void test_boundary_matrix(void)
     const uint8_t p[4]={12,34,56,78};
     const uint8_t zero[4]={0,0,0,0};
     size_t i,j;
-    PcSurface *s=pc_surface_rgba8_new(NULL);
-    assert(s);
-    for (i=0; i<sizeof(coords)/sizeof(coords[0]); ++i)
+    /*
+     * Exercise all 13x13 coordinate pairs while bounding live tile memory.
+     * The old single-surface matrix allocated 6x6 RGBA8 tiles (9 MiB)
+     * and exhausted vamos with 8 MiB of emulated RAM. Each row now uses
+     * exactly six 256 KiB tiles (~1.5 MiB), then releases them.
+     *
+     * This preserves every boundary pair and tests unmodified pixels
+     * on every row, rather than weakening coverage or increasing RAM.
+     */
+    for (i=0; i<sizeof(coords)/sizeof(coords[0]); ++i) {
+        PcSurface *s=pc_surface_rgba8_new(NULL);
+        assert(s);
         for (j=0; j<sizeof(coords)/sizeof(coords[0]); ++j)
-            assert(pc_surface_write_rgba8(s,coords[i],coords[j],p));
-    for (i=0; i<sizeof(coords)/sizeof(coords[0]); ++i)
+            assert(pc_surface_write_rgba8(s,coords[j],coords[i],p));
+        assert(pc_surface_tile_count(s)==6);
         for (j=0; j<sizeof(coords)/sizeof(coords[0]); ++j)
-            pixel_is(s,coords[i],coords[j],p);
-    pixel_is(s,999,999,zero);
-    pc_surface_destroy(s);
+            pixel_is(s,coords[j],coords[i],p);
+        /* Sparse defaults remain untouched, even inside an allocated tile. */
+        pixel_is(s,coords[0],coords[i]+1,zero);
+        pixel_is(s,999,999,zero);
+        pc_surface_destroy(s);
+    }
 }
 int main(void)
 {

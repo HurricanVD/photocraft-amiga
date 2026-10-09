@@ -32,3 +32,16 @@ When CI completes, record run id, commit, compiler `--version`/target, Docker di
 - Correction: reduce documented vamos RAM from 16384 KiB to 8192 KiB (same order used by VD/amiport examples); rerun CI. **Do not record native runtime parity as passed until actual execution succeeds.**
 
 Run: https://github.com/HurricanVD/photocraft-amiga/actions/runs/37910690849
+
+## Zweiter CI-Lauf 37911180171 (2026-10-09)
+
+- Commit: `c6ea8f2361579188ebd075570072f93cd2457076`.
+- Host-C99 inklusive Sanitizer: **pass**.
+- Rust-original-Test und C99-Oracle: **pass**.
+- GCC/Bebbo 13.3: Build mit `-O0` und `-O2` **pass**; alle sechs Amiga-HUNK-Header **pass**.
+- Pinned `machine68k`/`amitools` Installation: **pass**.
+- `vamos` mit 8192 KiB startet, jedoch ist der erste `pc_core_test` bei der Schreiboperation im Boundary-Matrix-Test fehlgeschlagen (`tests/pc_core_test.c:114`), nachdem die monolithische 13x13-Matrix ca. 9 MiB Tile-Speicher beanspruchte.
+- Korrektur im nächsten Commit: Alle 169 x/y-Paare unverändert prüfen, aber pro Y-Koordinate eine neue Surface mit genau sechs belegten X-Tiles verwenden (max. ca. 1,5 MiB Tile-Daten je Surface). Nach jedem Row-Test Surface freigeben; Defaults und Tile-Count zusätzlich kontrollieren. Danach beide Optimierungsstufen erneut unter `vamos` und gegen Rust prüfen.
+- Keine Aussage zum tatsächlichen m68k/Rust-Paritäts-PASS bis zum nächsten verifizierten CI-Lauf.
+
+[Actions-Lauf 37911180171](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37911180171).
