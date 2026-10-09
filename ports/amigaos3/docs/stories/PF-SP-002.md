@@ -2,7 +2,7 @@
 
 - Story ID: PF-SP-002
 - Type: SP (technical spike)
-- Status: in_progress (host slice implemented, target and Rust-runtime oracle evidence pending)
+- Status: in_progress (C99 host tests and Rust original differential fixtures passed; m68k target still pending)
 - Priority: P1
 - Date: 2026-10-09
 - Architecture: accepted ADR-0001
@@ -42,7 +42,10 @@ blend/compositor algorithms, commands/undo, persistence, reference Rust
 binary-to-C conformance run, and AmigaOS target compilation.
 
 The host tests are parity *fixtures* derived from source assertions. Because
-Rust cargo is not installed in the execution environment, tests have NOT been
-run against an actual compiled Rust reference binary. Do not mark the full
+Rust cargo is not installed in the local execution container, but actual original Rust crates and a Rust-to-C differential test HAVE been executed successfully on GitHub Actions (run 37909489232). Do not mark the full
 port or story done until the corresponding independent oracles and target
 gates are satisfied.
+
+## Executed Rust-original evidence (2026-10-09)
+
+The original unchanged geom/color/raster crates passed 52 Rust library tests in GitHub Actions, followed by a byte-identical comparison of the independent Rust API oracle against C99 for explicit geometry/format/RGBA8 sparse-COW vectors. See PF-TN-002 and [CI run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232). Keep the story **in_progress**, since the 68k runtime and broader format/doc contracts are not established.

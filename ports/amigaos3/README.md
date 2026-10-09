@@ -76,7 +76,7 @@ The test cases are taken from the observable expectations in upstream Rust
 a complete format-generic Rust `Surface` port or a `Document` implementation.
 In particular the initial C surface is RGBA8-only, uses a linear tile lookup,
 is single-threaded, and has no persistence, fill-rectangle, masks or blend math.
-Rust-native parity execution and m68k target builds remain follow-up gates.
+Rust-native parity execution for the enumerated differential fixtures **passed** in GitHub Actions run 37909489232; broader semantic parity and m68k target builds remain follow-up gates.
 
 ### Rust-original parity on GitHub Actions
 
@@ -88,3 +88,8 @@ the Linux C99/sanitizer job. See `tests/core_oracle.c` and
 
 This covers ONLY the enumerated sample vectors; full equivalence, full pixel
 format support and real AmigaOS runtime still require later testing.
+
+**Verified host Rust baseline (2026-10-09):** 52 original Rust tests passed
+and the independent Rust/C99 fixture outputs matched byte-for-byte on
+[GitHub Actions run 37909489232](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232).
+This is a limited host parity milestone, not an AmigaOS executable or full editor.

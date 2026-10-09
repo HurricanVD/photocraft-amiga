@@ -19,7 +19,7 @@ Test environment: Linux GCC/cc host, no m68k target runtime
 ## Evidence level
 
 Host-side tests: **pass**.
-Rust executable-to-C differential tests: **not_run**, cargo not present.
+Rust executable-to-C differential tests: **pass**, performed on GitHub Actions Ubuntu runner with real Rust toolchain.
 AmigaOS cross-compile/vamos: **not_run**.
 WinUAE and PiStorm3D: **not_run**.
 Overall PF-SP-002 remains `in_progress`.
@@ -46,3 +46,19 @@ Cargo workspace.
 The differential result remains **pending** until the new workflow run is
 confirmed and its logs inspected. Do not infer a passing Rust runtime from
 the presence of this CI configuration alone.
+
+## Verified Rust original vs C99 CI run (2026-10-09)
+
+- Workflow: [AmigaOS 3.2 Host Core #37909489232](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232)
+- Commit: `bc063cf156b4931d09b58a52584215ccd3f4d72b`
+- Job: `Rust originals vs C99 port` — **success**.
+- Original source: original, unchanged `photocraft-geom`, `photocraft-color`, `photocraft-raster` crates built through `cargo test --locked --lib`.
+- Rust results: `photocraft-color` 21 passed; `photocraft-geom` 14 passed; `photocraft-raster` 17 passed. Total **52 passed, 0 failed**.
+- Independent Rust oracle: `tests/rust_oracle/src/main.rs` uses original crate APIs.
+- Independent C oracle: `tests/core_oracle.c` uses the new `pc_core` API.
+- Exact comparison: `diff -u oracle-rust.txt oracle-c.txt` produced no differences, final log:
+  `PASS: original PhotoCraft Rust crates match C99 port oracle`.
+- C99 + AddressSanitizer + UndefinedBehaviorSanitizer job: **success** on the same commit.
+
+**Meaning:** executable, byte-for-byte parity for this *enumerated fixture set*.
+**Not proven:** complete Surface API, all pixel depths and modes, document/layer model, compositing, cross-compiler build, WinUAE/QuarkTex runtime, or complete upstream PhotoCraft functionality.
