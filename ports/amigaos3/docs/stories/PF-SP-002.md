@@ -50,3 +50,25 @@ The original unchanged geom/color/raster crates passed 52 Rust library tests in 
 ## New native-slice evidence (2026-10-09)
 
 [PF-TN-003](../tests/done/PF-TN-003.md) and [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402) verify the already-implemented RGBA8 C99 subset on an emulated m68k CPU, including byte-identical Rust oracle fixtures. This resolves the previously missing *subset* target smoke only; it does not close PF-SP-002's broader document/image processing implementation.
+
+## 2026-10-09 typed raster and flat-layer exploration (NOT production ABI)
+
+The experimental `PcRaster` under `include/pc_raster.h`/`src/pc_raster.c`
+supports raw encoded pixel sizes for U8, U16 and F32, RGB/Gray/CMYK/other
+PhotoCraft channel layouts, default pixels, sparse 256x256 COW tiles,
+and bounded rectangular raw `read_region`/`write_region`. It deliberately
+does **not** claim complete format conversion, ICC, floating-point rendering,
+atomic multi-tile edits on OOM or production search/map performance.
+
+The limited flat raster-layer `PcDocument` prototype under
+`pc_document.h/.c` preserves bottom-first ordering, unique IDs, names,
+visibility and clone ownership. It is **not** the PhotoCraft
+`doc::Document` (groups, masks, effects, history, PSD not present).
+
+This exploratory work is permitted under the existing accepted ADR-0001.
+[ADR-0002](../../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
+and [ADR-0003](../../../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md)
+are proposed. Neither can be represented as accepted without user approval.
+Typed interleaved-byte conformance is exercised against the real Rust
+`Surface::write_interleaved`/`to_interleaved` API. New host, sanitizer,
+GCC13 m68k and vamos tests are additional evidence *only once actually green*.

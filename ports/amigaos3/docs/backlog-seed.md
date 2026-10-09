@@ -13,3 +13,5 @@ The `PF` prefix is now **reserved** in the private VD process registry, so forma
 8. PF-SP-002 / PF-TN-002: host-first Kernport (geom/color-Metadaten/RGBA8 sparse COW) with passing host/Rust oracle and m68k/vamos fixture tests; full format-generic raster/document port remains in progress.
 
 9. PF-SP-003 / PF-TN-003: **done / archived** (port-local `stories/done/`, `tests/done/`). GCC13.3 m68k/vamos and Rust parity pass at O0/O2 (CI #37915607402); final review and closure documented, vxplatform GCC16 default and MiniGL unaffected.
+
+10. PF-SP-002: experimental typed encoded U8/U16/F32 raster regions plus flat raster-layer document prototype; new Rust differential + host/m68k/vamos gates, pending verification; ADR-0002/0003 remain proposed.

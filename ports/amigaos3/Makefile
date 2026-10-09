@@ -88,3 +88,57 @@ gcc13-check-hunks:
 gcc13-vamos-tests:
 	@VAMOS="$(VAMOS)" M68K_BUILD_DIR="$(GCC13_BUILD)" \
 	  RUST_ORACLE="$(RUST_ORACLE)" sh scripts/vamos-core-tests.sh
+
+# PF-SP-002 experimental generic encoded raster and flat layer prototypes.
+RASTER_TEST := $(BUILD)/pc_raster_test
+DOCUMENT_TEST := $(BUILD)/pc_document_test
+TYPED_ORACLE := $(BUILD)/typed_oracle
+
+$(RASTER_TEST): tests/pc_raster_test.c src/pc_raster.c src/pc_core.c include/pc_raster.h include/pc_core.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_raster_test.c src/pc_raster.c src/pc_core.c
+
+$(DOCUMENT_TEST): tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_core.c include/pc_document.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_core.c
+
+$(TYPED_ORACLE): tests/typed_oracle.c src/pc_raster.c src/pc_core.c include/pc_raster.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/typed_oracle.c src/pc_raster.c src/pc_core.c
+
+.PHONY: host-typed-test host-typed-sanitize gcc13-build-typed gcc13-check-typed-hunks gcc13-vamos-typed-tests
+host-typed-test: $(RASTER_TEST) $(DOCUMENT_TEST) $(TYPED_ORACLE)
+	./$(RASTER_TEST)
+	./$(DOCUMENT_TEST)
+
+host-test: host-typed-test
+
+host-typed-sanitize: | $(BUILD)
+	$(HOST_CC) -std=c99 -O1 -g -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude -o $(BUILD)/pc_raster_test_san tests/pc_raster_test.c src/pc_raster.c src/pc_core.c
+	./$(BUILD)/pc_raster_test_san
+	$(HOST_CC) -std=c99 -O1 -g -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude -o $(BUILD)/pc_document_test_san tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_core.c
+	./$(BUILD)/pc_document_test_san
+
+host-core-sanitize: host-typed-sanitize
+
+gcc13-build-typed: gcc13-preflight
+	@set -eu; for opt in O0 O2; do \
+	  mkdir -p "$(GCC13_BUILD)/$$opt"; \
+	  flags="$(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt"; \
+	  "$(GCC13_CC)" $$flags -Iinclude $(GCC13_LDFLAGS) \
+	    src/pc_raster.c src/pc_core.c tests/pc_raster_test.c \
+	    -o "$(GCC13_BUILD)/$$opt/pc_raster_test"; \
+	  "$(GCC13_CC)" $$flags -Iinclude $(GCC13_LDFLAGS) \
+	    src/pc_document.c src/pc_raster.c src/pc_core.c tests/pc_document_test.c \
+	    -o "$(GCC13_BUILD)/$$opt/pc_document_test"; \
+	  "$(GCC13_CC)" $$flags -Iinclude $(GCC13_LDFLAGS) \
+	    src/pc_raster.c src/pc_core.c tests/typed_oracle.c \
+	    -o "$(GCC13_BUILD)/$$opt/typed_oracle"; \
+	  echo "Built GCC13 $$opt typed raster / flat document / oracle HUNK"; \
+	done
+
+gcc13-check-typed-hunks:
+	@python3 scripts/check-hunk.py $(GCC13_BUILD)/O0/pc_raster_test $(GCC13_BUILD)/O0/pc_document_test $(GCC13_BUILD)/O0/typed_oracle \
+	  $(GCC13_BUILD)/O2/pc_raster_test $(GCC13_BUILD)/O2/pc_document_test $(GCC13_BUILD)/O2/typed_oracle
+
+gcc13-check-hunks: gcc13-check-typed-hunks
+
+gcc13-vamos-typed-tests:
+	@VAMOS="$(VAMOS)" M68K_BUILD_DIR="$(GCC13_BUILD)" RUST_ORACLE_TYPED="$(RUST_ORACLE_TYPED)" sh scripts/vamos-typed-tests.sh

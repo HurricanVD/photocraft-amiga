@@ -21,7 +21,43 @@ fn pixel_line(label: &str, s: &Surface, x: i32, y: i32) {
         q(v[0]), q(v[1]), q(v[2]), q(v[3])
     );
 }
+
+fn typed_case(label: &str, fmt: PixelFormat) {
+    let rect = Rect::new(-1, 255, 1, 257);
+    let bpp = fmt.bytes_per_pixel();
+    let input: Vec<u8> = (0..4 * bpp).map(|i| ((i * 31 + 7) % 251) as u8).collect();
+    let mut original = Surface::new(fmt);
+    original.write_interleaved(rect, &input);
+    print_hex(&format!("typed-{label}-initial"), &original.to_interleaved(rect));
+    println!("typed-{label}-tiles {}", original.tile_count());
+    let mut clone = original.clone();
+    let replacement = vec![0xa5u8; bpp];
+    clone.write_interleaved(Rect::new(0, 256, 1, 257), &replacement);
+    print_hex(&format!("typed-{label}-snapshot"), &clone.to_interleaved(rect));
+    print_hex(&format!("typed-{label}-original"), &original.to_interleaved(rect));
+}
+
+fn print_hex(label: &str, bytes: &[u8]) {
+    print!("{label} ");
+    for b in bytes { print!("{b:02x}"); }
+    println!();
+}
+fn typed_main() {
+    typed_case("rgba8", PixelFormat::RGBA8);
+    typed_case("rgba16", PixelFormat::RGBA16);
+    typed_case("rgba32f", PixelFormat::RGBA32F);
+    typed_case("graya8", PixelFormat::GRAYA8);
+    typed_case("cmyka8", PixelFormat::CMYKA8);
+    let def = Surface::with_default(PixelFormat::GRAYA8, &[128.0 / 255.0, 1.0]);
+    print_hex("typed-graya8-default",
+        &def.to_interleaved(Rect::new(-500, 400, -499, 401)));
+}
+
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("typed") {
+        typed_main();
+        return;
+    }
     let a = Rect::new(0, 0, 10, 10);
     let b = Rect::new(5, 5, 15, 15);
     rect_line("rect-xywh", Rect::from_xywh(10, 20, 30, 40));

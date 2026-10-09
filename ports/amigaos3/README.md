@@ -134,3 +134,28 @@ AmigaOS/ReAction editor nor proof of PiStorm3D/MiniGL functionality.
 **Core target status (2026-10-09):** PF-SP-003 GCC13.3/vamos O0/O2 and original Rust differential checks passed ([CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)); PF-SP-003 is now formally archived as done ([review](docs/reviews/PF-SP-003-final-review.md), [story](docs/stories/done/PF-SP-003.md)). PF-SP-001 (MiniGL) stays blocked; PF-SP-002 (broader PhotoCraft core) stays in progress. There is no native editor or licensed MiniGL distribution yet.
 
 **Story overview (2026-10-09):** [PF-SP-001](docs/stories/PF-SP-001.md) = blocked (MiniGL WinUAE); [PF-SP-002](docs/stories/PF-SP-002.md) = in_progress (wider PhotoCraft core); [PF-SP-003](docs/stories/done/PF-SP-003.md) = done (GCC13.3/vamos technical spike, no GUI/release approval). Process bootstrap and PF registry activation remain pending.
+
+## Experimental typed raster / flat document (PF-SP-002)
+
+`include/pc_raster.h` and `src/pc_raster.c` extend the core prototype
+with **raw encoded** U8/U16/F32 interleaved tile data, sparse 256×256 COW
+snapshots, per-format defaults, pixel and bounded rectangular reads/writes.
+U16 and F32 raw bytes use *native-endian* samples; the C API performs no
+colour conversion, HDR normalization or ICC management. The C99 bulk-write
+path is **not transactional** if a later tile allocation fails.
+
+`include/pc_document.h` and `src/pc_document.c` introduce a minimal
+**flat raster-only layer** scaffold (bottom-first, IDs, names, visibility,
+ownership and COW snapshot). This is not yet the original PhotoCraft
+`Document` or composite/commands/history/PSD model.
+
+```sh
+make -C ports/amigaos3 host-test
+make -C ports/amigaos3 host-core-sanitize
+```
+
+GitHub Actions now compares *encoded interleaved* bytes across U8/U16/F32,
+Gray+Alpha and CMYK+Alpha formats against the original PhotoCraft Rust APIs,
+then repeats the target C tests at GCC13 `-O0/-O2` under `vamos`.
+See the still-**proposed** [ADR-0002](../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
+and [ADR-0003](../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md).

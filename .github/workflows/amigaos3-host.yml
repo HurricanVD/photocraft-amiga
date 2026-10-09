@@ -59,6 +59,12 @@ jobs:
             ports/amigaos3/src/pc_core.c \
             ports/amigaos3/tests/core_oracle.c \
             -o ports/amigaos3/build/core_oracle_c
+          cc -std=c99 -O2 -Wall -Wextra -Werror -pedantic \
+            -Iports/amigaos3/include \
+            ports/amigaos3/src/pc_core.c \
+            ports/amigaos3/src/pc_raster.c \
+            ports/amigaos3/tests/typed_oracle.c \
+            -o ports/amigaos3/build/typed_oracle
       - name: Compare original Rust outputs with C99 outputs
         run: |
           set -eu
@@ -69,7 +75,15 @@ jobs:
           ports/amigaos3/build/core_oracle_c > ports/amigaos3/build/oracle-c.txt
           diff -u ports/amigaos3/build/oracle-rust.txt \
                   ports/amigaos3/build/oracle-c.txt
-          echo "PASS: original PhotoCraft Rust crates match C99 port oracle"
+            ports/amigaos3/build/oracle-rust-typed.txt
+            ports/amigaos3/build/oracle-c-typed.txt
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml -- typed \
+            > ports/amigaos3/build/oracle-rust-typed.txt
+          ports/amigaos3/build/typed_oracle > ports/amigaos3/build/oracle-c-typed.txt
+          diff -u ports/amigaos3/build/oracle-rust-typed.txt \
+                  ports/amigaos3/build/oracle-c-typed.txt
+          echo "PASS: original PhotoCraft Rust crates match C99 port and typed oracle"
       - name: Upload differential outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -111,7 +125,7 @@ jobs:
             /bin/sh -ec '
               compiler="$(command -v m68k-amigaos-gcc)"
               root="$(dirname "$(dirname "$(realpath "$compiler")")")"
-              make -C ports/amigaos3 gcc13-build-tests GCC_BEBBO_ROOT="$root"
+              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed GCC_BEBBO_ROOT="$root"
             '
           make -C ports/amigaos3 gcc13-check-hunks
       - name: Install pinned vamos and machine68k
@@ -130,10 +144,12 @@ jobs:
             'git+https://github.com/cnvogelg/amitools.git@3b57f2052ee76c28bbc5e4256227f62dca7b1c9f'
           python -c 'import greenlet, machine68k; print("machine68k import PASS")'
           vamos --help >/dev/null
-      - name: Execute six m68k tests and compare with Rust
+      - name: Execute twelve m68k tests and compare with original Rust
         run: |
           make -C ports/amigaos3 gcc13-vamos-tests \
             RUST_ORACLE=build/oracle-rust.txt
+          make -C ports/amigaos3 gcc13-vamos-typed-tests \
+            RUST_ORACLE_TYPED=build/oracle-rust-typed.txt
       - name: Upload GCC13 target evidence
         if: always()
         uses: actions/upload-artifact@v4

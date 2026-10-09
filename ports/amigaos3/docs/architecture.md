@@ -46,3 +46,19 @@ This is independent of the unverified MiniGL UI/backend compatibility.
 ## Current CPU core target evidence (2026-10-09)
 
 The **isolated C99 subset** (`pc_core` geometry, RGBA8 sparse COW surface, colour-format metadata) has host ASan/UBSan evidence and has been compiled as 68020-compatible Amiga HUNK by GCC/Bebbo 13.3 at `-O0` and `-O2`. All six headless test/fixture HUNK binaries run under pinned `vamos`; the two m68k C oracles match the original Rust crate oracle byte-for-byte for the enumerated fixtures ([PF-TN-003](tests/done/PF-TN-003.md), [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)). GCC13 remains an opt-in test lane consistent with vxplatform ADR-0014; it does not replace a product compiler policy or the accepted ADR-0001 direction. The native PhotoCraft document model, formats, UI, bitmap MiniGL and RTG present paths remain unimplemented or unverified.
+
+## Proposed core and compiler ADRs / exploratory implementation (2026-10-09)
+
+- [ADR-0002](../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
+  scopes typed, sparse COW raster formats and constrained memory; remains
+  `proposed`, requiring explicit owner acceptance.
+- [ADR-0003](../../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md)
+  scopes opt-in GCC13 versus future compiler product choice; remains
+  `proposed`. GCC13 is validated only as a test profile, not as native
+  PhotoCraft product toolchain.
+- `pc_raster.h/.c` and `pc_document.h/.c` are isolated experimental
+  format-generic byte storage and *flat* layer-ownership probes. Neither
+  changes accepted ADR-0001 nor represents the full original doc model.
+- Exact Rust-original `Surface::write_interleaved` /
+  `to_interleaved` output is the test oracle across format/strides; 68k
+  GCC13/vamos and host sanitizer jobs are mandatory validation.
