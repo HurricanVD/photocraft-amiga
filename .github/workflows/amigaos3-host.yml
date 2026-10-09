@@ -6,11 +6,17 @@ on:
     paths:
       - "ports/amigaos3/**"
       - ".github/workflows/amigaos3-host.yml"
+      - "crates/geom/**"
+      - "crates/color/**"
+      - "crates/raster/**"
   pull_request:
     branches: [amigaos32]
     paths:
       - "ports/amigaos3/**"
       - ".github/workflows/amigaos3-host.yml"
+      - "crates/geom/**"
+      - "crates/color/**"
+      - "crates/raster/**"
   workflow_dispatch:
 
 permissions:
@@ -30,3 +36,46 @@ jobs:
         run: make -C ports/amigaos3 host-test
       - name: Address/undefined sanitizer core tests
         run: make -C ports/amigaos3 host-core-sanitize
+
+  rust-original-parity:
+    name: Rust originals vs C99 port
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CARGO_TERM_COLOR: always
+      CARGO_PROFILE_DEV_DEBUG: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Rust stable (PhotoCraft requires 1.95+)
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run original PhotoCraft geom/color/raster library tests
+        run: cargo test -p photocraft-geom -p photocraft-color -p photocraft-raster --locked --lib
+      - name: Compile independent C oracle
+        run: |
+          mkdir -p ports/amigaos3/build
+          cc -std=c99 -O2 -Wall -Wextra -Werror -pedantic \
+            -Iports/amigaos3/include \
+            ports/amigaos3/src/pc_core.c \
+            ports/amigaos3/tests/core_oracle.c \
+            -o ports/amigaos3/build/core_oracle_c
+      - name: Compare original Rust outputs with C99 outputs
+        run: |
+          set -eu
+          export CARGO_TARGET_DIR="${{ github.workspace }}/target"
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml \
+            > ports/amigaos3/build/oracle-rust.txt
+          ports/amigaos3/build/core_oracle_c > ports/amigaos3/build/oracle-c.txt
+          diff -u ports/amigaos3/build/oracle-rust.txt \
+                  ports/amigaos3/build/oracle-c.txt
+          echo "PASS: original PhotoCraft Rust crates match C99 port oracle"
+      - name: Upload differential outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: photocraft-rust-vs-c-core
+          path: |
+            ports/amigaos3/build/oracle-rust.txt
+            ports/amigaos3/build/oracle-c.txt
+          if-no-files-found: ignore

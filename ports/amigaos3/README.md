@@ -77,3 +77,14 @@ a complete format-generic Rust `Surface` port or a `Document` implementation.
 In particular the initial C surface is RGBA8-only, uses a linear tile lookup,
 is single-threaded, and has no persistence, fill-rectangle, masks or blend math.
 Rust-native parity execution and m68k target builds remain follow-up gates.
+
+### Rust-original parity on GitHub Actions
+
+`rust-original-parity` runs actual upstream PhotoCraft Rust library tests for
+`geom`, `color`, and `raster`, and compares a deterministic independent C99
+oracle with a Rust oracle backed by the original crates. It is separate from
+the Linux C99/sanitizer job. See `tests/core_oracle.c` and
+`tests/rust_oracle/`.
+
+This covers ONLY the enumerated sample vectors; full equivalence, full pixel
+format support and real AmigaOS runtime still require later testing.

@@ -28,3 +28,21 @@ Reference Rust sources were read via the connected GitHub repository in
 `HurricanVD/photocraft-amiga` on the same `amigaos32` branch.
 The new C files are independently authored and contain no imported private
 Dunkelkammer implementation.
+
+## Live original-Rust differential verification (new workflow)
+
+A new independent `rust-original-parity` job runs the original, UNMODIFIED
+`photocraft-geom`, `photocraft-color` and `photocraft-raster` library
+tests through `cargo test --locked`. It then builds a standalone Rust
+program with path dependencies on those original crates and compares its
+machine-readable result vectors with an independent C99 executable using
+`diff -u` (the job fails if any byte differs). No C code enters the Rust
+Cargo workspace.
+
+- C oracle: `tests/core_oracle.c`
+- Rust oracle: `tests/rust_oracle/src/main.rs`
+- GitHub Actions: `.github/workflows/amigaos3-host.yml`
+
+The differential result remains **pending** until the new workflow run is
+confirmed and its logs inspected. Do not infer a passing Rust runtime from
+the presence of this CI configuration alone.
