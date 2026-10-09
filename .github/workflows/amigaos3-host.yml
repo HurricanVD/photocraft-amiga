@@ -1,0 +1,32 @@
+name: AmigaOS 3.2 Host Core
+
+on:
+  push:
+    branches: [amigaos32]
+    paths:
+      - "ports/amigaos3/**"
+      - ".github/workflows/amigaos3-host.yml"
+  pull_request:
+    branches: [amigaos32]
+    paths:
+      - "ports/amigaos3/**"
+      - ".github/workflows/amigaos3-host.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-c99:
+    name: Portable C99 + ASan/UBSan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Compiler information
+        run: cc --version
+      - name: Host staging and core tests
+        run: make -C ports/amigaos3 host-test
+      - name: Address/undefined sanitizer core tests
+        run: make -C ports/amigaos3 host-core-sanitize

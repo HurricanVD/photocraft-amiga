@@ -15,20 +15,20 @@ Dunkelkammer DkDocument. Implement a testable C99 subset with no AmigaOS GUI,
 MiniGL or SDK dependency.
 
 Reference:
-- \`crates/geom/src/lib.rs\`: 256x256 tile size, half-open Rect, signed
-  negative coordinate \`div_euclid\`, intersect/union/saturating translation.
-- \`crates/color/src/lib.rs\`: pixel format metadata for RGB/Gray/CMYK,
+- `crates/geom/src/lib.rs`: 256x256 tile size, half-open Rect, signed
+  negative coordinate `div_euclid`, intersect/union/saturating translation.
+- `crates/color/src/lib.rs`: pixel format metadata for RGB/Gray/CMYK,
   U8/U16/F32 storage sizes.
-- \`crates/raster/src/lib.rs\`: sparse RGBA8 pixels, default pixel, Arc-like
+- `crates/raster/src/lib.rs`: sparse RGBA8 pixels, default pixel, Arc-like
   COW clones, prune and tile count.
 
 ## Scope
 
-- C99 \`pc_core.h\` / \`pc_core.c\` with explicit owner and error returns.
+- C99 `pc_core.h` / `pc_core.c` with explicit owner and error returns.
 - No changes to the Rust crates or cargo workspace.
 - Host test fixtures derived from upstream Rust test cases and negative tile
   boundary grids.
-- Existing \`host-test\` runs the staging test and first core test.
+- Existing `host-test` runs the staging test and first core test.
 - Optional ASan/UBSan target for memory and signed arithmetic diagnostics.
 - No third-party or proprietary Dunkelkammer code copied.
 

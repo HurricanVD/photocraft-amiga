@@ -61,19 +61,19 @@ The active technical spike is [PF-SP-001](docs/stories/PF-SP-001.md), with [PF-T
 ## Host-first PhotoCraft CPU core (PF-SP-002)
 
 A first independent C99 port of upstream geometry, PixelFormat metadata and a
-sparse 256x256 RGBA8 raster surface lives in \`include/pc_core.h\` and
-\`src/pc_core.c\`. It supports negative document coordinates, default pixels,
+sparse 256x256 RGBA8 raster surface lives in `include/pc_core.h` and
+`src/pc_core.c`. It supports negative document coordinates, default pixels,
 COW surface clones, RGBA8 pixel edits and pruning default-only tiles.
 
-\`\`\`sh
+```sh
 make -C ports/amigaos3 host-test
 make -C ports/amigaos3 host-core-sanitize   # Linux/clang/gcc with ASan+UBSan
-\`\`\`
+```
 
 The test cases are taken from the observable expectations in upstream Rust
-\`crates/geom/src/lib.rs\`, \`crates/color/src/lib.rs\` and
-\`crates/raster/src/lib.rs\`. **This is a narrow host-test implementation**, not
-a complete format-generic Rust \`Surface\` port or a \`Document\` implementation.
+`crates/geom/src/lib.rs`, `crates/color/src/lib.rs` and
+`crates/raster/src/lib.rs`. **This is a narrow host-test implementation**, not
+a complete format-generic Rust `Surface` port or a `Document` implementation.
 In particular the initial C surface is RGBA8-only, uses a linear tile lookup,
 is single-threaded, and has no persistence, fill-rectangle, masks or blend math.
 Rust-native parity execution and m68k target builds remain follow-up gates.
