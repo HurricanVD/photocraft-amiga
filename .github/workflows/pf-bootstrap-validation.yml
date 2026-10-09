@@ -1,0 +1,64 @@
+name: PF Bootstrap Validation
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/pf-bootstrap-validation.yml"
+      - "tools/check-bootstrap-evidence.sh"
+      - "tools/check-process-version.*"
+      - "docs/project-metadata.env"
+      - "docs/development-process.md"
+      - "docs/backlog*.md"
+      - "docs/bootstrap/**"
+      - "docs/reviews/bootstrap-*.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pf-bootstrap:
+    name: VD 0.2.1 Bootstrap (Bash + PowerShell)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      # Consumer has to live two directories below the workspace root to
+      # resolve VD_PROCESS_REPO=../../tools/vd-amiga-dev-process unchanged.
+      - name: Check out PhotoCraft
+        uses: actions/checkout@v4
+        with:
+          path: apps/photocraft-amiga
+          persist-credentials: false
+
+      # Pin exact reviewed process tree; do not float with shared main.
+      - name: Check out VD 0.2.1
+        uses: actions/checkout@v4
+        with:
+          repository: HurricanVD/vd-amiga-dev-process
+          ref: 0566a39c28ee73285463f33eb72b210b5d215db4
+          path: tools/vd-amiga-dev-process
+          persist-credentials: false
+
+      - name: Verify exact process baseline and runner availability
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(cat tools/vd-amiga-dev-process/VERSION)" = "0.2.1"
+          test "$(git -C tools/vd-amiga-dev-process rev-parse HEAD)" = "0566a39c28ee73285463f33eb72b210b5d215db4"
+          command -v sh
+          command -v make
+          command -v pwsh
+
+      - name: Run PF bootstrap evidence gates on actual checkouts
+        shell: bash
+        run: |
+          set -euo pipefail
+          sh apps/photocraft-amiga/tools/check-bootstrap-evidence.sh 2>&1 | tee "${RUNNER_TEMP}/pf-bootstrap-evidence.log"
+
+      - name: Attach gate logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pf-bootstrap-evidence
+          path: ${{ runner.temp }}/pf-bootstrap-evidence.log
+          if-no-files-found: ignore
