@@ -9,3 +9,5 @@ The `PF` prefix is now **reserved** in the private VD process registry, so forma
 5. Prototype an off-screen MiniGL bitmap context for ReAction without painting on gadgets.
 6. Port first nontrivial PhotoCraft CPU component, proving byte/behavior parity on synthetic cases and exact limits.
 7. Only after core parity: add ReAction shell, document/session/command bridges and PSD interoperability.
+
+8. PF-SP-002 / PF-TN-002: host-first Kernport (geom/color-Metadaten/RGBA8 sparse COW) with passing host fixture tests; Rust binary oracle and m68k remain pending.

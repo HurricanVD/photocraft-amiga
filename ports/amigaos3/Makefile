@@ -7,9 +7,10 @@ MINIGL_INCLUDE ?=
 MINIGL_IMPORT_LIB ?=
 BUILD := build
 HOST_TEST := $(BUILD)/pc_tile_convert_test
+CORE_TEST := $(BUILD)/pc_core_test
 AMIGA_SMOKE := $(BUILD)/pc_minigl_smoke
 
-.PHONY: all host-test amiga-preflight amiga-smoke clean
+.PHONY: all host-test host-core-test host-core-sanitize amiga-preflight amiga-smoke clean
 all: host-test
 
 $(BUILD):
@@ -18,8 +19,19 @@ $(BUILD):
 $(HOST_TEST): tests/pc_tile_convert_test.c src/pc_tile_convert.c include/pc_tile_convert.h | $(BUILD)
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_tile_convert_test.c src/pc_tile_convert.c
 
-host-test: $(HOST_TEST)
+$(CORE_TEST): tests/pc_core_test.c src/pc_core.c include/pc_core.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ src/pc_core.c tests/pc_core_test.c
+
+host-core-test: $(CORE_TEST)
+	./$(CORE_TEST)
+
+host-test: $(HOST_TEST) $(CORE_TEST)
 	./$(HOST_TEST)
+	./$(CORE_TEST)
+
+host-core-sanitize: | $(BUILD)
+	$(HOST_CC) -std=c99 -g -O1 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude -o $(BUILD)/pc_core_test_san src/pc_core.c tests/pc_core_test.c
+	./$(BUILD)/pc_core_test_san
 
 amiga-preflight:
 	@command -v "$(CC68K)" >/dev/null 2>&1 || { echo "BLOCKED: missing $(CC68K)"; exit 2; }
