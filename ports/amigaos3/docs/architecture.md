@@ -34,3 +34,11 @@ The C bridge API is NOT yet finalized. A renderer must consume *PhotoCraft* RGBA
 ## Gate order
 
 Host algorithm tests -> optional m68k HUNK/vamos tests -> manual WinUAE/QuarkTex NG visual tests -> supported PiStorm3D real hardware tests. A m68k Rust toolchain with required std/alloc is not assumed to exist.
+
+## GCC13.3 + vamos as a separate compatibility gate
+
+PF-SP-003 adds an opt-in C99 build/runtime probe against GCC/Bebbo 13.3.0,
+following vxplatform's `TOOLCHAIN_PROFILE=gcc13` *provider* guard pattern.
+Unlike vxplatform, PhotoCraft builds no VXP archive in this probe. Amiga HUNK
+runs under vamos at O0/O2 and should match the original Rust oracle bytes.
+This is independent of the unverified MiniGL UI/backend compatibility.

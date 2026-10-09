@@ -93,3 +93,28 @@ format support and real AmigaOS runtime still require later testing.
 and the independent Rust/C99 fixture outputs matched byte-for-byte on
 [GitHub Actions run 37909489232](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232).
 This is a limited host parity milestone, not an AmigaOS executable or full editor.
+
+## GCC13.3 and vamos tests (PF-SP-003)
+
+The optional m68k compatibility lane is modeled on the **GCC13.3 opt-in**
+provider contract in `HurricanVD/vxplatform` ADR-0014. vxplatform's default
+remains GCC16.1.1b; this fork does **not** change that default.
+
+```sh
+make -C ports/amigaos3 gcc13-build-tests \
+  GCC_BEBBO_ROOT=/absolute/path/to/amiga-gcc-13.3
+make -C ports/amigaos3 gcc13-check-hunks
+make -C ports/amigaos3 gcc13-vamos-tests \
+  RUST_ORACLE=build/oracle-rust.txt
+```
+
+The Rust oracle text is produced by the `rust-original-parity` Actions job
+and is downloaded automatically by the GCC13 job. Local runs need a genuine
+Rust original-oracle output file; the C oracle is not a substitute. The
+GCC13 lane requires neither the MiniGL SDK nor WinUAE.
+
+The CI compiler image is tag-pinned and its resolved digest is logged.
+Compiler target and exact 13.3.0 version are checked fail-closed before
+building. Re-run evidence is tracked under
+[PF-TN-003](docs/tests/PF-TN-003.md). A running/passing CI job is required
+before any m68k test is called successful.
