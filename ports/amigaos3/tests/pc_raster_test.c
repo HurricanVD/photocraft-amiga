@@ -12,11 +12,9 @@ static void check_one(PcPixelFormat fmt)
     size_t i,n,bpp=pc_format_bytes_per_pixel(fmt);
     PcRect area=pc_rect_new(-1,255,1,257);
     assert(bpp&&bpp<=20);
-    n=pc_raster_region_bytes(pc_raster_new(fmt,NULL),area);
-    /* Proper allocation and destruction are checked below; avoid
-     * introducing unowned transient rasters in memory-budgeted tests. */
-    assert(n==bpp*4);
     r=pc_raster_new(fmt,NULL);assert(r);
+    n=pc_raster_region_bytes(r,area);
+    assert(n==bpp*4);
     assert(pc_raster_tile_count(r)==0);
     assert(!pc_raster_read_region(r,area,got,n-1));
     assert(pc_raster_read_region(r,area,got,n));
