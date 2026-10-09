@@ -38,6 +38,12 @@ grep -q 'PF-SP-002.*in_progress' "$repo_root/docs/backlog.md" || { echo 'FAIL PF
 grep -q 'PF-SP-003.*2026-10-09' "$repo_root/docs/backlog-done.md" || { echo 'FAIL PF-SP-003 missing from done' >&2; exit 1; }
 echo 'STATIC_BOOTSTRAP_DOCS=PASS'
 
+# Public fork CI may run only the static gate; full VD checks run in the
+# private shared-process repository because its sources are not public.
+if [ "${1:-}" = '--static-only' ]; then
+  exit 0
+fi
+
 if [ ! -f "$process_path/VERSION" ]; then
   echo "POSIX_DRIFT=RUNTIME_BLOCKED (missing process checkout: $process_path)" >&2
   exit 2
