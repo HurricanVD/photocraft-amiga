@@ -14,6 +14,6 @@ The `PF` prefix is now **reserved** in the private VD process registry, so forma
 
 9. PF-SP-003 / PF-TN-003: **done / archived** (port-local `stories/done/`, `tests/done/`). GCC13.3 m68k/vamos and Rust parity pass at O0/O2 (CI #37915607402); final review and closure documented, vxplatform GCC16 default and MiniGL unaffected.
 
-10. PF-SP-002: experimental typed encoded U8/U16/F32 raster regions plus flat raster-layer document prototype; new Rust differential + host/m68k/vamos gates, pending verification; ADR-0002/0003 remain proposed.
+10. PF-SP-002: experimental typed encoded U8/U16/F32 raster regions plus flat raster-layer document prototype; new Rust differential + host/m68k/vamos gates, pending verification; ADR-0002/0003 accepted for architecture (2026-10-09); production compiler/API still not selected.
 
-11. PF-SP-002 / PF-TN-004: typed U8/U16/F32 raw encoded raster and flat raster-only layer ownership prototype, 12 valid HUNK/vamos tests and Rust-oracle fixtures PASSED (CI #37919197110). Full PhotoCraft document engine and production ABI are still in progress; ADR-0002/0003 proposed.
+11. PF-SP-002 / PF-TN-004: typed U8/U16/F32 raw encoded raster and flat raster-only layer ownership prototype, 12 valid HUNK/vamos tests and Rust-oracle fixtures PASSED (CI #37919197110). Full PhotoCraft document engine and production ABI are still in progress; ADR-0002/0003 accepted; further implementation/release gates open.

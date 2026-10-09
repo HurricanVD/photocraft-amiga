@@ -47,15 +47,14 @@ This is independent of the unverified MiniGL UI/backend compatibility.
 
 The **isolated C99 subset** (`pc_core` geometry, RGBA8 sparse COW surface, colour-format metadata) has host ASan/UBSan evidence and has been compiled as 68020-compatible Amiga HUNK by GCC/Bebbo 13.3 at `-O0` and `-O2`. All six headless test/fixture HUNK binaries run under pinned `vamos`; the two m68k C oracles match the original Rust crate oracle byte-for-byte for the enumerated fixtures ([PF-TN-003](tests/done/PF-TN-003.md), [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)). GCC13 remains an opt-in test lane consistent with vxplatform ADR-0014; it does not replace a product compiler policy or the accepted ADR-0001 direction. The native PhotoCraft document model, formats, UI, bitmap MiniGL and RTG present paths remain unimplemented or unverified.
 
-## Proposed core and compiler ADRs / exploratory implementation (2026-10-09)
+## Core and compiler ADRs / experimental implementation (updated 2026-10-09)
 
 - [ADR-0002](../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
-  scopes typed, sparse COW raster formats and constrained memory; remains
-  `proposed`, requiring explicit owner acceptance.
+  is **accepted** for PhotoCraft 256x256 sparse COW semantics, typed storage
+  and constrained target memory; a stable/complete document ABI still needs implementation review.
 - [ADR-0003](../../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md)
-  scopes opt-in GCC13 versus future compiler product choice; remains
-  `proposed`. GCC13 is validated only as a test profile, not as native
-  PhotoCraft product toolchain.
+  is **accepted** for test-profile separation and evidence gates. GCC13 remains
+  an opt-in tested profile; a full PhotoCraft production compiler is **not selected**.
 - `pc_raster.h/.c` and `pc_document.h/.c` are isolated experimental
   format-generic byte storage and *flat* layer-ownership probes. Neither
   changes accepted ADR-0001 nor represents the full original doc model.
@@ -67,4 +66,4 @@ The **isolated C99 subset** (`pc_core` geometry, RGBA8 sparse COW surface, colou
 
 `pc_raster.h/.c` is a **separate experimental C99 encoded raster API** supporting U8/U16/F32 and PhotoCraft mode/channel metadata, 256×256 sparse COW tiles, default pixels and rectangular IO. It is not a colour-management or compositing conversion layer; U16/F32 bytes are native-endian as in Rust `to_ne_bytes`. Multi-tile write failure is not yet atomic. `pc_document.h/.c` is a *flat raster-only ownership scaffold* and does not replace PhotoCraft's grouped document model.
 
-[PF-TN-004](tests/PF-TN-004.md) shows host, original Rust differential and GCC13/vamos O0/O2 passing on CI #37919197110. ADR-0002 and ADR-0003 have been submitted only as **proposals**, not accepted product architecture. Further core/memory/ABI, graphics and release decisions need explicit review before implementing a stable public interface.
+[PF-TN-004](tests/PF-TN-004.md) shows host, original Rust differential and GCC13/vamos O0/O2 passing on CI #37919197110. ADR-0002 and ADR-0003 were **accepted by the project owner on 2026-10-09** for their stated architectural direction and separated test profiles. Further specific core/memory/ABI, graphics and release decisions need implementation-level review before a stable public interface.

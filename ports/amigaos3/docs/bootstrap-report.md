@@ -26,3 +26,7 @@ PF-SP-003 and PF-TN-003 have been technically reviewed and archived under the po
 ## 2026-10-09 typed core extension
 
 ADR-0002 and ADR-0003 are on the `amigaos32` branch as **proposed** decisions, with no owner acceptance yet. The experimental C99 raster and flat-layer documents have passing host/Rust-original and GCC13 HUNK/vamos checks in CI #37919197110; see PF-TN-004. The complete central process bootstrap, PF activation, MiniGL runtime, native GUI, and full image engine are still outstanding.
+
+## Owner decision (2026-10-09)
+
+ADRs 0002 and 0003 were explicitly accepted for architecture direction in the fork. Full canonical VD bootstrap remains outstanding; the reserved PF prefix is **not** promoted to active by architectural approval or merging the code into the fork's main branch. Future implementation-driving stories need the standard process gates before release readiness.

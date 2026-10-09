@@ -1,11 +1,13 @@
 # ADR-0002: Native PhotoCraft core, tile storage and memory contract
 
 - ADR-ID: `ADR-0002`
-- Status: `proposed`
-- Created / updated: 2026-10-09
-- Lifecycle action: `propose`
+- Status: `accepted`
+- Created: 2026-10-09
+- Accepted: 2026-10-09
+- Last updated: 2026-10-09
+- Lifecycle action: `accept`
 - Decision depth: `far_reaching` — core ABI, data model, storage and memory budget across future stories
-- Decision authority: user / project owner; approval `pending`
+- Decision authority: project owner; approval `approved` by explicit instruction "adr freigeben, commit und merge nach main. push für vd-amiga-dev-process" on 2026-10-09
 - Scope: `ports/amigaos3` (PhotoCraft fork); upstream Rust crates are not modified
 - Referenced accepted ADR: [ADR-0001](ADR-0001-amigaos3-port-seam.md)
 - Architectural test baseline: `PF-SP-002`, `PF-TN-002`; `PF-SP-003` and archived `PF-TN-003`
@@ -24,7 +26,7 @@ The accepted ADR-0001 requires a genuine PhotoCraft port, not replacing it
 with Dunkelkammer's 128×128 document/tile model. The first RGBA8 C99
 COW prototype and its six GCC13/vamos tests have passing evidence.
 
-## Proposed technical contract
+## Accepted architectural contract
 
 1. Preserve **PhotoCraft's 256×256 tile grid** and negative-coordinate floor
    division. Missing tiles return their format-specific default pixel.
@@ -76,8 +78,8 @@ COW prototype and its six GCC13/vamos tests have passing evidence.
 
 ## Approval and revisit
 
-**This ADR is NOT accepted.** PF-SP-002 may run reversible, explicitly
-experimental C99 spikes while the permanent storage/API decision is pending.
-Before making it a stable engine or first implementation-driven PO/TD/BG
-story, obtain a separate explicit user approval and complete the applicable
-pre-ready architecture review and target memory tests.
+**Accepted for architectural direction** by the project owner on 2026-10-09. This establishes the underlying PhotoCraft semantic constraints, the 256x256/COW memory strategy and isolation of platform services, **not** a stabilized binary C API or proof of a complete document engine.
+
+A final public/production API, allocator fault semantics, transaction handling, indexed tile lookup, memory budgets, ICC, PSD and multi-layer rendering still require implementation-level reviews, deterministic Rust-oracle tests and target evidence. The experimental `PcRaster`/`PcDocument` modules do not become automatically release-ready by acceptance of this ADR.
+
+Review record: [ADR-0002/0003 joint approval audit](../../ports/amigaos3/docs/reviews/ADR-0002-0003-approval-2026-10-09.md).

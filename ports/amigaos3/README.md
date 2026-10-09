@@ -157,8 +157,8 @@ make -C ports/amigaos3 host-core-sanitize
 GitHub Actions now compares *encoded interleaved* bytes across U8/U16/F32,
 Gray+Alpha and CMYK+Alpha formats against the original PhotoCraft Rust APIs,
 then repeats the target C tests at GCC13 `-O0/-O2` under `vamos`.
-See the still-**proposed** [ADR-0002](../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
-and [ADR-0003](../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md).
+See **accepted** [ADR-0002](../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
+and **accepted** [ADR-0003](../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md).
 
 ### Verified typed raster and flat layer experiment (2026-10-09)
 
@@ -169,3 +169,5 @@ and [ADR-0003](../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md).
 - Twelve HUNK executables (six at `-O0`, six at `-O2`) validated and all twelve run under `vamos` **PASS**, including flat-layer ownership and typed byte-for-byte Rust comparison at both optimisation levels.
 
 See [PF-TN-004](docs/tests/PF-TN-004.md) for scope, evidence, and exclusions. The flat raster-layer prototype has **no** group, blend, masks, PSD round-trip, history, render engine or native GUI.
+
+**2026-10-09 owner approval:** ADR-0002 and ADR-0003 are `accepted`; no full editor, stable binary API, compiler promotion or distribution rights are implied. The GCC13/vamos test lane continues, and the fork `main` may now receive the explicitly requested merge of `amigaos32` without upstream contribution.

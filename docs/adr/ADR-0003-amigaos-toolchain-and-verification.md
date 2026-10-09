@@ -1,11 +1,13 @@
 # ADR-0003: PhotoCraft AmigaOS compiler, target and verification profiles
 
 - ADR-ID: `ADR-0003`
-- Status: `proposed`
-- Created / updated: 2026-10-09
-- Lifecycle action: `propose`
+- Status: `accepted`
+- Created: 2026-10-09
+- Accepted: 2026-10-09
+- Last updated: 2026-10-09
+- Lifecycle action: `accept`
 - Decision depth: `far_reaching` — production compiler choice, ABI, target and build/release gate
-- Decision authority: user / project owner; approval `pending`
+- Decision authority: project owner; approval `approved` by explicit instruction "adr freigeben, commit und merge nach main. push für vd-amiga-dev-process" on 2026-10-09
 - Scope: `ports/amigaos3` (fork only)
 - Existing accepted basis: ADR-0001, VD Amiga process 0.2.1
 - Related: HurricanVD/vxplatform ADR-0014 `gcc13` opt-in provider profile; PF-SP-003 / PF-TN-003
@@ -24,7 +26,7 @@ artifacts. The central VD process documents a staged 16.1 reference
 migration. We must not silently force another project's compiler policy
 onto the PhotoCraft fork.
 
-## Proposed profiles (decision not final)
+## Accepted profile separation (product-compiler selection deliberately deferred)
 
 | Profile | Toolchain | Purpose | Required evidence |
 |---|---|---|---|
@@ -64,8 +66,9 @@ onto the PhotoCraft fork.
 - [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402):
   C99/Sanitizers, real Rust fixtures and six GCC13/vamos HUNK runs PASS.
 - Prefix `PF` remains `reserved`, full central bootstrap pending.
-- Exact eventual production compiler and SDK selection **requires user
-  sign-off**. Until then PF-SP-002/other experimental spikes may validate
-  additional compiler profiles, but must not claim product acceptance.
+- Exact eventual production compiler and SDK selection **still requires a separate owner decision** before a release or application target is approved. Approval of ADR-0003 does NOT choose GCC13 as the default, and it does NOT inherit vxplatform's GCC16 default. Experimental spikes may evaluate both without claiming product acceptance.
+- The defined `host`, `gcc13-vamos`, `gcc16-evaluation` and `minigl-winuae` profiles, regression ladder and isolation rules are now the **accepted architecture**. Compiler selection for the full native product is an explicitly deferred decision, not an unspecified silent default.
 
-**Status remains proposed** pending explicit decision and final pre-ready review.
+**Accepted** on 2026-10-09 by explicit project owner authorization. Future changes to production compiler policy, toolchain version, ABI boundaries or release gates require a separate recorded decision/review.
+
+Review record: [ADR-0002/0003 joint approval audit](../../ports/amigaos3/docs/reviews/ADR-0002-0003-approval-2026-10-09.md).

@@ -23,3 +23,9 @@ and top-level changelog remain unchanged.
 - Added minimal flat raster-layer ownership, bottom-first order, visibility and document COW snapshot; not yet a full PhotoCraft document model.
 - Passed C99 host/sanitizer and original Rust interleaved differential on CI, plus twelve GCC/Bebbo 13.3 HUNK/vamos checks at O0/O2 ([run #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110)).
 - New ADR-0002/ADR-0003 remain *proposed*; no public ABI or production compiler approved.
+
+## 2026-10-09 — Architecture approvals
+
+- Project owner accepted ADR-0002 (PhotoCraft tile/core/memory strategy) and ADR-0003 (separated toolchain and runtime validation profiles).
+- GCC13.3 remains an opt-in validated target test lane, not a designated native product compiler; full API, ReAction, MiniGL and release decisions remain open.
+- No PhotoCraft Rust upstream changes; fork-specific architecture and tests remain isolated under `ports/amigaos3`.

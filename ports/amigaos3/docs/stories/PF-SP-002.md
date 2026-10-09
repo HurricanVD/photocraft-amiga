@@ -65,10 +65,10 @@ The limited flat raster-layer `PcDocument` prototype under
 visibility and clone ownership. It is **not** the PhotoCraft
 `doc::Document` (groups, masks, effects, history, PSD not present).
 
-This exploratory work is permitted under the existing accepted ADR-0001.
-[ADR-0002](../../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
+This exploratory work is permitted under the accepted ADR-0001, and its
+semantic/verification boundaries now follow **accepted** [ADR-0002](../../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
 and [ADR-0003](../../../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md)
-are proposed. Neither can be represented as accepted without user approval.
+(approved by the project owner on 2026-10-09). No stable public C ABI or product compiler is approved.
 Typed interleaved-byte conformance is exercised against the real Rust
 `Surface::write_interleaved`/`to_interleaved` API. New host, sanitizer,
 GCC13 m68k and vamos tests are additional evidence *only once actually green*.
@@ -79,4 +79,4 @@ Implemented `pc_raster.h/.c` for sparse encoded interleaved bytes across U8/U16/
 
 **Evidence:** [PF-TN-004](../tests/PF-TN-004.md), [CI #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110) — C99/ASan+UBSan PASS, Rust-original interleaved-byte differential PASS, 12 m68k HUNK and vamos executions at O0/O2 PASS. The typed/m68k Rust oracle is byte-identical on enumerated fixtures. No native PhotoCraft GUI or product compiler selection follows.
 
-Architecture proposals: [ADR-0002](../../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../../../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md), both `proposed` pending explicit user approval. PF-SP-002 remains `in_progress` for the full PhotoCraft document/image editing core.
+Architecture proposals: [ADR-0002](../../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../../../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md), both `accepted` for the architectural scope on 2026-10-09. PF-SP-002 remains `in_progress` for the full PhotoCraft document/image editing core. Implementation/target tests and product-compiler selection are separate gates.
