@@ -46,3 +46,7 @@ exit=2
 ```
 
 The `PASS` covers only the independent C99 host-side pixel staging logic. Actual `glReadPixels`, `glTexSubImage2D`, MiniGL ABI, m68k link and WinUAE require later target-specific evidence. Recording the blocked preflight is evidence that missing prerequisites fail clearly, not a successful cross-build.
+
+## 2026-10-09 scope clarification
+
+The separately conducted GCC13.3/vamos CPU core tests are green (archived PF-TN-003); **these are not the MiniGL library/SDK tests**. The historical SDK-00 failure here was a missing compiler in the *original isolated host environment*. No evidence exists yet that the MiniGL-specific HUNK links against its SDK or runs on WinUAE/QuarkTex NG. PF-SP-001 stays `blocked`.

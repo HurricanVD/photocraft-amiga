@@ -116,7 +116,7 @@ GCC13 lane requires neither the MiniGL SDK nor WinUAE.
 The CI compiler image is tag-pinned and its resolved digest is logged.
 Compiler target and exact 13.3.0 version are checked fail-closed before
 building. Re-run evidence is tracked under
-[PF-TN-003](docs/tests/PF-TN-003.md). A running/passing CI job is required
+[PF-TN-003](docs/tests/done/PF-TN-003.md). A running/passing CI job is required
 before any m68k test is called successful.
 
 ### Verified GCC13.3/vamos result (2026-10-09)
@@ -131,4 +131,6 @@ now processes one 6-tile row at a time, avoiding the earlier 9 MiB peak.
 This milestone is an **emulated CPU-core smoke**; it is neither an
 AmigaOS/ReAction editor nor proof of PiStorm3D/MiniGL functionality.
 
-**Core target status (2026-10-09):** PF-SP-003 GCC13.3/vamos O0/O2 and original Rust differential checks passed ([CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)); formal spike closure in progress. PF-SP-001 (MiniGL) stays blocked; PF-SP-002 (broader PhotoCraft core) stays in progress. There is no native editor or licensed MiniGL distribution yet.
+**Core target status (2026-10-09):** PF-SP-003 GCC13.3/vamos O0/O2 and original Rust differential checks passed ([CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)); PF-SP-003 is now formally archived as done ([review](docs/reviews/PF-SP-003-final-review.md), [story](docs/stories/done/PF-SP-003.md)). PF-SP-001 (MiniGL) stays blocked; PF-SP-002 (broader PhotoCraft core) stays in progress. There is no native editor or licensed MiniGL distribution yet.
+
+**Story overview (2026-10-09):** [PF-SP-001](docs/stories/PF-SP-001.md) = blocked (MiniGL WinUAE); [PF-SP-002](docs/stories/PF-SP-002.md) = in_progress (wider PhotoCraft core); [PF-SP-003](docs/stories/done/PF-SP-003.md) = done (GCC13.3/vamos technical spike, no GUI/release approval). Process bootstrap and PF registry activation remain pending.

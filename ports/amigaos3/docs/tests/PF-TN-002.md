@@ -3,7 +3,7 @@
 Date: 2026-10-09
 Story: PF-SP-002
 Scope: independent C99 PhotoCraft geometry, format metadata, RGBA8 sparse COW
-Test environment: Linux GCC/cc host, no m68k target runtime
+Original host test environment: Linux GCC/cc; additional m68k/vamos tests completed later in PF-TN-003.
 
 ## Executed checks
 
@@ -43,9 +43,7 @@ Cargo workspace.
 - Rust oracle: `tests/rust_oracle/src/main.rs`
 - GitHub Actions: `.github/workflows/amigaos3-host.yml`
 
-The differential result remains **pending** until the new workflow run is
-confirmed and its logs inspected. Do not infer a passing Rust runtime from
-the presence of this CI configuration alone.
+This was the initial workflow setup note. Its runtime result was subsequently confirmed PASS by actual GitHub Actions #37909489232 and repeated in #37915607402. See the dated verification sections below; do not equate that limited subset with full app parity.
 
 ## Verified Rust original vs C99 CI run (2026-10-09)
 
@@ -62,3 +60,7 @@ the presence of this CI configuration alone.
 
 **Meaning:** executable, byte-for-byte parity for this *enumerated fixture set*.
 **Not proven:** complete Surface API, all pixel depths and modes, document/layer model, compositing, cross-compiler build, WinUAE/QuarkTex runtime, or complete upstream PhotoCraft functionality.
+
+## 2026-10-09 evidence reconciliation
+
+The initially missing m68k smoke **now passes for the RGBA8/geometry subset only**, via archived [PF-TN-003](done/PF-TN-003.md) (GCC13.3 and vamos, -O0/-O2, Rust oracle differential). The full format-generic raster, layer/document, editing/compose and MiniGL/GUI tests are not implemented or not yet target-verified. PF-SP-002 remains `in_progress`.

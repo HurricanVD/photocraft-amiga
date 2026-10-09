@@ -2,7 +2,7 @@
 
 - Datum: 2026-10-09
 - Story-ID: `PF-SP-003`; type `SP`; entry profile `standard`
-- Status: `ready_for_final_review`
+- Status: `reviewed/closed` after final review, closure technical scope only
 - Scope: `amigaos32` port-local GCC13/vamos test lane and memory-bounded test harness
 - Original source change: C99 test under `ports/amigaos3/tests/pc_core_test.c`; core implementation unchanged
 - Initial implementation commits: `8bc3637` (toolchain lane), `c6ea8f2` (8-MiB setup), `622cfba` (bounded boundary matrix)
@@ -24,3 +24,7 @@
 - Future concerns: process bootstrap/prefix activation, normal pre-ready gate on future app features, MiniGL/QuarkTex NG and PiStorm3D target evidence, format-generic raster and document engine.
 - Candidate commit closure: isolate story/review/test/archive/docs changes to `ports/amigaos3/` and ADR verification metadata; no upstream/`main` mutation.
 - Reference: `HurricanVD/vd-amiga-dev-process/docs/templates/change-summary.md` v0.2.1.
+
+## Closure evidence
+
+Final reviewer: [PF-SP-003-final-review.md](PF-SP-003-final-review.md) (recommendation approve, no open High/Medium findings). Archived story/test links: [PF-SP-003](../stories/done/PF-SP-003.md), [PF-TN-003](../tests/done/PF-TN-003.md). Central bootstrap and PF prefix `active` migration remain separate follow-up work. No product release/marketing approval.

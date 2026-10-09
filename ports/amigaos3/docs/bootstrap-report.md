@@ -18,3 +18,7 @@ Next gates: complete canonical VD bootstrap review, promote seed items into PF-*
 ## 2026-10-09 progress addendum (historical bootstrap text above unchanged)
 
 Bootstrap remains *manual pre-bootstrap*. The `PF` prefix is still `reserved`, not `active`, and no canonical central bootstrap run has been documented. Formal stories PF-SP-001/002/003 and test reports PF-TN-001/002/003 now exist in the port-local overlay. The first host+Rust differential and opt-in GCC13.3 HUNK/vamos O0/O2 checks have passed for the documented RGBA8 core subset ([CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)). The original MiniGL/WinUAE checks are **not run**, and the native app is not implemented. Older 'next gates' above describe the initial 2026-10-08 state, not the current test outcome.
+
+## 2026-10-09 closure addendum
+
+PF-SP-003 and PF-TN-003 have been technically reviewed and archived under the port-local `done/` paths. This closure does not activate the PF registry or complete the central VD process bootstrap. Active status remains PF-SP-001 `blocked` and PF-SP-002 `in_progress`; accepted ADR-0001 has only updated verification metadata and continues to require MiniGL/WinUAE and complete native product evidence.

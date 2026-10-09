@@ -15,7 +15,7 @@
 - NDK/API evidence: `unverified` for MiniGL bitmap context and display lifecycle; test/SDK-backed gate remains open
 - OS deviation log: `ports/amigaos3/docs/os-deviation-log.md`
 - vxlibs baseline: `ready_components_available`; usage decision `spike_required` for any future relevant shared helpers
-- Implementation/runtime evidence (2026-10-09): **partial** — scoped portable RGBA8/geometry C core validated with GCC13.3 HUNK/vamos O0/O2 against original Rust fixtures ([PF-TN-003](../../ports/amigaos3/docs/tests/PF-TN-003.md), [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)); PhotoCraft editor/GUI/MiniGL/WinUAE/PSD engine **not validated**. Architectural sign-off is not runtime or release sign-off.
+- Implementation/runtime evidence (2026-10-09): **partial** — scoped portable RGBA8/geometry C core validated with GCC13.3 HUNK/vamos O0/O2 against original Rust fixtures ([PF-TN-003](../../ports/amigaos3/docs/tests/done/PF-TN-003.md), [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)); PhotoCraft editor/GUI/MiniGL/WinUAE/PSD engine **not validated**. Architectural sign-off is not runtime or release sign-off.
 - Supersedes: none
 - Superseded by: none
 - Lifecycle source: `HurricanVD/vd-amiga-dev-process/docs/process/adr-lifecycle.md`
@@ -81,6 +81,6 @@ Implementation/NDK checks and final pre-ready reviews remain separate. The accep
 - Initial architecture review: `approve_with_followups` (2026-10-08); see [review report](../../ports/amigaos3/docs/reviews/ADR-0001-architecture-review-2026-10-08.md).
 - User acceptance: `approved` (2026-10-08; direct chat instruction).
 - Final pre-ready review: pending, to be performed for the first implementation story.
-- Implementation review: scoped GCC13.3/vamos CPU-core spike validated (PF-SP-003, PF-TN-003); main PhotoCraft implementation review still pending (PF-SP-001/002).
+- Implementation review: scoped GCC13.3/vamos CPU-core test spike PF-SP-003 technically passed and archived (PF-TN-003; 2026-10-09); main PhotoCraft implementation review still pending (PF-SP-001/002).
 - Documentation sync: scope and port metadata updated with this acceptance; original upstream Rust workspace remains unchanged.
 

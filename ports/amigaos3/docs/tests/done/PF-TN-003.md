@@ -2,7 +2,7 @@
 
 - Date: 2026-10-09
 - Story: PF-SP-003
-- Test status: **pass** for GCC13.3 m68k HUNK/vamos O0/O2 and original Rust differential, verified on GitHub Actions run 37915607402 (2026-10-09)
+- Test status: **pass**, archived with PF-SP-003 after review (2026-10-09); GCC13.3 m68k/vamos O0/O2 and original Rust differential verified in CI #37915607402
 - Compiler baseline: opt-in GCC/Bebbo 13.3.0; root explicit and version-checked, independent of GCC16 vxplatform production profile.
 - Emulation: amitools vamos + pinned machine68k; AmigaOS system libraries only as available in vamos.
 - CI: `.github/workflows/amigaos3-host.yml`, job `gcc13-vamos`.
@@ -70,3 +70,7 @@ Run: https://github.com/HurricanVD/photocraft-amiga/actions/runs/37910690849
 Diese Tests beweisen die **definierten C99-Core-Fixtures auf emuliertem 68020** mit GCC13, einschließlich Rust-Oracle-Vergleich. Sie beweisen *nicht* komplette Rust-Rastersemantik, PSD/Dokument-/Layer-Engine, echtes AmigaOS/Workbench, MiniGL, QuarkTex NG, RTG, PiStorm3D oder eine GCC13-Produkt-/Releasefreigabe.
 
 Die technische Testphase ist **pass**; der formale Story-Abschluss bleibt an den VD-Prozessreview gebunden.
+
+## Archival / closure (2026-10-09)
+
+Technical scope accepted as `pass` and archived in the port-local `tests/done/`. Final review: [PF-SP-003-final-review](../../reviews/PF-SP-003-final-review.md). The subsequent CI run #37916110300 also passed on the documentation/evidence commit. The tests do **not** certify MiniGL or the completed PhotoCraft editor.

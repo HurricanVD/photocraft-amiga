@@ -45,8 +45,8 @@ The fixtures are based on the original PhotoCraft Rust public APIs. Actual Rust 
 
 ## Executed Rust-original evidence (2026-10-09)
 
-The original unchanged geom/color/raster crates passed 52 Rust library tests in GitHub Actions, followed by a byte-identical comparison of the independent Rust API oracle against C99 for explicit geometry/format/RGBA8 sparse-COW vectors. See PF-TN-002 and [CI run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232). Keep the story **in_progress**, since the 68k runtime and broader format/doc contracts are not established.
+The original unchanged geom/color/raster crates passed 52 Rust library tests in GitHub Actions, followed by a byte-identical comparison of the independent Rust API oracle against C99 for explicit geometry/format/RGBA8 sparse-COW vectors. See PF-TN-002 and [CI run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232). Keep the story **in_progress** because broad format/document contracts and their native application/runtime are not established; the RGBA8 68k subset was subsequently demonstrated in PF-SP-003.
 
 ## New native-slice evidence (2026-10-09)
 
-[PF-TN-003](../tests/PF-TN-003.md) and [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402) verify the already-implemented RGBA8 C99 subset on an emulated m68k CPU, including byte-identical Rust oracle fixtures. This resolves the previously missing *subset* target smoke only; it does not close PF-SP-002's broader document/image processing implementation.
+[PF-TN-003](../tests/done/PF-TN-003.md) and [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402) verify the already-implemented RGBA8 C99 subset on an emulated m68k CPU, including byte-identical Rust oracle fixtures. This resolves the previously missing *subset* target smoke only; it does not close PF-SP-002's broader document/image processing implementation.

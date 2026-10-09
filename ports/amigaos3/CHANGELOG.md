@@ -14,3 +14,5 @@ and top-level changelog remain unchanged.
 - Host C99/sanitizer and original Rust-versus-C differential tests pass.
 - Scope is infrastructure/core fixture testing; no editor, GPU backend, GUI,
   full document model or distribution artifact is released.
+
+- PF-SP-003 technically completed and archived (GCC13/vamos/Rust comparison only); process startup chronology and bootstrap differences explicitly recorded in final review. No new shipping capability.
