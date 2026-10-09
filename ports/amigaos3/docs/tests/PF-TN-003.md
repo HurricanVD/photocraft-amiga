@@ -19,3 +19,16 @@
 | Hardware | WinUAE/QuarkTex NG and PiStorm3D | not covered |
 
 When CI completes, record run id, commit, compiler `--version`/target, Docker digest, native logs, number of tests, exact comparison result, failures and remedies. No success until verified from job logs.
+
+## Initial CI run 37910690849 (2026-10-09)
+
+- Host-C99/sanitizers: pass.
+- Rust-original comparison: pass.
+- GCC13.3 image pull/version/preflight: pass; image digest recorded in CI logs.
+- GCC13.3 native build at O0 and O2: **pass**.
+- Six binary HUNK_HEADER checks: **pass**, binary sizes logged.
+- Pinned machine68k + amitools/vamos installation: pass.
+- First vamos invocation: **fail in emulator configuration** with `Too much RAM allocated with hw access enabled!` at `-m 16384`. No product assertion was executed in this run.
+- Correction: reduce documented vamos RAM from 16384 KiB to 8192 KiB (same order used by VD/amiport examples); rerun CI. **Do not record native runtime parity as passed until actual execution succeeds.**
+
+Run: https://github.com/HurricanVD/photocraft-amiga/actions/runs/37910690849

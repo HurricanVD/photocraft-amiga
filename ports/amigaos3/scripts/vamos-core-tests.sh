@@ -14,7 +14,7 @@ for opt in O0 O2; do
   for test_name in pc_core_test pc_tile_convert_test; do
     log="$dir/logs/$test_name.log"
     echo "vamos: $opt $test_name"
-    "$VAMOS" -S -C 20 -m 16384 -s 128 "$dir/$test_name" > "$log" 2>&1 || {
+    "$VAMOS" -S -C 20 -m 8192 -s 128 "$dir/$test_name" > "$log" 2>&1 || {
       cat "$log"; echo "FAIL: vamos $opt $test_name" >&2; exit 1;
     }
     cat "$log"
@@ -26,7 +26,7 @@ for opt in O0 O2; do
     esac || { echo "FAIL: expected PASS line missing" >&2; exit 1; }
   done
   log="$dir/logs/core_oracle.log"
-  "$VAMOS" -S -C 20 -m 16384 -s 128 "$dir/core_oracle" > "$log" 2>&1 || {
+  "$VAMOS" -S -C 20 -m 8192 -s 128 "$dir/core_oracle" > "$log" 2>&1 || {
     cat "$log"; echo "FAIL: vamos $opt oracle" >&2; exit 1;
   }
   diff -u "$RUST_ORACLE" "$log" || {

@@ -32,3 +32,7 @@
 
 Until GitHub Actions job `GCC13.3 m68k HUNK + vamos vs Rust` is confirmed green and logs reviewed, status stays `in_progress`.
 Runtime comparison in vamos does not verify real PiStorm3D, QuarkTex NG, FPU or RTG.
+
+## First CI test finding (2026-10-09)
+
+Run 37910690849 built all 6 HUNK binaries successfully and installed pinned vamos, but stopped before the first test due to its own 16 MiB machine68k memory-map configuration (`Too much RAM allocated with hw access enabled`). This is an emulator setup defect, not an observed application failure. The runtime runner now requests 8 MiB; target evidence remains pending.
