@@ -75,8 +75,6 @@ jobs:
           ports/amigaos3/build/core_oracle_c > ports/amigaos3/build/oracle-c.txt
           diff -u ports/amigaos3/build/oracle-rust.txt \
                   ports/amigaos3/build/oracle-c.txt
-            ports/amigaos3/build/oracle-rust-typed.txt
-            ports/amigaos3/build/oracle-c-typed.txt
           cargo run --quiet --manifest-path \
             ports/amigaos3/tests/rust_oracle/Cargo.toml -- typed \
             > ports/amigaos3/build/oracle-rust-typed.txt
@@ -92,6 +90,8 @@ jobs:
           path: |
             ports/amigaos3/build/oracle-rust.txt
             ports/amigaos3/build/oracle-c.txt
+            ports/amigaos3/build/oracle-rust-typed.txt
+            ports/amigaos3/build/oracle-c-typed.txt
           if-no-files-found: ignore
 
   gcc13-vamos:
