@@ -16,3 +16,10 @@ and top-level changelog remain unchanged.
   full document model or distribution artifact is released.
 
 - PF-SP-003 technically completed and archived (GCC13/vamos/Rust comparison only); process startup chronology and bootstrap differences explicitly recorded in final review. No new shipping capability.
+
+## 2026-10-09 — Typed PhotoCraft raster and flat-layer experiment (PF-SP-002)
+
+- Added experimental format-dependent 256×256 sparse COW tile storage (U8/U16/F32 raw encoded pixels), region IO, default-pixel and prune support.
+- Added minimal flat raster-layer ownership, bottom-first order, visibility and document COW snapshot; not yet a full PhotoCraft document model.
+- Passed C99 host/sanitizer and original Rust interleaved differential on CI, plus twelve GCC/Bebbo 13.3 HUNK/vamos checks at O0/O2 ([run #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110)).
+- New ADR-0002/ADR-0003 remain *proposed*; no public ABI or production compiler approved.

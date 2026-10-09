@@ -64,3 +64,7 @@ This was the initial workflow setup note. Its runtime result was subsequently co
 ## 2026-10-09 evidence reconciliation
 
 The initially missing m68k smoke **now passes for the RGBA8/geometry subset only**, via archived [PF-TN-003](done/PF-TN-003.md) (GCC13.3 and vamos, -O0/-O2, Rust oracle differential). The full format-generic raster, layer/document, editing/compose and MiniGL/GUI tests are not implemented or not yet target-verified. PF-SP-002 remains `in_progress`.
+
+## 2026-10-09 extension
+
+Broader typed U8/U16/F32/region/COW and flat-document fixture evidence is tracked in [PF-TN-004](PF-TN-004.md). The earlier RGBA8-specific entries above are historical. Host and m68k comparisons for the new experimental typed raster passed in CI #37919197110; full document/PSD/compositor parity remains unverified.

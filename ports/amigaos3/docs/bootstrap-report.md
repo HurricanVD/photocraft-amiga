@@ -22,3 +22,7 @@ Bootstrap remains *manual pre-bootstrap*. The `PF` prefix is still `reserved`, n
 ## 2026-10-09 closure addendum
 
 PF-SP-003 and PF-TN-003 have been technically reviewed and archived under the port-local `done/` paths. This closure does not activate the PF registry or complete the central VD process bootstrap. Active status remains PF-SP-001 `blocked` and PF-SP-002 `in_progress`; accepted ADR-0001 has only updated verification metadata and continues to require MiniGL/WinUAE and complete native product evidence.
+
+## 2026-10-09 typed core extension
+
+ADR-0002 and ADR-0003 are on the `amigaos32` branch as **proposed** decisions, with no owner acceptance yet. The experimental C99 raster and flat-layer documents have passing host/Rust-original and GCC13 HUNK/vamos checks in CI #37919197110; see PF-TN-004. The complete central process bootstrap, PF activation, MiniGL runtime, native GUI, and full image engine are still outstanding.

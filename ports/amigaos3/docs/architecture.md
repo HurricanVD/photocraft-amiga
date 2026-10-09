@@ -62,3 +62,9 @@ The **isolated C99 subset** (`pc_core` geometry, RGBA8 sparse COW surface, colou
 - Exact Rust-original `Surface::write_interleaved` /
   `to_interleaved` output is the test oracle across format/strides; 68k
   GCC13/vamos and host sanitizer jobs are mandatory validation.
+
+## New format-generic storage spike (2026-10-09)
+
+`pc_raster.h/.c` is a **separate experimental C99 encoded raster API** supporting U8/U16/F32 and PhotoCraft mode/channel metadata, 256×256 sparse COW tiles, default pixels and rectangular IO. It is not a colour-management or compositing conversion layer; U16/F32 bytes are native-endian as in Rust `to_ne_bytes`. Multi-tile write failure is not yet atomic. `pc_document.h/.c` is a *flat raster-only ownership scaffold* and does not replace PhotoCraft's grouped document model.
+
+[PF-TN-004](tests/PF-TN-004.md) shows host, original Rust differential and GCC13/vamos O0/O2 passing on CI #37919197110. ADR-0002 and ADR-0003 have been submitted only as **proposals**, not accepted product architecture. Further core/memory/ABI, graphics and release decisions need explicit review before implementing a stable public interface.

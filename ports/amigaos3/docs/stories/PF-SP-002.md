@@ -72,3 +72,11 @@ are proposed. Neither can be represented as accepted without user approval.
 Typed interleaved-byte conformance is exercised against the real Rust
 `Surface::write_interleaved`/`to_interleaved` API. New host, sanitizer,
 GCC13 m68k and vamos tests are additional evidence *only once actually green*.
+
+## Verified typed-format experiment and first layer scaffold (2026-10-09)
+
+Implemented `pc_raster.h/.c` for sparse encoded interleaved bytes across U8/U16/F32 and PhotoCraft channel-layout metadata. Added region read/write, COW snapshots, defaults/pruning, and a **flat raster-only** document ownership/order prototype in `pc_document.h/.c`. This is explicitly an implementation **spike**, not a final accepted public ABI. It does not port `Document`'s group/mask/history/compositor semantics.
+
+**Evidence:** [PF-TN-004](../tests/PF-TN-004.md), [CI #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110) — C99/ASan+UBSan PASS, Rust-original interleaved-byte differential PASS, 12 m68k HUNK and vamos executions at O0/O2 PASS. The typed/m68k Rust oracle is byte-identical on enumerated fixtures. No native PhotoCraft GUI or product compiler selection follows.
+
+Architecture proposals: [ADR-0002](../../../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../../../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md), both `proposed` pending explicit user approval. PF-SP-002 remains `in_progress` for the full PhotoCraft document/image editing core.

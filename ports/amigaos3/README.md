@@ -74,8 +74,8 @@ The test cases are taken from the observable expectations in upstream Rust
 `crates/geom/src/lib.rs`, `crates/color/src/lib.rs` and
 `crates/raster/src/lib.rs`. **This is a narrow host-test implementation**, not
 a complete format-generic Rust `Surface` port or a `Document` implementation.
-In particular the initial C surface is RGBA8-only, uses a linear tile lookup,
-is single-threaded, and has no persistence, fill-rectangle, masks or blend math.
+In particular the legacy `pc_core.c` surface is RGBA8-only, uses a linear tile lookup,
+is single-threaded, and has no persistence, fill-rectangle, masks or blend math. The separate `pc_raster.c` experimental raw encoded storage now supports multiple sample sizes; it does not introduce a complete colour-managed photo engine.
 Rust-native parity execution for the enumerated differential fixtures **passed** in GitHub Actions run 37909489232; broader semantic parity and m68k target builds remain follow-up gates.
 
 ### Rust-original parity on GitHub Actions
@@ -159,3 +159,13 @@ Gray+Alpha and CMYK+Alpha formats against the original PhotoCraft Rust APIs,
 then repeats the target C tests at GCC13 `-O0/-O2` under `vamos`.
 See the still-**proposed** [ADR-0002](../../docs/adr/ADR-0002-photocraft-core-and-memory-contract.md)
 and [ADR-0003](../../docs/adr/ADR-0003-amigaos-toolchain-and-verification.md).
+
+### Verified typed raster and flat layer experiment (2026-10-09)
+
+[GitHub Actions #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110) passed all three jobs for code commit `7860de9972e6d2951a99b5c0b4dd2043331bf3b9`:
+
+- C99 host tests plus ASan/UBSan **PASS**;
+- 52 original PhotoCraft Rust crate tests and exact encoded U8/U16/F32/GRAYA8/CMYKA8 region/COW Rust/C oracle output **PASS**;
+- Twelve HUNK executables (six at `-O0`, six at `-O2`) validated and all twelve run under `vamos` **PASS**, including flat-layer ownership and typed byte-for-byte Rust comparison at both optimisation levels.
+
+See [PF-TN-004](docs/tests/PF-TN-004.md) for scope, evidence, and exclusions. The flat raster-layer prototype has **no** group, blend, masks, PSD round-trip, history, render engine or native GUI.
