@@ -5,8 +5,8 @@
 - Prozess-Repo: `HurricanVD/vd-amiga-dev-process`
 - Prozessversion: `0.2.1` (exact pinned shared baseline, main VERSION previously verified)
 - Bootstrap-Profil: `process-overlay`
-- Ausfuehrender: Repository integration via connected GitHub; **official local PowerShell/Bash bootstrap script not executed**
-- Bootstrap status: **materialized_with_review_followups**, not claimed as a successfully executed official tool run.
+- Ausfuehrender: Repository integration via connected GitHub; **official bootstrap on the existing consumer checkout not executed**. Non-destructive official tool smoke executed only on disposable four-input snapshot in private process CI.
+- Bootstrap status: **materialized / official isolated bootstrap smoke and process checks PASS; independent final process review pending**. No in-place bootstrap execution or PF activation claimed.
 - Workstream and IP boundary: public PhotoCraft fork, no proprietary Dunkelkammer or private VD process sources vendored.
 
 ## Eingangsdokumente
@@ -40,9 +40,9 @@
 - Registry-Status nach Materialisierung: `reserved` (unchanged)
 - Registry-Transition: `n/a`
 - Prefix-Aktivierung: `follow_up_required`
-- Aktivierungs-Evidenz: project-metadata, bootstrap-report, canonical paths without prefix placeholders, reserved id-range; **formal process review outstanding**
+- Aktivierungs-Evidenz: project-metadata, bootstrap-report, canonical PF paths, reserved ID range and pinned private process CI [run #38004848964](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38004848964) (success on consumer `43cea705`); **independent final process review outstanding**.
 - Registry-Update-Owner: `HurricanVD/vd-amiga-dev-process` maintainers/owner
-- Prefix-Aktivierung-Naechster-Schritt: official bootstrap smoke, drift checks and evidence review; only then separately activate `PF`.
+- Prefix-Aktivierung-Naechster-Schritt: review the completed pinned smoke / Bash / PowerShell logs and final PR diff independently; only after approval submit a separate central registry transition `reserved -> active`.
 - Story-ID-Format: `PF-(PO|BG|SP|LL|PR|TD)-NNN`
 - Story-ID-Beispiel: `PF-SP-001`
 - Test-ID-Format: `PF-TN-NNN`
@@ -98,13 +98,13 @@
 
 ## Lokale Check-Evidenz
 
-- Prozessversion-Drift-Check PowerShell: `not_run`
-- Prozessversion-Drift-Check POSIX: `not_run`
-- Anwendbare lokale Checks: canonical file presence, PF ID/registry match, source-preservation, CI host/Rust and HUNK/vamos tests
-- Check-Runtime-Blocker: local sibling process checkout and PowerShell/WSL2 workspace not accessible through GitHub connector runtime
-- Check-Failure: `not_assessed` for official drift/full check (must not infer PASS)
-- Check-Rerun-Plan: check out exact VD `0.2.1` version into sibling workspace `tools/vd-amiga-dev-process`; run official `tools/bootstrap-repo.sh` without `--force` or `--activate-prefix` and run POSIX/PowerShell drift checks; examine report changes before further commit.
-- Available CI evidence: [AmigaOS core green run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37920223129); main repository CI/Linux/Windows separate.
+- Prozessversion-Drift-Check PowerShell: `pass` (GitHub Actions Ubuntu/pwsh, pinned process baseline; not evidence for the user's WSL2 workstation)
+- Prozessversion-Drift-Check POSIX: `pass` (GitHub Actions Ubuntu, pinned process baseline)
+- Anwendbare lokale Checks: canonical PF documents/ID and reserved registry, POSIX and PowerShell process version drift, PowerShell bootstrap fixture, exhaustive POSIX bootstrap fixture, shared process `make check`, official disposable consumer-input bootstrap smoke. Existing Rust/C99/HUNK/vamos CI remains separate product evidence.
+- Check-Runtime-Blocker: `n/a` in private GitHub Actions run #38004848964; local user-machine WSL2/NDK/MiniGL environment still unverified and is not implied by CI.
+- Check-Failure: `n/a` for pinned process CI checks; run #38004848964 ended `completed/success` and emitted all required PASS markers.
+- Check-Rerun-Plan: from the *private* process repository CI at process commit `0566a39c28ee73285463f33eb72b210b5d215db4`, check out the exact public consumer commit under `apps/photocraft-amiga`; run `sh apps/photocraft-amiga/tools/check-bootstrap-evidence.sh`. Do not check private process code into public PhotoCraft, or invoke official bootstrap in-place with `--force`/`--activate-prefix`.
+- Available process CI evidence: [private PF gate #38004848964](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38004848964) successful (consumer `43cea705`, process `0566a39`, `VERSION=0.2.1`); `STATIC_BOOTSTRAP_DOCS`, `POSIX_DRIFT`, `POWERSHELL_DRIFT`, `POWERSHELL_BOOTSTRAP_FIXTURE`, `BOOTSTRAP_FIXTURE`, `PROCESS_FULL_CHECK`, `CONSUMER_INPUT_SMOKE` and `PF_BOOTSTRAP_VALIDATION` all `PASS`. Public [PF static preflight #38004817978](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38004817978) success. [AmigaOS core test #37920223129](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37920223129) is separate product evidence.
 
 ## Starter-App-Build-Evidenz
 
@@ -119,6 +119,6 @@
 
 ## Offene Annahmen und Nacharbeiten
 
-- Official bootstrap script run + generated output comparison, POSIX/PowerShell drift checks, final bootstrap architecture/process review before PF activation.
+- Official bootstrap tool was successfully smoke-tested on an isolated four-input snapshot and generated its report. It was **not** applied over the existing PhotoCraft worktree; full in-place generated-output comparison was not performed (preservation of upstream inputs). POSIX/PowerShell drift and exhaustive fixtures passed in private CI. **Independent final architecture/process evidence review is still required before PF activation.**
 - Real AmigaOS/ReAction/RTG/MiniGL/WinUAE/QuarkTex/PiStorm3D tests and product compiler choice are **not** implied by this repository bootstrap.
 - Canonical stories/tests are the primary status records; port-local originals remain historical copies until a later link-drift cleanup.
