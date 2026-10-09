@@ -12,4 +12,4 @@ The `PF` prefix is now **reserved** in the private VD process registry, so forma
 
 8. PF-SP-002 / PF-TN-002: host-first Kernport (geom/color-Metadaten/RGBA8 sparse COW) with passing host fixture tests; Rust binary oracle and m68k remain pending.
 
-9. PF-SP-003 / PF-TN-003: opt-in GCC/Bebbo 13.3.0 m68k HUNK and vamos parity with original Rust; separate from vxplatform GCC16 default and MiniGL.
+9. PF-SP-003 / PF-TN-003: **technical O0/O2 GCC13.3 m68k/vamos tests and Rust parity PASS** (CI #37915607402); formal VD closure review pending. Separate from vxplatform GCC16 default and MiniGL.

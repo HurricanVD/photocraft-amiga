@@ -1,7 +1,7 @@
 # PF-SP-003 — GCC/Bebbo 13.3 + vamos compatibility lane
 
 - ID: PF-SP-003
-- Status: in_progress; acceptance requires green m68k/vamos CI evidence
+- Status: review; technical GCC13/vamos O0/O2 + Rust differential acceptance tests passed (CI #37915607402), final VD process review outstanding
 - Date: 2026-10-09
 - Scope: port-local toolchain and test infrastructure only; no production-toolchain change
 - ADR: ADR-0001 accepted; scoped reference: HurricanVD/vxplatform ADR-0014 (gcc13 opt-in)
@@ -30,12 +30,12 @@
 
 ## Pending
 
-Until GitHub Actions job `GCC13.3 m68k HUNK + vamos vs Rust` is confirmed green and logs reviewed, status stays `in_progress`.
+GitHub Actions #37915607402 confirms a successful GCC13.3 m68k/vamos run at O0 and O2 and byte-identical Rust reference fixtures. Technical evidence is complete for this spike; formal VD review/closure is still pending.
 Runtime comparison in vamos does not verify real PiStorm3D, QuarkTex NG, FPU or RTG.
 
 ## First CI test finding (2026-10-09)
 
-Run 37910690849 built all 6 HUNK binaries successfully and installed pinned vamos, but stopped before the first test due to its own 16 MiB machine68k memory-map configuration (`Too much RAM allocated with hw access enabled`). This is an emulator setup defect, not an observed application failure. The runtime runner now requests 8 MiB; target evidence remains pending.
+Run 37910690849 built all 6 HUNK binaries successfully and installed pinned vamos, but stopped before the first test due to its own 16 MiB machine68k memory-map configuration (`Too much RAM allocated with hw access enabled`). This is an emulator setup defect, not an observed application failure. The runtime runner now requests 8 MiB; after a bounded boundary-matrix test change, target evidence passed on run 37915607402.
 
 ## Runtime-Befund und gezielte Testreparatur (2026-10-09)
 
@@ -46,3 +46,9 @@ PhotoCraft-Kernimplementierung: 13 Testzeilen mit je 13 Schreib-/Lesepaaren,
 sechs X-Tiles pro Zeile, Freigabe nach jeder Zeile. Alle ursprünglichen 169
 Koordinatenpaare werden weiterhin geprüft. Das ist ein Memory-Budget-Fix der
 Regressionstests, keine Anpassung des Produktcodes an Testfehler.
+
+## Validation accepted for technical spike; formal closure pending (2026-10-09)
+
+[CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402) on code commit `622cfba` shows all three jobs green. GCC/Bebbo 13.3.0 generated six genuine HUNK files; all six executed under pinned `vamos` successfully, and both C core oracles (`-O0`, `-O2`) matched the original PhotoCraft Rust outputs byte-for-byte. Complete compiler and image provenance, sizes and logs: [PF-TN-003](../tests/PF-TN-003.md).
+
+Status is **review**, not `done`, because no separate final process review/change-summary/closure checks have been completed. No runtime performance or MiniGL/WinUAE capability follows from this spike.

@@ -118,3 +118,15 @@ Compiler target and exact 13.3.0 version are checked fail-closed before
 building. Re-run evidence is tracked under
 [PF-TN-003](docs/tests/PF-TN-003.md). A running/passing CI job is required
 before any m68k test is called successful.
+
+### Verified GCC13.3/vamos result (2026-10-09)
+
+[CI run #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)
+passed on commit `622cfba`: GCC13.3 built **6 valid HUNK binaries**
+(three tests at each of `-O0` and `-O2`), all ran under `vamos`, and
+the m68k C core oracles matched the original PhotoCraft Rust fixtures
+byte-for-byte at both optimization levels. The 169-case tile-boundary test
+now processes one 6-tile row at a time, avoiding the earlier 9 MiB peak.
+
+This milestone is an **emulated CPU-core smoke**; it is neither an
+AmigaOS/ReAction editor nor proof of PiStorm3D/MiniGL functionality.
