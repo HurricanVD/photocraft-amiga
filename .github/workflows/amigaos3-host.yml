@@ -1,0 +1,160 @@
+name: AmigaOS 3.2 Host Core
+
+on:
+  push:
+    branches: [amigaos32]
+    paths:
+      - "ports/amigaos3/**"
+      - ".github/workflows/amigaos3-host.yml"
+      - "crates/geom/**"
+      - "crates/color/**"
+      - "crates/raster/**"
+  pull_request:
+    branches: [amigaos32]
+    paths:
+      - "ports/amigaos3/**"
+      - ".github/workflows/amigaos3-host.yml"
+      - "crates/geom/**"
+      - "crates/color/**"
+      - "crates/raster/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-c99:
+    name: Portable C99 + ASan/UBSan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Compiler information
+        run: cc --version
+      - name: Host staging and core tests
+        run: make -C ports/amigaos3 host-test
+      - name: Address/undefined sanitizer core tests
+        run: make -C ports/amigaos3 host-core-sanitize
+
+  rust-original-parity:
+    name: Rust originals vs C99 port
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CARGO_TERM_COLOR: always
+      CARGO_PROFILE_DEV_DEBUG: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Rust stable (PhotoCraft requires 1.95+)
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run original PhotoCraft geom/color/raster library tests
+        run: cargo test -p photocraft-geom -p photocraft-color -p photocraft-raster --locked --lib
+      - name: Compile independent C oracle
+        run: |
+          mkdir -p ports/amigaos3/build
+          cc -std=c99 -O2 -Wall -Wextra -Werror -pedantic \
+            -Iports/amigaos3/include \
+            ports/amigaos3/src/pc_core.c \
+            ports/amigaos3/tests/core_oracle.c \
+            -o ports/amigaos3/build/core_oracle_c
+          cc -std=c99 -O2 -Wall -Wextra -Werror -pedantic \
+            -Iports/amigaos3/include \
+            ports/amigaos3/src/pc_core.c \
+            ports/amigaos3/src/pc_raster.c \
+            ports/amigaos3/tests/typed_oracle.c \
+            -o ports/amigaos3/build/typed_oracle
+      - name: Compare original Rust outputs with C99 outputs
+        run: |
+          set -eu
+          export CARGO_TARGET_DIR="${{ github.workspace }}/target"
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml \
+            > ports/amigaos3/build/oracle-rust.txt
+          ports/amigaos3/build/core_oracle_c > ports/amigaos3/build/oracle-c.txt
+          diff -u ports/amigaos3/build/oracle-rust.txt \
+                  ports/amigaos3/build/oracle-c.txt
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml -- typed \
+            > ports/amigaos3/build/oracle-rust-typed.txt
+          ports/amigaos3/build/typed_oracle > ports/amigaos3/build/oracle-c-typed.txt
+          diff -u ports/amigaos3/build/oracle-rust-typed.txt \
+                  ports/amigaos3/build/oracle-c-typed.txt
+          echo "PASS: original PhotoCraft Rust crates match C99 port and typed oracle"
+      - name: Upload differential outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: photocraft-rust-vs-c-core
+          path: |
+            ports/amigaos3/build/oracle-rust.txt
+            ports/amigaos3/build/oracle-c.txt
+            ports/amigaos3/build/oracle-rust-typed.txt
+            ports/amigaos3/build/oracle-c-typed.txt
+          if-no-files-found: ignore
+
+  gcc13-vamos:
+    name: GCC13.3 m68k HUNK + vamos vs Rust
+    needs: rust-original-parity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GCC13_IMAGE: stefanreinauer/amiga-gcc:gcc-v13.3-20260622
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download verified original Rust oracle
+        uses: actions/download-artifact@v4
+        with:
+          name: photocraft-rust-vs-c-core
+          path: ports/amigaos3/build
+      - name: Pull specific GCC13.3 image and record digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull "$GCC13_IMAGE"
+          docker image inspect "$GCC13_IMAGE" --format '{{json .RepoDigests}}'
+      - name: Cross-compile PhotoCraft C tests with GCC/Bebbo 13.3
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -v "$PWD:/work" -w /work "$GCC13_IMAGE" \
+            /bin/sh -ec '
+              compiler="$(command -v m68k-amigaos-gcc)"
+              root="$(dirname "$(dirname "$(realpath "$compiler")")")"
+              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed GCC_BEBBO_ROOT="$root"
+            '
+          make -C ports/amigaos3 gcc13-check-hunks
+      - name: Install pinned vamos and machine68k
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build pinned vamos environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install greenlet
+          python -m pip install \
+            'git+https://github.com/cnvogelg/machine68k.git@61600df53cb007e06b9f3c576d1c4b1d19042ef4'
+          python -m pip install \
+            'git+https://github.com/cnvogelg/amitools.git@3b57f2052ee76c28bbc5e4256227f62dca7b1c9f'
+          python -c 'import greenlet, machine68k; print("machine68k import PASS")'
+          vamos --help >/dev/null
+      - name: Execute twelve m68k tests and compare with original Rust
+        run: |
+          make -C ports/amigaos3 gcc13-vamos-tests \
+            RUST_ORACLE=build/oracle-rust.txt
+          make -C ports/amigaos3 gcc13-vamos-typed-tests \
+            RUST_ORACLE_TYPED=build/oracle-rust-typed.txt
+      - name: Upload GCC13 target evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: photocraft-gcc13-vamos
+          path: |
+            ports/amigaos3/build/m68k-gcc13/**/logs/*.log
+          if-no-files-found: warn

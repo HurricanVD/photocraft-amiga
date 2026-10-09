@@ -1,0 +1,14 @@
+[package]
+name = "photocraft-amiga-rust-oracle"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+# Isolated harness; does not add a member to the PhotoCraft cargo workspace.
+[workspace]
+resolver = "3"
+
+[dependencies]
+photocraft-geom = { path = "../../../../crates/geom" }
+photocraft-color = { path = "../../../../crates/color" }
+photocraft-raster = { path = "../../../../crates/raster" }
