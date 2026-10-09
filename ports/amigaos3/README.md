@@ -130,3 +130,5 @@ now processes one 6-tile row at a time, avoiding the earlier 9 MiB peak.
 
 This milestone is an **emulated CPU-core smoke**; it is neither an
 AmigaOS/ReAction editor nor proof of PiStorm3D/MiniGL functionality.
+
+**Core target status (2026-10-09):** PF-SP-003 GCC13.3/vamos O0/O2 and original Rust differential checks passed ([CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)); formal spike closure in progress. PF-SP-001 (MiniGL) stays blocked; PF-SP-002 (broader PhotoCraft core) stays in progress. There is no native editor or licensed MiniGL distribution yet.

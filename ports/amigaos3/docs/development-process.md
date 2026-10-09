@@ -13,3 +13,7 @@ This fork keeps upstream `docs/`, `Cargo.toml` and root `AGENTS.md` primarily go
 - Use process ADR/review/version-check and IP-provenance procedures before code imports or release decisions.
 
 State: architecture direction accepted by the owner on 2026-10-08; isolated port skeleton/overlay only. No full process bootstrap gate, compiler validation, final pre-ready review or runtime acceptance has been completed.
+
+## 2026-10-09 scope note
+
+This fork uses the process's story/test-ID and review conventions inside the isolated port overlay, not the complete canonical root-level bootstrap layout. For PF-SP-003, the meaningful test ladder is host tests -> real GCC13 HUNK -> headless `vamos` -> Rust oracle, while manual WinUAE/Workbench is **n/a for the CLI-only spike**; MiniGL/GUI tests remain mandatory later under PF-SP-001. No central automated WinUAE test is activated. Separate full-bootstrap/registry activation and process-gate parity work remain follow-ups rather than evidence of a shipped product.

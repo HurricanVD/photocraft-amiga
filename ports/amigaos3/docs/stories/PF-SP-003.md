@@ -52,3 +52,7 @@ Regressionstests, keine Anpassung des Produktcodes an Testfehler.
 [CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402) on code commit `622cfba` shows all three jobs green. GCC/Bebbo 13.3.0 generated six genuine HUNK files; all six executed under pinned `vamos` successfully, and both C core oracles (`-O0`, `-O2`) matched the original PhotoCraft Rust outputs byte-for-byte. Complete compiler and image provenance, sizes and logs: [PF-TN-003](../tests/PF-TN-003.md).
 
 Status is **review**, not `done`, because no separate final process review/change-summary/closure checks have been completed. No runtime performance or MiniGL/WinUAE capability follows from this spike.
+
+## Closure audit preparation (2026-10-09)
+
+An independent closure scope review and a `change_summary` are recorded under `../reviews/`. This is a **toolchain/test-only spike** with automated native target smoke, no ReAction/MiniGL integration, no shipping artefact, and no proprietary code import. Manual application test is `n/a` for this isolated headless executable, justified by the six automated vamos regressions and original Rust differential checks. The fork's canonical full bootstrap and PF prefix activation remain separate process follow-ups; the accepted architectural direction is unchanged.

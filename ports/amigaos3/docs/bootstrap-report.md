@@ -14,3 +14,7 @@ Implemented in this scaffold: testable C99 RGBA staging utility, its host test s
 Evidence: source written, builds NOT executed on a m68k toolchain; WinUAE and PiStorm3D tests NOT run. The `host-test` target must be executed before claiming portable test pass.
 
 Next gates: complete canonical VD bootstrap review, promote seed items into PF-* stories, run host tests, verify m68k compile with actual SDK, complete implementation-level pre-ready review, and manually exercise QuarkTex NG.
+
+## 2026-10-09 progress addendum (historical bootstrap text above unchanged)
+
+Bootstrap remains *manual pre-bootstrap*. The `PF` prefix is still `reserved`, not `active`, and no canonical central bootstrap run has been documented. Formal stories PF-SP-001/002/003 and test reports PF-TN-001/002/003 now exist in the port-local overlay. The first host+Rust differential and opt-in GCC13.3 HUNK/vamos O0/O2 checks have passed for the documented RGBA8 core subset ([CI #37915607402](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37915607402)). The original MiniGL/WinUAE checks are **not run**, and the native app is not implemented. Older 'next gates' above describe the initial 2026-10-08 state, not the current test outcome.
