@@ -35,39 +35,80 @@ for field in 'Prozessversion' 'Story-ID-Prefix' 'Test-ID-Prefix' 'Build' 'Window
   fi
 done
 grep -q 'PF-SP-001.*blocked' "$repo_root/docs/backlog.md" || { echo 'FAIL PF-SP-001 status changed' >&2; exit 1; }
-grep -q 'PF-SP-002.*blocked' "$repo_root/docs/backlog.md" || { echo 'FAIL PF-SP-002 split freeze missing' >&2; exit 1; }
-grep -q '^- Status: blocked' "$repo_root/docs/stories/PF-SP-002.md" || { echo 'FAIL PF-SP-002 canonical freeze missing' >&2; exit 1; }
+# Check the actual Status column and the lifecycle backlog section.
+# This is a cheap fail-closed evidence guard, not a replacement for a full DoR review.
+pf_backlog_row() {
+  awk -F'|' -v target="$1" -v want="$2" -v category="$3" '
+    /^## / { section=$0 }
+    /^\|/ {
+      id=$2; state=$6
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", id)
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", state)
+      if (id==target) {
+        count++
+        if (state==want && section==category) correct++
+      }
+    }
+    END { exit !(count==1 && correct==1) }
+  ' "$repo_root/docs/backlog.md"
+}
+pf_done_count() {
+  awk -F'|' -v target="$1" '
+    /^\|/ {
+      id=$2
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", id)
+      if (id==target) count++
+    }
+    END { print count+0 }
+  ' "$repo_root/docs/backlog-done.md"
+}
+pf_backlog_row PF-SP-002 blocked '## Blockiert' || { echo 'FAIL PF-SP-002 is not blocked in canonical backlog section' >&2; exit 1; }
+grep -Eq '^- Status: [`]?blocked[`]?([[:space:]]|$)' "$repo_root/docs/stories/PF-SP-002.md" || { echo 'FAIL canonical parent is not blocked' >&2; exit 1; }
 grep -q 'decision: `split_required`' "$repo_root/docs/reviews/PF-SP-002-atomization-report-2026-10-11.md" || { echo 'FAIL retrospective atomization decision missing' >&2; exit 1; }
-# This is a snapshot-consistency check, NOT a DoR or review approval.
-# No child status is frozen at draft/refining: all VD lifecycle transitions
-# are handled by the story gate and must remain possible.
+# Child IDs may advance through any *valid* VD lifecycle stage. Status
+# transitions must include their separate DoR/implementation/review markers.
 for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001; do
   active="$repo_root/docs/stories/$id.md"
   archived="$repo_root/docs/stories/done/$id.md"
-  if [ -f "$active" ] && [ -f "$archived" ]; then
-    echo "FAIL duplicated child $id" >&2; exit 1
-  fi
-  if [ -f "$active" ]; then
-    story="$active"
-  elif [ -f "$archived" ]; then
-    story="$archived"
-  else
-    echo "FAIL missing child $id" >&2; exit 1
-  fi
+  if [ -f "$active" ] && [ -f "$archived" ]; then echo "FAIL duplicated child $id" >&2; exit 1; fi
+  if [ -f "$active" ]; then story="$active"
+  elif [ -f "$archived" ]; then story="$archived"
+  else echo "FAIL missing child $id" >&2; exit 1; fi
   status=$(sed -n 's/^- Status: [`]*\([a-z_]*\)[`]*.*/\1/p' "$story" | head -n 1)
   case "$status" in
-    draft|refining|ready|in_progress|review|blocked|rejected|done) ;;
+    draft|refining) section='## Offen' ;;
+    ready) section='## Bereit' ;;
+    in_progress|review) section='## Aktive PF-Stories' ;;
+    blocked|rejected) section='## Blockiert' ;;
+    done) section='' ;;
     *) echo "FAIL invalid child status $id: $status" >&2; exit 1 ;;
   esac
   if [ "$status" = done ]; then
     [ "$story" = "$archived" ] || { echo "FAIL done child not archived $id" >&2; exit 1; }
-    grep -Fq "| $id |" "$repo_root/docs/backlog-done.md" || {
-      echo "FAIL child $id absent from backlog-done" >&2; exit 1
-    }
+    [ "$(pf_done_count "$id")" -eq 1 ] || { echo "FAIL missing/duplicate done row $id" >&2; exit 1; }
+    if grep -Fq "| $id |" "$repo_root/docs/backlog.md"; then echo "FAIL stale active row $id" >&2; exit 1; fi
   else
     [ "$story" = "$active" ] || { echo "FAIL non-done child archived $id" >&2; exit 1; }
-    grep -F "| $id |" "$repo_root/docs/backlog.md" | grep -Eq "\|[[:space:]]*$status[[:space:]]*\|" || {
-      echo "FAIL child $id backlog status does not match $status" >&2; exit 1
+    pf_backlog_row "$id" "$status" "$section" || { echo "FAIL backlog status/section $id: $status" >&2; exit 1; }
+    [ "$(pf_done_count "$id")" -eq 0 ] || { echo "FAIL stale done entry $id" >&2; exit 1; }
+  fi
+  case "$status" in
+    ready|in_progress|review|done)
+      grep -Fqx -- '- `refinement_triage`: `pass`' "$story" &&
+      grep -Fqx -- '- `arch_review.pre_ready_final`: `pass`' "$story" &&
+      grep -Fqx -- '- `dor_check`: `pass`' "$story" || {
+        echo "FAIL missing pre-ready/DoR proof on $id" >&2; exit 1
+      } ;;
+  esac
+  case "$status" in
+    in_progress|review|done)
+      grep -Fqx -- '- `implementation_gate_report`: `pass`' "$story" || {
+        echo "FAIL missing implementation gate $id" >&2; exit 1
+      } ;;
+  esac
+  if [ "$status" = done ]; then
+    grep -Fqx -- '- `review_report`: `approve`' "$story" || {
+      echo "FAIL missing final review approval $id" >&2; exit 1
     }
   fi
 done
