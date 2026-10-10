@@ -29,13 +29,13 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 
 | ID | Titel | Typ | Prioritaet | Status | Blocker |
 |---|---|---|---|---|---|
+| PF-SP-001 | MiniGL / QuarkTex NG | SP | P1 | blocked | MiniGL/QuarkTex/WinUAE target gate ausstehend |
 | PF-SP-002 | PhotoCraft Core-Port (historischer Parent) | SP | P1 | blocked | split_required; siehe atomization_report, keine weitere Implementierung |
 
 ## Aktive PF-Stories
 
 | ID | Titel | Art | Priorität | Status |
 |---|---|---|---|---|
-| PF-SP-001 | MiniGL / QuarkTex NG | SP | P1 | blocked |
 
 Statusquelle: [PF-SP-002-Atomisierung](reviews/PF-SP-002-atomization-report-2026-10-11.md). Child-Stories sind `refining|draft`, nicht `ready|in_progress|done`. Keine weitere Implementierung auf Parent; WIP-Limit nach VD v0.2.1 beachten.
 

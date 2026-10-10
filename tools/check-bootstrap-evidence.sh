@@ -34,7 +34,7 @@ for field in 'Prozessversion' 'Story-ID-Prefix' 'Test-ID-Prefix' 'Build' 'Window
     exit 1
   fi
 done
-grep -q 'PF-SP-001.*blocked' "$repo_root/docs/backlog.md" || { echo 'FAIL PF-SP-001 status changed' >&2; exit 1; }
+pf_backlog_row PF-SP-001 blocked '## Blockiert' || { echo 'FAIL PF-SP-001 not in blocked section' >&2; exit 1; }
 # Check the actual Status column and the lifecycle backlog section.
 # This is a cheap fail-closed evidence guard, not a replacement for a full DoR review.
 pf_backlog_row() {
@@ -97,6 +97,7 @@ for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001;
   case "$status" in
     ready|in_progress|review|done)
       grep -Fqx -- '- `refinement_triage`: `pass`' "$story" &&
+      grep -Fqx -- '- `arch_review.initial`: `pass`' "$story" &&
       grep -Fqx -- '- `arch_review.pre_ready_final`: `pass`' "$story" &&
       grep -Fqx -- '- `dor_check`: `pass`' "$story" || {
         echo "FAIL missing pre-ready/DoR proof on $id" >&2; exit 1
