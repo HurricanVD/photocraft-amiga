@@ -52,8 +52,13 @@ jobs:
           all='["ubuntu-latest","macos-latest","windows-latest"]'
           # A separate, pinned GCC13 + vamos lane is needed when the isolated
           # Amiga port or its original Rust semantic oracle changes.
-          if [ "$EVENT" != pull_request ]; then
+          # On main pushes the dedicated amigaos3-host.yml workflow owns
+          # the native gates; avoid running the expensive GCC13 image twice.
+          # Manual root CI dispatches still run the full portable/native lane.
+          if [ "$EVENT" = workflow_dispatch ]; then
             echo 'port=true' >> "$GITHUB_OUTPUT"
+          elif [ "$EVENT" != pull_request ]; then
+            echo 'port=false' >> "$GITHUB_OUTPUT"
           elif git diff --name-only "$BASE" HEAD | grep -Eq '^(ports/amigaos3/|crates/(doc|raster|color|geom)/|\.github/workflows/(amigaos3-host|ci)\.yml$)'; then
             echo 'port=true' >> "$GITHUB_OUTPUT"
           else
