@@ -1,6 +1,6 @@
 # PF-TN-005 — Flat Document shift and layer opacity parity
 
-- Story: [PF-SP-002](../stories/PF-SP-002.md), **in_progress**.
+- Story: `PF-SP-004` (retrospektiv zugeordnet; `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
 - Started: 2026-10-10.
 - Decision basis: [accepted ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md).
 - Scope: experimental flat-raster `PcDocument` metadata. This is **not** the product `doc::Document`, an approved C ABI or a native GUI.
@@ -52,3 +52,7 @@ require further implementation and verification.
 
 Future edits still require fresh execution on their final commit before
 claiming a complete PR or merge status.
+
+## Retrospektive Story-Traceability (2026-10-11)
+
+Dieser Scoped-Test `PF-TN-005` ist der Child-Story `PF-SP-004` zugeordnet. Die technische Ausfuehrung auf dem damals eingefrorenen PF-SP-002-Implementierungs-SHA bleibt historische Evidenz, **keine** nachtraegliche DoR-/Implementation-/Reviewer-Freigabe. Governance-Korrektur: [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); kanonischer Parent wird dort `blocked`. Die PR-Stack-Abhaengigkeiten bleiben bestehen.
