@@ -34,7 +34,6 @@ for field in 'Prozessversion' 'Story-ID-Prefix' 'Test-ID-Prefix' 'Build' 'Window
     exit 1
   fi
 done
-pf_backlog_row PF-SP-001 blocked '## Blockiert' || { echo 'FAIL PF-SP-001 not in blocked section' >&2; exit 1; }
 # Check the actual Status column and the lifecycle backlog section.
 # This is a cheap fail-closed evidence guard, not a replacement for a full DoR review.
 pf_backlog_row() {
@@ -62,6 +61,7 @@ pf_done_count() {
     END { print count+0 }
   ' "$repo_root/docs/backlog-done.md"
 }
+pf_backlog_row PF-SP-001 blocked '## Blockiert' || { echo 'FAIL PF-SP-001 not in blocked section' >&2; exit 1; }
 pf_backlog_row PF-SP-002 blocked '## Blockiert' || { echo 'FAIL PF-SP-002 is not blocked in canonical backlog section' >&2; exit 1; }
 grep -Eq '^- Status: [`]?blocked[`]?([[:space:]]|$)' "$repo_root/docs/stories/PF-SP-002.md" || { echo 'FAIL canonical parent is not blocked' >&2; exit 1; }
 [ ! -e "$repo_root/docs/stories/done/PF-SP-002.md" ] || { echo 'FAIL blocked parent duplicated in done archive' >&2; exit 1; }
