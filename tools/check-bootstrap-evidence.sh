@@ -64,6 +64,8 @@ pf_done_count() {
 }
 pf_backlog_row PF-SP-002 blocked '## Blockiert' || { echo 'FAIL PF-SP-002 is not blocked in canonical backlog section' >&2; exit 1; }
 grep -Eq '^- Status: [`]?blocked[`]?([[:space:]]|$)' "$repo_root/docs/stories/PF-SP-002.md" || { echo 'FAIL canonical parent is not blocked' >&2; exit 1; }
+[ ! -e "$repo_root/docs/stories/done/PF-SP-002.md" ] || { echo 'FAIL blocked parent duplicated in done archive' >&2; exit 1; }
+[ "$(pf_done_count PF-SP-002)" -eq 0 ] || { echo 'FAIL blocked parent present in backlog-done' >&2; exit 1; }
 grep -q 'decision: `split_required`' "$repo_root/docs/reviews/PF-SP-002-atomization-report-2026-10-11.md" || { echo 'FAIL retrospective atomization decision missing' >&2; exit 1; }
 # Child IDs may advance through any *valid* VD lifecycle stage. Status
 # transitions must include their separate DoR/implementation/review markers.
@@ -83,8 +85,8 @@ for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001;
     done) section='' ;;
     *) echo "FAIL invalid child status $id: $status" >&2; exit 1 ;;
   esac
-  if [ "$status" = done ]; then
-    [ "$story" = "$archived" ] || { echo "FAIL done child not archived $id" >&2; exit 1; }
+  if [ "$status" = done ] || { [ "$status" = rejected ] && [ "$story" = "$archived" ]; }; then
+    [ "$story" = "$archived" ] || { echo "FAIL terminal child not archived $id" >&2; exit 1; }
     [ "$(pf_done_count "$id")" -eq 1 ] || { echo "FAIL missing/duplicate done row $id" >&2; exit 1; }
     if grep -Fq "| $id |" "$repo_root/docs/backlog.md"; then echo "FAIL stale active row $id" >&2; exit 1; fi
   else
