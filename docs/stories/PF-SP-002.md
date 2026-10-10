@@ -136,5 +136,8 @@ retaining the COW raster surface contract.
   passthrough-blending, expanded/artboard state, changing parents,
   serialization, effects, undo or clipping. Group-specific metadata
   beyond child ordering and names is a future design task.
-- `PF-SP-002` remains `in_progress`; do not merge or mark tests passed
-  until exact branch CI evidence is verified.
+- The **scoped** host/Rust Group oracle and GCC13 O0/O2 HUNK/vamos
+  jobs passed on implementation source commit `c67bbca` in
+  [CI #38042365174](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042365174).
+  See [PF-TN-006](../tests/PF-TN-006.md). Whole-PR final-head CI
+  and review remain separate. `PF-SP-002` stays `in_progress`.
