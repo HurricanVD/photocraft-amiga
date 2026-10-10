@@ -1,7 +1,7 @@
 # PF-TN-006 — Nested raster groups and deep-COW document tree
 
 - Date: 2026-10-10
-- Story: `PF-SP-002` (`in_progress`)
+- Story: `PF-SP-005` (retrospektiv zugeordnet; `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
 - Branch: `feature/pf-sp-002-group-tree`, **stacked on PR #3** (flat-layer/opacity increment)
 - Scoped verification: **PASS** against source commit `c67bbca4325668daace0cc8cfddd060ef0495469` in [CI #38042365174](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042365174); overall multi-platform CI is recorded separately. Subsequent documentation commits do not inherit this source SHA automatically.
 - Accepted scope: ADR-0002 PhotoCraft bottom-first group semantics,
@@ -62,3 +62,7 @@ state, cross-parent moves, command history and native AmigaOS UI are excluded.
   checks have completed.
 - Test status: **scoped PASS; no WinUAE/QuarkTex/MiniGL/PiStorm3D
   graphical or hardware tests**.
+
+## Retrospektive Story-Traceability (2026-10-11)
+
+Dieser Scoped-Test `PF-TN-006` ist der Child-Story `PF-SP-005` zugeordnet. Die technische Ausfuehrung auf dem damals eingefrorenen PF-SP-002-Implementierungs-SHA bleibt historische Evidenz, **keine** nachtraegliche DoR-/Implementation-/Reviewer-Freigabe. Governance-Korrektur: [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); kanonischer Parent wird dort `blocked`. Die PR-Stack-Abhaengigkeiten bleiben bestehen.
