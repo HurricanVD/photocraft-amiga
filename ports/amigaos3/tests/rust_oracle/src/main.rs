@@ -2,8 +2,9 @@
 //! This harness lives outside the upstream Cargo workspace, and only
 //! observes public Rust crate APIs. Its output is compared with C99.
 
-use photocraft_color::PixelFormat;
-use photocraft_geom::{Rect, TileCoord};
+use photocraft_color::{ColorMode, PixelFormat, SampleType};
+use photocraft_doc::{Document, Layer, LayerId};
+use photocraft_geom::{Rect, Size, TileCoord};
 use photocraft_raster::Surface;
 
 fn rect_line(label: &str, r: Rect) {
@@ -53,7 +54,66 @@ fn typed_main() {
         &def.to_interleaved(Rect::new(-500, 400, -499, 401)));
 }
 
+fn document_order(label: &str, d: &Document) {
+    println!(
+        "{label} {} {} {}",
+        d.layers[0].id.0, d.layers[1].id.0, d.layers[2].id.0
+    );
+}
+
+// Reference contracts: original doc::Layer defaults and Document::shift.
+// This is limited to flat raster layer metadata, not groups or compositing.
+fn document_main() {
+    let mut d = Document::new(
+        "Three layers",
+        Size::new(20, 30),
+        ColorMode::Rgb,
+        SampleType::U8,
+    );
+    for (id, name) in [(11, "Bottom"), (22, "Middle"), (33, "Top")] {
+        let mut layer = Layer::raster(name, PixelFormat::RGBA8);
+        layer.id = LayerId(id);
+        d.layers.push(layer);
+    }
+
+    document_order("initial", &d);
+    println!("defaults {:.2} {:.2}", d.layers[0].opacity, d.layers[0].fill_opacity);
+    println!("raise {}", d.shift(LayerId(11), 2) as u8);
+    document_order("raised", &d);
+    println!("lower {}", d.shift(LayerId(11), -1) as u8);
+    document_order("lowered", &d);
+    println!("boundary {}", d.shift(LayerId(11), 2) as u8);
+    println!("absent {}", d.shift(LayerId(444), 0) as u8);
+    println!("zero {}", d.shift(LayerId(11), 0) as u8);
+    document_order("stayed", &d);
+
+    d.layers[0].opacity = 0.0;
+    d.layers[0].fill_opacity = 0.75;
+    d.layers[1].opacity = 0.5;
+    d.layers[1].fill_opacity = 0.25;
+    println!(
+        "meta {:.2} {:.2} {:.2} {:.2}",
+        d.layers[0].opacity, d.layers[0].fill_opacity,
+        d.layers[1].opacity, d.layers[1].fill_opacity,
+    );
+
+    let mut snapshot = d.clone();
+    println!("clone-shift {}", snapshot.shift(LayerId(33), -2) as u8);
+    snapshot.layers[1].opacity = 1.0;
+    snapshot.layers[1].fill_opacity = 1.0;
+    document_order("original", &d);
+    document_order("snapshot", &snapshot);
+    println!(
+        "unchanged {:.2} {:.2}",
+        d.layers[1].opacity, d.layers[1].fill_opacity,
+    );
+}
+
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("document") {
+        document_main();
+        return;
+    }
     if std::env::args().nth(1).as_deref() == Some("typed") {
         typed_main();
         return;

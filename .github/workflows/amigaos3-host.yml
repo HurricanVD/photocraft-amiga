@@ -2,13 +2,14 @@ name: AmigaOS 3.2 Host Core
 
 on:
   push:
-    branches: [amigaos32]
+    branches: [main, amigaos32]
     paths:
       - "ports/amigaos3/**"
       - ".github/workflows/amigaos3-host.yml"
       - "crates/geom/**"
       - "crates/color/**"
       - "crates/raster/**"
+      - "crates/doc/**"
   pull_request:
     branches: [amigaos32]
     paths:
@@ -49,8 +50,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Rust stable (PhotoCraft requires 1.95+)
         uses: dtolnay/rust-toolchain@stable
-      - name: Run original PhotoCraft geom/color/raster library tests
-        run: cargo test -p photocraft-geom -p photocraft-color -p photocraft-raster --locked --lib
+      - name: Run original PhotoCraft geom/color/raster/doc library tests
+        run: cargo test -p photocraft-geom -p photocraft-color -p photocraft-raster -p photocraft-doc --locked --lib
       - name: Compile independent C oracle
         run: |
           mkdir -p ports/amigaos3/build
@@ -65,6 +66,13 @@ jobs:
             ports/amigaos3/src/pc_raster.c \
             ports/amigaos3/tests/typed_oracle.c \
             -o ports/amigaos3/build/typed_oracle
+          cc -std=c99 -O2 -Wall -Wextra -Werror -pedantic \
+            -Iports/amigaos3/include \
+            ports/amigaos3/src/pc_core.c \
+            ports/amigaos3/src/pc_raster.c \
+            ports/amigaos3/src/pc_document.c \
+            ports/amigaos3/tests/document_oracle.c \
+            -o ports/amigaos3/build/document_oracle
       - name: Compare original Rust outputs with C99 outputs
         run: |
           set -eu
@@ -81,7 +89,14 @@ jobs:
           ports/amigaos3/build/typed_oracle > ports/amigaos3/build/oracle-c-typed.txt
           diff -u ports/amigaos3/build/oracle-rust-typed.txt \
                   ports/amigaos3/build/oracle-c-typed.txt
-          echo "PASS: original PhotoCraft Rust crates match C99 port and typed oracle"
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml -- document \
+            > ports/amigaos3/build/oracle-rust-document.txt
+          ports/amigaos3/build/document_oracle \
+            > ports/amigaos3/build/oracle-c-document.txt
+          diff -u ports/amigaos3/build/oracle-rust-document.txt \
+                  ports/amigaos3/build/oracle-c-document.txt
+          echo "PASS: original PhotoCraft Rust geom/color/raster/doc match C99 scoped oracles"
       - name: Upload differential outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -92,6 +107,8 @@ jobs:
             ports/amigaos3/build/oracle-c.txt
             ports/amigaos3/build/oracle-rust-typed.txt
             ports/amigaos3/build/oracle-c-typed.txt
+            ports/amigaos3/build/oracle-rust-document.txt
+            ports/amigaos3/build/oracle-c-document.txt
           if-no-files-found: ignore
 
   gcc13-vamos:

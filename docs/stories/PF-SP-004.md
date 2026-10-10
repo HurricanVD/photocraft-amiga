@@ -75,3 +75,12 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
+
+## Retrospektiver Implementierungsnachweis (PR #3, keine historische DoR-Fiktion)
+
+- Vor dem Atomisierungsbericht unter dem zu breiten Parent implementiert; nun der eigenstaendigen Story PF-SP-004 zugeordnet.
+- Die experimentelle C99-Implementierung `pc_document.h/.c` bietet bottom-first Root-Reordering (`Document::shift`) und unabhaengige `opacity/fill_opacity` als IEEE-754 f32, ohne native UI oder stabilen ABI.
+- Grenzen: Invalid-ID/INT_MIN/INT_MAX, NaN/INF und Bereichsfehler werden ohne mutation zurueckgewiesen; Clone-Ebenen teilen Raster nur als COW.
+- Unveraendertes Rust-Original: `crates/doc/src/lib.rs`; PF-TN-005 und Rust/C99-Differential sowie C99/ASan/UBSan und GCC13 13.3 O0/O2 HUNK/vamos im früheren [CI #38033843306](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38033843306) PASS fuer den damaligen Stand.
+- **Kein** automatisches `pre_ready_final`, DoR, Implementation-Gate oder `done` durch uebernommene Testevidenz. Aktuelle Child-Story bleibt `refining` bis zum getrennten Architektur-/Lifecycle-Review.
+- Zusätzliche Zeilen im ursprünglichen Parent-PR wurden **nicht** in den kanonischen gesperrten Parent zurückgeschrieben; dessen historische Original-Raster-Evidenz bleibt erhalten.
