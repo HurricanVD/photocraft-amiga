@@ -93,6 +93,7 @@ gcc13-vamos-tests:
 RASTER_TEST := $(BUILD)/pc_raster_test
 DOCUMENT_TEST := $(BUILD)/pc_document_test
 DOCUMENT_ORACLE := $(BUILD)/document_oracle
+GROUP_ORACLE := $(BUILD)/group_oracle
 TYPED_ORACLE := $(BUILD)/typed_oracle
 
 $(RASTER_TEST): tests/pc_raster_test.c src/pc_raster.c src/pc_core.c include/pc_raster.h include/pc_core.h | $(BUILD)
@@ -101,6 +102,9 @@ $(RASTER_TEST): tests/pc_raster_test.c src/pc_raster.c src/pc_core.c include/pc_
 $(DOCUMENT_TEST): tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_core.c include/pc_document.h | $(BUILD)
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_core.c
 
+$(GROUP_ORACLE): tests/group_oracle.c src/pc_document.c src/pc_raster.c src/pc_core.c include/pc_document.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/group_oracle.c src/pc_document.c src/pc_raster.c src/pc_core.c
+
 $(DOCUMENT_ORACLE): tests/document_oracle.c src/pc_document.c src/pc_raster.c src/pc_core.c include/pc_document.h | $(BUILD)
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/document_oracle.c src/pc_document.c src/pc_raster.c src/pc_core.c
 
@@ -108,7 +112,7 @@ $(TYPED_ORACLE): tests/typed_oracle.c src/pc_raster.c src/pc_core.c include/pc_r
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/typed_oracle.c src/pc_raster.c src/pc_core.c
 
 .PHONY: host-typed-test host-typed-sanitize gcc13-build-typed gcc13-check-typed-hunks gcc13-vamos-typed-tests
-host-typed-test: $(RASTER_TEST) $(DOCUMENT_TEST) $(TYPED_ORACLE) $(DOCUMENT_ORACLE)
+host-typed-test: $(RASTER_TEST) $(DOCUMENT_TEST) $(TYPED_ORACLE) $(DOCUMENT_ORACLE) $(GROUP_ORACLE)
 	./$(RASTER_TEST)
 	./$(DOCUMENT_TEST)
 
