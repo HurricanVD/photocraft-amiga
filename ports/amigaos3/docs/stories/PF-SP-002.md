@@ -1,3 +1,5 @@
+> **Historische Portkopie, Stand 2026-10-09.** Der aktuelle kanonische [PF-SP-002-Status](../../../../docs/stories/PF-SP-002.md) ist seit 2026-10-11 `blocked` nach `split_required`; jedes nachstehende `in_progress` betrifft nur den damaligen Stand, nicht eine aktuelle Lifecycle-Freigabe.
+
 # PF-SP-002 — Host-first PhotoCraft raster/core port
 
 - Story ID: PF-SP-002
