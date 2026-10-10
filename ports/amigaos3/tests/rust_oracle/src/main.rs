@@ -3,7 +3,7 @@
 //! observes public Rust crate APIs. Its output is compared with C99.
 
 use photocraft_color::{ColorMode, PixelFormat, SampleType};
-use photocraft_doc::{Document, Layer, LayerId};
+use photocraft_doc::{Document, Layer, LayerContent, LayerId};
 use photocraft_geom::{Rect, Size, TileCoord};
 use photocraft_raster::Surface;
 
@@ -109,7 +109,53 @@ fn document_main() {
     );
 }
 
+/* Bounded differential fixture for the original PhotoCraft Group contract:
+ * child index zero is bottom, IDs are stable, and clone owns child vectors. */
+fn rust_group_child_ids(group: &Layer) -> (u64, u64) {
+    match &group.content {
+        LayerContent::Group(g) => (g.children[0].id.0, g.children[1].id.0),
+        _ => unreachable!("fixture requires a group"),
+    }
+}
+fn group_main() {
+    let mut d=Document::new("Groups",Size::new(16,16),
+                            ColorMode::Rgb,SampleType::U8);
+    let mut a=Layer::raster("Bottom",PixelFormat::RGBA8);
+    a.id=LayerId(102);
+    let mut inside=Layer::raster("Nested pix",PixelFormat::RGBA8);
+    inside.id=LayerId(104);
+    let mut nested=Layer::group("Child group",vec![inside]);
+    nested.id=LayerId(103);
+    let mut parent=Layer::group("Root group",vec![a,nested]);
+    parent.id=LayerId(101);
+    d.layers.push(parent);
+    println!("root {}",d.layers[0].id.0);
+    println!("total {}",d.layer_count());
+    println!("root-count {}",d.layers.len());
+    let (lo,hi)=rust_group_child_ids(&d.layers[0]);
+    println!("children {lo} {hi}");
+    println!("inner {}",match &d.layers[0].content {
+        LayerContent::Group(g)=>match &g.children[1].content{
+            LayerContent::Group(inner)=>inner.children[0].id.0,
+            _=>0
+        }, _=>0
+    });
+    println!("shift {}",d.shift(LayerId(103),-1) as u8);
+    let (lo,hi)=rust_group_child_ids(&d.layers[0]);
+    println!("after {lo} {hi}");
+    let mut snapshot=d.clone();
+    println!("clone-shift {}",snapshot.shift(LayerId(103),1) as u8);
+    let (lo,hi)=rust_group_child_ids(&d.layers[0]);
+    println!("original {lo} {hi}");
+    let (lo,hi)=rust_group_child_ids(&snapshot.layers[0]);
+    println!("snapshot {lo} {hi}");
+}
+
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("group") {
+        group_main();
+        return;
+    }
     if std::env::args().nth(1).as_deref() == Some("document") {
         document_main();
         return;

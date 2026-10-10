@@ -242,7 +242,7 @@ jobs:
 
   amiga-document-parity:
     # Run the portable oracle when the Amiga port or Rust semantics change.
-    name: PF-SP-002 flat Document C99 vs original Rust
+    name: PF Document C99 vs original Rust (SP-004/005/006)
     needs: platforms
     if: needs.platforms.outputs.port == 'true'
     runs-on: ubuntu-24.04
@@ -270,18 +270,28 @@ jobs:
           diff -u ports/amigaos3/build/oracle-rust-document.txt \
                   ports/amigaos3/build/oracle-c-document.txt
           echo "PASS: original Rust Document shift and opacity vs C99"
-      - name: Upload PF-SP-002 oracle evidence
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml -- group \
+            > ports/amigaos3/build/oracle-rust-group.txt
+          ports/amigaos3/build/group_oracle \
+            > ports/amigaos3/build/oracle-c-group.txt
+          diff -u ports/amigaos3/build/oracle-rust-group.txt \
+                  ports/amigaos3/build/oracle-c-group.txt
+          echo "PASS: original Rust Group order/clone vs C99"
+      - name: Upload PF Document scoped oracle evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pf-sp-002-document-parity
+          name: pf-document-rust-c-parity
           path: |
             ports/amigaos3/build/oracle-rust-document.txt
             ports/amigaos3/build/oracle-c-document.txt
+            ports/amigaos3/build/oracle-rust-group.txt
+            ports/amigaos3/build/oracle-c-group.txt
           if-no-files-found: ignore
 
   amiga-document-m68k:
-    name: PF-SP-002 GCC13 m68k Document O0/O2 vamos
+    name: PF Document GCC13 O0/O2 vamos (SP-004/005/006)
     needs: [platforms, amiga-document-parity]
     if: needs.platforms.outputs.port == 'true'
     runs-on: ubuntu-24.04
@@ -341,6 +351,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pf-sp-002-gcc13-document-vamos
+          name: pf-document-gcc13-vamos
           path: ports/amigaos3/build/m68k-gcc13/**/logs/pc_document_test.log
           if-no-files-found: ignore
