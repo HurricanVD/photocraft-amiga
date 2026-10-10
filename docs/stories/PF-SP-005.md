@@ -84,3 +84,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - Fehlender oder falscher Parent sowie doppelte ID werden ohne Ownership-Uebergang zurückgewiesen. Kein gruppenweises Rendering, Cross-Parent-Move, Masken-/PSD-/History-Verhalten freigegeben.
 - Echte Host C99/ASan+UBSan/51 Original-Rust-Tests, Rust-vs-C Group-Differential und GCC13 13.3 HUNK/vamos O0/O2 im [CI #38042621636](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042621636) erfolgreich auf früherem Implementierungssnapshot; PF-TN-006 konserviert das.
 - `pre_ready_final` und Implementation-Gate für diesen Child-Scope bleiben nachzuholen. Keine Rückdatierung der Freigabe, keine Änderung am administrativ gesperrten Parent PF-SP-002.
+
+## Technischer Delta-Review-Befund, 2026-10-11
+
+Ein Codex-Review des Implementierungs-PRs erkannte zwei semantische Abweichungen: ein Root-only `pc_document_layer_count` und eine Root-only `pc_document_shift_layer`-Operation. Die Korrektur richtet `layer_count` rekursiv am echten Rust-`Document::layer_count` aus, erhaelt den root-only API-Vertrag unter dem neuen, eindeutigen Namen `pc_document_root_layer_count`, und verschiebt Knoten ueber deren echte Sibling-Liste. Rust/C-Gruppenoracles enthalten nun Gesamt- und Root-Zahl; die Testmatrix testet Verschiebungen innerhalb verschachtelter Gruppen. Dies ist ein Review-Fix fuer den bestehenden PF-SP-005-Spike, kein neuer Produkt-ABI-Vertrag; exakt-head CI ist erneut erforderlich.
