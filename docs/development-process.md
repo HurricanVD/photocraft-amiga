@@ -8,7 +8,7 @@ in der gepinnten Version von `VD_PROCESS_REPO`.
 - Prozess-Repo: `vd-amiga-dev-process`
 - Prozessversion: `0.2.1` (Pin in `docs/project-metadata.env`; kein automatisches Update)
 - Adoption: `overlay`
-- Story-ID-Prefix: `PF` (zentral reserviert; Aktivierung noch offen)
+- Story-ID-Prefix: `PF` (zentral `active` seit Prozess-Registry-Merge PR #19 am 2026-10-10)
 - Test-ID-Prefix: `PF`
 - Story-ID-Format: `PF-(PO|BG|SP|LL|PR|TD)-NNN`
 - Test-ID-Format: `PF-TN-NNN`
