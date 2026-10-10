@@ -3,7 +3,7 @@
 
 - Story ID: PF-SP-002
 - Type: SP (technical spike)
-- Status: in_progress (the current C99 RGBA8/geometry subset has host, Rust-oracle and GCC13.3/vamos O0/O2 evidence; full format-generic raster/document port remains open)
+- Status: blocked (2026-10-11, retrospective `atomization_report: split_required`; bisherige Implementierungsevidenz bleibt historisch erhalten; keine weiteren Aenderungen unter dieser Sammelstory)
 - Priority: P1
 - Date: 2026-10-09
 - Architecture: accepted ADR-0001
@@ -42,11 +42,11 @@ raster support, Fill/Region and selection data, Layer/Group hierarchy,
 blend/compositor algorithms, commands/undo, persistence, reference Rust
 binary-to-C conformance for the broader surface API, and complete AmigaOS application build.
 
-The fixtures are based on the original PhotoCraft Rust public APIs. Actual Rust tests (52 passing) and Rust/C99 differential output were executed in GitHub Actions; the narrower C99 kernel was also built with GCC/Bebbo 13.3.0 and run under vamos at O0 and O2. These do not prove the format-generic raster API, native PhotoCraft Document/Engine, WinUAE or graphics backend. PF-SP-002 remains in_progress for these broader requirements.
+The fixtures are based on the original PhotoCraft Rust public APIs. Actual Rust tests (52 passing) and Rust/C99 differential output were executed in GitHub Actions; the narrower C99 kernel was also built with GCC/Bebbo 13.3.0 and run under vamos at O0 and O2. These do not prove the format-generic raster API, native PhotoCraft Document/Engine, WinUAE or graphics backend. Dieser Absatz beschreibt den damaligen Stand (2026-10-09); PF-SP-002 wurde am 2026-10-11 nach `split_required` auf `blocked` gesetzt.
 
 ## Executed Rust-original evidence (2026-10-09)
 
-The original unchanged geom/color/raster crates passed 52 Rust library tests in GitHub Actions, followed by a byte-identical comparison of the independent Rust API oracle against C99 for explicit geometry/format/RGBA8 sparse-COW vectors. See PF-TN-002 and [CI run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232). Keep the story **in_progress** because broad format/document contracts and their native application/runtime are not established; the RGBA8 68k subset was subsequently demonstrated in PF-SP-003.
+The original unchanged geom/color/raster crates passed 52 Rust library tests in GitHub Actions, followed by a byte-identical comparison of the independent Rust API oracle against C99 for explicit geometry/format/RGBA8 sparse-COW vectors. See PF-TN-002 and [CI run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232). Historischer Status zum damaligen Zeitpunkt: **in_progress**; seit dem Split vom 2026-10-11 administrativ **blocked**, weil die breiten Format-/Dokument-/Runtime-Kontrakte eigene Stories erfordern; the RGBA8 68k subset was subsequently demonstrated in PF-SP-003.
 
 ## New native-slice evidence (2026-10-09)
 
@@ -80,64 +80,13 @@ Implemented `pc_raster.h/.c` for sparse encoded interleaved bytes across U8/U16/
 
 **Evidence:** [PF-TN-004](../tests/PF-TN-004.md), [CI #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110) — C99/ASan+UBSan PASS, Rust-original interleaved-byte differential PASS, 12 m68k HUNK and vamos executions at O0/O2 PASS. The typed/m68k Rust oracle is byte-identical on enumerated fixtures. No native PhotoCraft GUI or product compiler selection follows.
 
-Architecture proposals: [ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md), both `accepted` for the architectural scope on 2026-10-09. PF-SP-002 remains `in_progress` for the full PhotoCraft document/image editing core. Implementation/target tests and product-compiler selection are separate gates.
+Architecture proposals: [ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md), both `accepted` for the architectural scope on 2026-10-09. Der damalige `in_progress`-Sammelstatus ist historisch. Seit 2026-10-11 ist PF-SP-002 `blocked`, und die offenen Full-Document-/Engine-Schritte sind atomisiert. Implementation/target tests and product-compiler selection are separate gates.
 
-## Next incremental contract: flat-layer shifts and opacity metadata (2026-10-10)
+## Retrospektive Pflichtatomisierung — 2026-10-11 (kanonische Entscheidung)
 
-Implementation scope under the already accepted ADR-0002: extend the **experimental**
-`PcDocument` flat-raster scaffold with the original PhotoCraft Rust
-`Document::shift(LayerId, delta)` direction and independent
-`Layer::opacity` / `Layer::fill_opacity` metadata. Index zero remains the
-bottom layer; positive deltas raise a layer. Invalid IDs or out-of-range
-shifts are rejected without mutation, and valid zero shifts succeed.
-The shift is allocation-free and retains stable layer IDs, names and surface
-ownership. Both opacity fields default to `1.0f`, accept finite values in
-`[0,1]`, and remain independent across document COW clones.
-
-- Source of truth: unmodified `crates/doc/src/lib.rs`, `Document::shift`,
-  `Layer::new`, and `Layer` opacity fields.
-- C99 contract: `ports/amigaos3/include/pc_document.h` and
-  `src/pc_document.c`.
-- Regression vectors: `tests/pc_document_test.c`, including reorders,
-  boundaries (`INT_MIN`/`INT_MAX`), invalid opacity / NaN / infinity,
-  layer pointers, snapshot isolation and lifetime.
-- Differential fixture: `tests/document_oracle.c` and the original Rust
-  `tests/rust_oracle/src/main.rs -- document`. Comparisons are limited
-  to enumerated flat-raster metadata; they do **not** establish
-  full Rust `doc::Document` parity.
-- Test protocol: [PF-TN-005](../tests/PF-TN-005.md). CI and GCC13/vamos
-  conclusions must be recorded from actual runs, never inferred.
-
-**Remaining scope:** group/tree parenting, masks, blend/compositor, persistence,
-commands/undo, allocator rollback, production performance, native AmigaOS GUI
-and selection of a shipping toolchain are still open. PF-SP-002 remains
-`in_progress` and this incremental C99 interface is not an approved ABI.
-
-## Nested raster-group follow-up (2026-10-10, stacked implementation)
-
-A separate, additive branch builds on the flat-layer implementation to
-introduce a **bounded tree** corresponding only to the original Rust
-`LayerContent::Group { children }` layout. Parent and child siblings are
-bottom-first; root document indexes keep their existing contract.
-New APIs add root/group containers, append raster/group children by unique ID,
-query children by parent ID and reorder only siblings. The group hierarchy is
-limited to `MAX_GROUP_DEPTH=100` from the original Rust model. On failed
-append, raster ownership remains with the caller, and no partial parent
-mutation is allowed. Cloning recursively duplicates groups/names while
-retaining the COW raster surface contract.
-
-- C implementation: `ports/amigaos3/src/pc_document.c`,
-  `include/pc_document.h`; existing flat-layer ABI remains experimental.
-- Source semantics: unchanged `crates/doc/src/lib.rs` (`Group`,
-  `LayerContent::Group`, `Document::shift`, `MAX_GROUP_DEPTH`).
-- Regression protocol: `docs/tests/PF-TN-006.md`, C unit tests,
-  original Rust `-- group` oracle and independent C group oracle.
-- This does **not** implement group compositing, masks, group
-  passthrough-blending, expanded/artboard state, changing parents,
-  serialization, effects, undo or clipping. Group-specific metadata
-  beyond child ordering and names is a future design task.
-- The **scoped** host/Rust Group oracle and GCC13 O0/O2 HUNK/vamos
-  jobs passed on implementation source commit `c67bbca` in
-  [CI #38042365174](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042365174).
-  See [PF-TN-006](../tests/PF-TN-006.md). Whole-PR final-head CI
-  and review remain separate. `PF-SP-002` stays `in_progress`.
+- `atomization_report.decision: split_required`; [vollstaendiger Bericht](../reviews/PF-SP-002-atomization-report-2026-10-11.md).
+- PF-SP-002 wurde als in_progress gefuehrt, obwohl Atomisierungs-/Refinement-/Pre-ready-/Implementation-Gate in der kanonischen Akte nicht belegt sind. Dieser Prozessmangel wird nicht durch CI kompensiert und nicht rueckwirkend als PASS deklariert.
+- **Ab jetzt blocked / administrativ eingefroren:** nur historische Raster-/COW-Baseline und deren PF-TN-002/004-Evidenz; keine neue Funktionsarbeit oder Done-Promotion auf diesem Parent.
+- Eigenstaendige Child-Storys: `PF-SP-004` (Flat Layer, PF-TN-005/PR #3), `PF-SP-005` (Groups, PF-TN-006/PR #4), `PF-SP-006` (Gray8 Mask, PF-TN-007/PR #5), `PF-SP-007` (CPU-Compositor), `PF-SP-008` (History/Undo), `PF-SP-009` (Persistenz), `PF-TD-001` (Memory/OOM/Tile-Index).
+- Child-Implementierung in PRs #3–#5 ist bereits vorhanden, bleibt aber bis zur Child-DoR-/Review-Bewertung **nicht mergefreigegeben**. Das Archiv `PF-SP-003` bleibt unberuehrt.
+- Kanonischer Status hat Vorrang vor der historischen Port-Kopie `ports/amigaos3/docs/stories/PF-SP-002.md`.
