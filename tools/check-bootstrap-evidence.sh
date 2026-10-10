@@ -50,7 +50,9 @@ if [ ! -f "$process_path/VERSION" ]; then
 fi
 process_root=$(CDPATH= cd "$process_path" && pwd)
 [ "$(tr -d '\r\n' < "$process_root/VERSION")" = '0.2.1' ] || { echo 'FAIL process VERSION is not 0.2.1' >&2; exit 1; }
-grep -Eq '^\| `PF` \| `photocraft-amiga` \|.*\| reserved \|' "$process_root/docs/process/workspace-id-prefixes.md" || { echo 'FAIL PF registry is not reserved' >&2; exit 1; }
+# Both states are valid: reserved before formal activation, active afterward.
+# A missing/unallocated PF entry must always fail.
+grep -Eq '^\|[[:space:]]*`PF`[[:space:]]*\|[[:space:]]*`photocraft-amiga`[[:space:]]*\|.*\|[[:space:]]*(reserved|active)[[:space:]]*\|' "$process_root/docs/process/workspace-id-prefixes.md" || { echo 'FAIL PF registry is not reserved or active for photocraft-amiga' >&2; exit 1; }
 
 sh "$repo_root/tools/check-process-version.sh" "$repo_root"
 echo 'POSIX_DRIFT=PASS'
