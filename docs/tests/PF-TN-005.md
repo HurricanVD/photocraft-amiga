@@ -55,4 +55,4 @@ claiming a complete PR or merge status.
 
 ## Retrospektive Story-Traceability (2026-10-11)
 
-Dieser Scoped-Test `PF-TN-005` ist der Child-Story `PF-SP-004` zugeordnet. Das zuvor unter PF-SP-002 erstellte und ausgefuehrte Testartefakt ist nur technische historische Evidenz; es autorisiert **kein** nachtraegliches DoR-/Implementation-/Reviewer-Gate. Die formale Aufteilung steht in [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6). Der kanonische Parent wird dort `blocked` und die PRs #3→#4→#5 bleiben gestapelt.
+Dieser Scoped-Test `PF-TN-005` ist der Child-Story `PF-SP-004` zugeordnet. Die technische Ausfuehrung auf dem damals eingefrorenen PF-SP-002-Implementierungs-SHA bleibt historische Evidenz, **keine** nachtraegliche DoR-/Implementation-/Reviewer-Freigabe. Governance-Korrektur: [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); kanonischer Parent wird dort `blocked`. Die PR-Stack-Abhaengigkeiten bleiben bestehen.
