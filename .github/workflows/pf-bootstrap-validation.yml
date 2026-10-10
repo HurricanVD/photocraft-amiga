@@ -1,15 +1,9 @@
 name: PF Bootstrap Docs Preflight
 
 on:
+  # Run on every PR: edits to canonical stories, tests, ADRs, AGENTS.md
+  # or scripts must not bypass the PF bootstrap/static evidence gate.
   pull_request:
-    paths:
-      - ".github/workflows/pf-bootstrap-validation.yml"
-      - "tools/check-bootstrap-evidence.sh"
-      - "docs/project-metadata.env"
-      - "docs/development-process.md"
-      - "docs/backlog*.md"
-      - "docs/bootstrap/**"
-      - "docs/reviews/bootstrap-*.md"
   workflow_dispatch:
 
 permissions:
