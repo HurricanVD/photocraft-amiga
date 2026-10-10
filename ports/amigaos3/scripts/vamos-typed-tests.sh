@@ -19,7 +19,7 @@ for opt in O0 O2; do
       pc_raster_test)
         grep -q '^PASS: PhotoCraft encoded U8/U16/F32 raster regions/COW$' "$log";;
       pc_document_test)
-        grep -q '^PASS: PhotoCraft flat raster-layer document ownership/order/COW$' "$log";;
+        grep -q '^PASS: PhotoCraft flat raster-layer document ownership/order/COW/opacity/shift$' "$log";;
     esac || { echo "FAIL: missing $opt $test_name pass marker" >&2; exit 1; }
   done
   log="$dir/logs/typed_oracle.log"
