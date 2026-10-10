@@ -81,3 +81,34 @@ Implemented `pc_raster.h/.c` for sparse encoded interleaved bytes across U8/U16/
 **Evidence:** [PF-TN-004](../tests/PF-TN-004.md), [CI #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110) — C99/ASan+UBSan PASS, Rust-original interleaved-byte differential PASS, 12 m68k HUNK and vamos executions at O0/O2 PASS. The typed/m68k Rust oracle is byte-identical on enumerated fixtures. No native PhotoCraft GUI or product compiler selection follows.
 
 Architecture proposals: [ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md), both `accepted` for the architectural scope on 2026-10-09. PF-SP-002 remains `in_progress` for the full PhotoCraft document/image editing core. Implementation/target tests and product-compiler selection are separate gates.
+
+## Next incremental contract: flat-layer shifts and opacity metadata (2026-10-10)
+
+Implementation scope under the already accepted ADR-0002: extend the **experimental**
+`PcDocument` flat-raster scaffold with the original PhotoCraft Rust
+`Document::shift(LayerId, delta)` direction and independent
+`Layer::opacity` / `Layer::fill_opacity` metadata. Index zero remains the
+bottom layer; positive deltas raise a layer. Invalid IDs or out-of-range
+shifts are rejected without mutation, and valid zero shifts succeed.
+The shift is allocation-free and retains stable layer IDs, names and surface
+ownership. Both opacity fields default to `1.0f`, accept finite values in
+`[0,1]`, and remain independent across document COW clones.
+
+- Source of truth: unmodified `crates/doc/src/lib.rs`, `Document::shift`,
+  `Layer::new`, and `Layer` opacity fields.
+- C99 contract: `ports/amigaos3/include/pc_document.h` and
+  `src/pc_document.c`.
+- Regression vectors: `tests/pc_document_test.c`, including reorders,
+  boundaries (`INT_MIN`/`INT_MAX`), invalid opacity / NaN / infinity,
+  layer pointers, snapshot isolation and lifetime.
+- Differential fixture: `tests/document_oracle.c` and the original Rust
+  `tests/rust_oracle/src/main.rs -- document`. Comparisons are limited
+  to enumerated flat-raster metadata; they do **not** establish
+  full Rust `doc::Document` parity.
+- Test protocol: [PF-TN-005](../tests/PF-TN-005.md). CI and GCC13/vamos
+  conclusions must be recorded from actual runs, never inferred.
+
+**Remaining scope:** group/tree parenting, masks, blend/compositor, persistence,
+commands/undo, allocator rollback, production performance, native AmigaOS GUI
+and selection of a shipping toolchain are still open. PF-SP-002 remains
+`in_progress` and this incremental C99 interface is not an approved ABI.
