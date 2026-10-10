@@ -57,7 +57,7 @@ static PcLayer *pc_find_layer(PcLayer *items,size_t count,uint64_t id,
             if(found_depth)*found_depth=depth;
             return &items[i];
         }
-        if(items[i].is_group && depth<PC_DOCUMENT_MAX_GROUP_DEPTH){
+        if(items[i].is_group && depth<=PC_DOCUMENT_MAX_GROUP_DEPTH){
             hit=pc_find_layer(items[i].children,items[i].count,id,
                               depth+1,found_depth);
             if(hit)return hit;
