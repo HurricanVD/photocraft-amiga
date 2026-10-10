@@ -38,3 +38,5 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 | PF-SP-001 | MiniGL / QuarkTex NG | SP | P1 | blocked |
 
 Statusquelle: [PF-SP-002-Atomisierung](reviews/PF-SP-002-atomization-report-2026-10-11.md). Child-Stories sind `refining|draft`, nicht `ready|in_progress|done`. Keine weitere Implementierung auf Parent; WIP-Limit nach VD v0.2.1 beachten.
+
+Hinweis zu späteren Lifecycle-Änderungen: `draft|refining` gehören unter **Offen**, `ready` unter **Bereit**, `blocked|rejected` unter **Blockiert**, `in_progress|review` in die **Aktive PF-Stories**-Tabelle; abgeschlossene IDs wandern ausschließlich nach `docs/backlog-done.md` und `docs/stories/done/`. Die PF-Validierung verlangt vor jeder `ready`-Promotion `refinement_triage: pass`, `arch_review.pre_ready_final: pass` und `dor_check: pass`; vor `in_progress` zusätzlich `implementation_gate_report: pass`, vor `done` außerdem `review_report: approve`. Diese Marker dürfen nur nach real dokumentierten Gates gesetzt werden.
