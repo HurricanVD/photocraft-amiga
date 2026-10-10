@@ -38,7 +38,11 @@
 | Story | Stand | Nachweis |
 |---|---|---|
 | PF-SP-001 | blocked | MiniGL/WinUAE offen |
-| PF-SP-002 | in_progress | PF-TN-002/004 |
+| PF-SP-002 | blocked (split_required, 2026-10-11) | PF-TN-002/004 historisch; Child-Stories PF-SP-004..009, PF-TD-001 unter docs/stories/ |
 | PF-SP-003 | done | PF-TN-003 |
 
 Noch keine neue Produktstory ohne freigegebenes pre_ready_final-Gate.
+
+## Nachtraegliche Atomisierung (2026-10-11)
+
+PF-SP-002 war zu gross und ist kanonisch `blocked`. Die formalen Child-Storys stehen im aktiven Backlog als `refining|draft`. Dieser Bootstrap-Seed teilt **keine** neuen IDs zu; maßgeblich sind `docs/backlog.md` und [atomization_report](../reviews/PF-SP-002-atomization-report-2026-10-11.md).

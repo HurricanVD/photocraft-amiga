@@ -3,7 +3,7 @@
 
 - Story ID: PF-SP-002
 - Type: SP (technical spike)
-- Status: in_progress (the current C99 RGBA8/geometry subset has host, Rust-oracle and GCC13.3/vamos O0/O2 evidence; full format-generic raster/document port remains open)
+- Status: blocked (2026-10-11, retrospective `atomization_report: split_required`; bisherige Implementierungsevidenz bleibt historisch erhalten; keine weiteren Aenderungen unter dieser Sammelstory)
 - Priority: P1
 - Date: 2026-10-09
 - Architecture: accepted ADR-0001
@@ -81,3 +81,12 @@ Implemented `pc_raster.h/.c` for sparse encoded interleaved bytes across U8/U16/
 **Evidence:** [PF-TN-004](../tests/PF-TN-004.md), [CI #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110) — C99/ASan+UBSan PASS, Rust-original interleaved-byte differential PASS, 12 m68k HUNK and vamos executions at O0/O2 PASS. The typed/m68k Rust oracle is byte-identical on enumerated fixtures. No native PhotoCraft GUI or product compiler selection follows.
 
 Architecture proposals: [ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md), both `accepted` for the architectural scope on 2026-10-09. PF-SP-002 remains `in_progress` for the full PhotoCraft document/image editing core. Implementation/target tests and product-compiler selection are separate gates.
+
+## Retrospektive Pflichtatomisierung — 2026-10-11 (kanonische Entscheidung)
+
+- `atomization_report.decision: split_required`; [vollstaendiger Bericht](../reviews/PF-SP-002-atomization-report-2026-10-11.md).
+- PF-SP-002 wurde als in_progress gefuehrt, obwohl Atomisierungs-/Refinement-/Pre-ready-/Implementation-Gate in der kanonischen Akte nicht belegt sind. Dieser Prozessmangel wird nicht durch CI kompensiert und nicht rueckwirkend als PASS deklariert.
+- **Ab jetzt blocked / administrativ eingefroren:** nur historische Raster-/COW-Baseline und deren PF-TN-002/004-Evidenz; keine neue Funktionsarbeit oder Done-Promotion auf diesem Parent.
+- Eigenstaendige Child-Storys: `PF-SP-004` (Flat Layer, PF-TN-005/PR #3), `PF-SP-005` (Groups, PF-TN-006/PR #4), `PF-SP-006` (Gray8 Mask, PF-TN-007/PR #5), `PF-SP-007` (CPU-Compositor), `PF-SP-008` (History/Undo), `PF-SP-009` (Persistenz), `PF-TD-001` (Memory/OOM/Tile-Index).
+- Child-Implementierung in PRs #3–#5 ist bereits vorhanden, bleibt aber bis zur Child-DoR-/Review-Bewertung **nicht mergefreigegeben**. Das Archiv `PF-SP-003` bleibt unberuehrt.
+- Kanonischer Status hat Vorrang vor der historischen Port-Kopie `ports/amigaos3/docs/stories/PF-SP-002.md`.
