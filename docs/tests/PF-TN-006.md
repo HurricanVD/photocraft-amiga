@@ -3,7 +3,7 @@
 - Date: 2026-10-10
 - Story: `PF-SP-002` (`in_progress`)
 - Branch: `feature/pf-sp-002-group-tree`, **stacked on PR #3** (flat-layer/opacity increment)
-- Status: `pending` until CI on exact group branch commit completes.
+- Scoped verification: **PASS** against source commit `c67bbca4325668daace0cc8cfddd060ef0495469` in [CI #38042365174](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042365174); overall multi-platform CI is recorded separately. Subsequent documentation commits do not inherit this source SHA automatically.
 - Accepted scope: ADR-0002 PhotoCraft bottom-first group semantics,
   `MAX_GROUP_DEPTH=100`, stable global layer IDs, bounded C99 allocation.
 - Classification: incremental host/target **spike**, not native product API.
@@ -37,8 +37,28 @@ Do **not** interpret a passing group-tree contract as rendering/Photoshop
 group parity. Masks, ICC/PSD, blend/pass-through rules, effect stacks, group
 state, cross-parent moves, command history and native AmigaOS UI are excluded.
 
-## Recorded evidence
+## Recorded test evidence — 2026-10-10
 
-Pending: exact source commit, GitHub Actions run IDs, host/original Rust
-results, m68k HUNK/vamos run and reviewer conclusion. Never infer PASS from
-earlier PF-TN-005 CI.
+- Source/fixture commit: `c67bbca4325668daace0cc8cfddd060ef0495469`
+  (all group implementation code and CI comparison present).
+- [CI #38042365174](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042365174)
+  scoped job `PF-SP-002 flat Document C99 vs original Rust`:
+  **completed/success**. Executed C99 host and ASan+UBSan tests, 51
+  unchanged original PhotoCraft `photocraft-doc` tests and byte-identical
+  Rust `LayerContent::Group` vs C99 nested group oracle.
+- Observed markers: `PASS: PhotoCraft bounded group hierarchy/deep COW/ID semantics`
+  and `PASS: original Rust Group order/clone vs C99`.
+- Same run, native job `PF-SP-002 GCC13 m68k Document O0/O2 vamos`:
+  **completed/success**. Validated six real m68k HUNK binaries; the
+  extended group-aware `pc_document_test` passed in pinned `vamos`
+  at both `-O0` and `-O2`.
+- Compiler baseline: opt-in GCC/Bebbo 13.3.0 test image
+  `stefanreinauer/amiga-gcc:gcc-v13.3-20260622`; resolved
+  digest `sha256:f9d09422a89f317a2f59d5db46227ad9bd8d753d5c9fe41553fcfdc6ecf60ce8`.
+  The test profile is **not** an approved product compiler/ABI.
+- The full application CI `corpus tests`, Windows, macOS, Linux,
+  documentation and bootstrap checks are separate verification jobs.
+  Do not claim a final merge-ready status until all required final-head
+  checks have completed.
+- Test status: **scoped PASS; no WinUAE/QuarkTex/MiniGL/PiStorm3D
+  graphical or hardware tests**.
