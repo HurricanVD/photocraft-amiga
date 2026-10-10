@@ -67,6 +67,25 @@ grep -Eq '^- Status: [`]?blocked[`]?([[:space:]]|$)' "$repo_root/docs/stories/PF
 [ ! -e "$repo_root/docs/stories/done/PF-SP-002.md" ] || { echo 'FAIL blocked parent duplicated in done archive' >&2; exit 1; }
 [ "$(pf_done_count PF-SP-002)" -eq 0 ] || { echo 'FAIL blocked parent present in backlog-done' >&2; exit 1; }
 grep -q 'decision: `split_required`' "$repo_root/docs/reviews/PF-SP-002-atomization-report-2026-10-11.md" || { echo 'FAIL retrospective atomization decision missing' >&2; exit 1; }
+# Only ONE canonical status per gate is valid: prevent appended `pass` lines
+# from overriding older pending/failing lines in a promoted child story.
+pf_gate_marker() {
+  key=$1
+  expected=$2
+  story_file=$3
+  awk -v key="$key" -v expected="$expected" '
+    /^- `/ {
+      line=$0; sub(/^- `/, "", line)
+      split(line, tokens, "`")
+      if (tokens[1]==key) {
+        count++
+        if ($0=="- `" key "`: `" expected "`") match_count++
+      }
+    }
+    END { exit !(count==1 && match_count==1) }
+  ' "$story_file"
+}
+
 # Child IDs may advance through any *valid* VD lifecycle stage. Status
 # transitions must include their separate DoR/implementation/review markers.
 for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001; do
@@ -96,21 +115,21 @@ for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001;
   fi
   case "$status" in
     ready|in_progress|review|done)
-      grep -Fqx -- '- `refinement_triage`: `pass`' "$story" &&
-      grep -Fqx -- '- `arch_review.initial`: `pass`' "$story" &&
-      grep -Fqx -- '- `arch_review.pre_ready_final`: `pass`' "$story" &&
-      grep -Fqx -- '- `dor_check`: `pass`' "$story" || {
+      pf_gate_marker "refinement_triage" pass "$story" &&
+      pf_gate_marker "arch_review.initial" pass "$story" &&
+      pf_gate_marker "arch_review.pre_ready_final" pass "$story" &&
+      pf_gate_marker "dor_check" pass "$story" || {
         echo "FAIL missing pre-ready/DoR proof on $id" >&2; exit 1
       } ;;
   esac
   case "$status" in
     in_progress|review|done)
-      grep -Fqx -- '- `implementation_gate_report`: `pass`' "$story" || {
+      pf_gate_marker "implementation_gate_report" pass "$story" || {
         echo "FAIL missing implementation gate $id" >&2; exit 1
       } ;;
   esac
   if [ "$status" = done ]; then
-    grep -Fqx -- '- `review_report`: `approve`' "$story" || {
+    pf_gate_marker review_report approve "$story" || {
       echo "FAIL missing final review approval $id" >&2; exit 1
     }
   fi
