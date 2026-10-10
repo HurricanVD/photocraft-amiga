@@ -14,6 +14,8 @@ int main(void)
     assert(pc_document_group_append_group(d,101,103,"Child group"));
     assert(pc_document_group_append_raster(d,103,104,"Nested pix",b));
     printf("root %llu\n",(unsigned long long)pc_document_layer_id(d,0));
+    printf("total %lu\n",(unsigned long)pc_document_layer_count(d));
+    printf("root-count %lu\n",(unsigned long)pc_document_root_layer_count(d));
     printf("children %llu %llu\n",
       (unsigned long long)pc_document_group_child_id(d,101,0),
       (unsigned long long)pc_document_group_child_id(d,101,1));

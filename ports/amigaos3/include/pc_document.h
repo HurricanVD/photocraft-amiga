@@ -18,7 +18,12 @@ typedef struct PcDocument PcDocument;
 PcDocument *pc_document_new(const char *name,uint32_t width,uint32_t height);
 PcDocument *pc_document_clone(const PcDocument *document);
 void pc_document_destroy(PcDocument *document);
+/* Matches Rust doc::Document::layer_count: recursive total including
+ * group nodes and all descendant layers. No full-tree flattening.
+ * Root-indexed getters continue to use the root's own indices. */
 size_t pc_document_layer_count(const PcDocument *document);
+/* Explicit root-only count, for root-indexed layer_id/name/raster getters. */
+size_t pc_document_root_layer_count(const PcDocument *document);
 int pc_document_append_raster(PcDocument *document,uint64_t id,
                               const char *name,PcRaster *owned_surface);
 /* Append group at the document root; id must be unique across the tree. */
@@ -54,7 +59,7 @@ PcRaster *pc_document_layer_raster(PcDocument *document,size_t index);
 int pc_document_layer_visible(const PcDocument *document,size_t index);
 int pc_document_set_layer_visible(PcDocument *document,size_t index,int visible);
 
-/* Match Rust doc::Document::shift: +delta raises (toward top), negative
+/* Match Rust doc::Document::shift, including nested child siblings: +delta raises (toward top), negative
  * lowers; index 0 is bottom. Invalid id or out-of-range target returns 0
  * without mutating the document. A valid zero shift returns 1.
  * Moves ownership without allocating, cloning or changing layer IDs. */

@@ -162,7 +162,26 @@ void pc_document_destroy(PcDocument *d)
     for(i=0;i<d->count;++i)pc_layer_release(&d->layers[i]);
     free(d->layers);free(d->name);free(d);
 }
-size_t pc_document_layer_count(const PcDocument *d){return d?d->count:0;}
+/* Root index APIs still address only root siblings. The legacy
+ * root-only count is retained explicitly; Rust Document::layer_count
+ * includes the root and all nested descendants. */
+size_t pc_document_root_layer_count(const PcDocument *d){return d?d->count:0;}
+static size_t pc_count_tree(const PcLayer *items,size_t count)
+{
+    size_t i,total=count;
+    for(i=0;i<count;++i){
+        if(items[i].is_group){
+            size_t kids=pc_count_tree(items[i].children,items[i].count);
+            if(kids>SIZE_MAX-total)return SIZE_MAX;
+            total+=kids;
+        }
+    }
+    return total;
+}
+size_t pc_document_layer_count(const PcDocument *d)
+{
+    return d?pc_count_tree(d->layers,d->count):0;
+}
 uint32_t pc_document_width(const PcDocument *d){return d?d->width:0;}
 uint32_t pc_document_height(const PcDocument *d){return d?d->height:0;}
 
@@ -265,10 +284,29 @@ static int pc_shift(PcLayer *items,size_t count,uint64_t id,int delta)
     return 1;
 }
 /* Only reorders siblings; no cross-parent ownership transfer. */
+/* Locate the actual sibling vector of a node, as original
+ * Document::shift(LayerId) does; never change parent ownership. */
+static int pc_find_siblings(PcLayer *items,size_t count,uint64_t id,
+                             size_t depth,PcLayer **siblings,size_t *length)
+{
+    size_t i;
+    for(i=0;i<count;++i){
+        if(items[i].id==id){
+            *siblings=items;*length=count;return 1;
+        }
+        if(items[i].is_group && depth<=PC_DOCUMENT_MAX_GROUP_DEPTH &&
+           pc_find_siblings(items[i].children,items[i].count,id,
+                             depth+1,siblings,length))return 1;
+    }
+    return 0;
+}
 int pc_document_shift_layer(PcDocument *d,uint64_t id,int delta)
 {
-    if(!d||id==0)return 0;
-    return pc_shift(d->layers,d->count,id,delta);
+    PcLayer *siblings=NULL;
+    size_t count=0;
+    if(!d||id==0 ||
+       !pc_find_siblings(d->layers,d->count,id,1,&siblings,&count))return 0;
+    return pc_shift(siblings,count,id,delta);
 }
 int pc_document_group_shift_child(PcDocument *d,uint64_t parent_id,
                                   uint64_t child_id,int delta)

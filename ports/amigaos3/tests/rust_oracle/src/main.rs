@@ -130,6 +130,8 @@ fn group_main() {
     parent.id=LayerId(101);
     d.layers.push(parent);
     println!("root {}",d.layers[0].id.0);
+    println!("total {}",d.layer_count());
+    println!("root-count {}",d.layers.len());
     let (lo,hi)=rust_group_child_ids(&d.layers[0]);
     println!("children {lo} {hi}");
     println!("inner {}",match &d.layers[0].content {

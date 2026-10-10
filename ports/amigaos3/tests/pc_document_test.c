@@ -120,6 +120,8 @@ static void test_group_tree(void)
     assert(pc_document_group_append_group(d,101,103,"Child group"));
     assert(pc_document_group_append_raster(d,103,104,"Nested pix",nested));
     assert(pc_document_group_child_count(d,101)==2);
+    assert(pc_document_root_layer_count(d)==1);
+    assert(pc_document_layer_count(d)==4); /* root + raster + group + raster */
     assert(pc_document_group_child_id(d,101,0)==102);
     assert(pc_document_group_child_id(d,101,1)==103);
     assert(pc_document_group_child_is_group(d,101,0)==0);
@@ -139,6 +141,11 @@ static void test_group_tree(void)
     assert(pc_document_group_child_count(d,101)==2);
     assert(pc_raster_write_pixel(nested,-1,256,red,4));
 
+    /* The public document-level shift must find the nested sibling list. */
+    assert(pc_document_shift_layer(d,103,-1));
+    assert(pc_document_group_child_id(d,101,0)==103);
+    assert(pc_document_group_child_id(d,101,1)==102);
+    assert(pc_document_shift_layer(d,103,1));
     assert(pc_document_group_shift_child(d,101,103,-1));
     assert(pc_document_group_child_id(d,101,0)==103);
     assert(pc_document_group_child_id(d,101,1)==102);
@@ -182,6 +189,8 @@ static void test_group_tree(void)
     owned=pc_raster_new(fmt,NULL);
     assert(owned && pc_document_group_append_raster(d,parent,201,"deep raster",owned));
     assert(pc_document_group_child_id(d,parent,0)==201);
+    assert(pc_document_root_layer_count(d)==1);
+    assert(pc_document_layer_count(d)==PC_DOCUMENT_MAX_GROUP_DEPTH+1);
     assert(!pc_document_append_group(d,201,"duplicate deep ID"));
     copy=pc_document_clone(d);
     assert(copy && pc_document_group_child_id(copy,parent,0)==201);
