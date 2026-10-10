@@ -42,11 +42,11 @@ raster support, Fill/Region and selection data, Layer/Group hierarchy,
 blend/compositor algorithms, commands/undo, persistence, reference Rust
 binary-to-C conformance for the broader surface API, and complete AmigaOS application build.
 
-The fixtures are based on the original PhotoCraft Rust public APIs. Actual Rust tests (52 passing) and Rust/C99 differential output were executed in GitHub Actions; the narrower C99 kernel was also built with GCC/Bebbo 13.3.0 and run under vamos at O0 and O2. These do not prove the format-generic raster API, native PhotoCraft Document/Engine, WinUAE or graphics backend. PF-SP-002 remains in_progress for these broader requirements.
+The fixtures are based on the original PhotoCraft Rust public APIs. Actual Rust tests (52 passing) and Rust/C99 differential output were executed in GitHub Actions; the narrower C99 kernel was also built with GCC/Bebbo 13.3.0 and run under vamos at O0 and O2. These do not prove the format-generic raster API, native PhotoCraft Document/Engine, WinUAE or graphics backend. Dieser Absatz beschreibt den damaligen Stand (2026-10-09); PF-SP-002 wurde am 2026-10-11 nach `split_required` auf `blocked` gesetzt.
 
 ## Executed Rust-original evidence (2026-10-09)
 
-The original unchanged geom/color/raster crates passed 52 Rust library tests in GitHub Actions, followed by a byte-identical comparison of the independent Rust API oracle against C99 for explicit geometry/format/RGBA8 sparse-COW vectors. See PF-TN-002 and [CI run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232). Keep the story **in_progress** because broad format/document contracts and their native application/runtime are not established; the RGBA8 68k subset was subsequently demonstrated in PF-SP-003.
+The original unchanged geom/color/raster crates passed 52 Rust library tests in GitHub Actions, followed by a byte-identical comparison of the independent Rust API oracle against C99 for explicit geometry/format/RGBA8 sparse-COW vectors. See PF-TN-002 and [CI run](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37909489232). Historischer Status zum damaligen Zeitpunkt: **in_progress**; seit dem Split vom 2026-10-11 administrativ **blocked**, weil die breiten Format-/Dokument-/Runtime-Kontrakte eigene Stories erfordern; the RGBA8 68k subset was subsequently demonstrated in PF-SP-003.
 
 ## New native-slice evidence (2026-10-09)
 
@@ -80,7 +80,7 @@ Implemented `pc_raster.h/.c` for sparse encoded interleaved bytes across U8/U16/
 
 **Evidence:** [PF-TN-004](../tests/PF-TN-004.md), [CI #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110) — C99/ASan+UBSan PASS, Rust-original interleaved-byte differential PASS, 12 m68k HUNK and vamos executions at O0/O2 PASS. The typed/m68k Rust oracle is byte-identical on enumerated fixtures. No native PhotoCraft GUI or product compiler selection follows.
 
-Architecture proposals: [ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md), both `accepted` for the architectural scope on 2026-10-09. PF-SP-002 remains `in_progress` for the full PhotoCraft document/image editing core. Implementation/target tests and product-compiler selection are separate gates.
+Architecture proposals: [ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md), both `accepted` for the architectural scope on 2026-10-09. Der damalige `in_progress`-Sammelstatus ist historisch. Seit 2026-10-11 ist PF-SP-002 `blocked`, und die offenen Full-Document-/Engine-Schritte sind atomisiert. Implementation/target tests and product-compiler selection are separate gates.
 
 ## Retrospektive Pflichtatomisierung — 2026-10-11 (kanonische Entscheidung)
 
