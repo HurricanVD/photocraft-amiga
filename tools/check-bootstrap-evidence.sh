@@ -42,11 +42,11 @@ grep -q 'PF-SP-002.*blocked' "$repo_root/docs/backlog.md" || { echo 'FAIL PF-SP-
 grep -q '^- Status: blocked' "$repo_root/docs/stories/PF-SP-002.md" || { echo 'FAIL PF-SP-002 canonical freeze missing' >&2; exit 1; }
 grep -q 'decision: `split_required`' "$repo_root/docs/reviews/PF-SP-002-atomization-report-2026-10-11.md" || { echo 'FAIL retrospective atomization decision missing' >&2; exit 1; }
 for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001; do
-  grep -q -- "^- Status: \\`\\(draft\\|refining\\)" "$repo_root/docs/stories/$id.md" || {
+  grep -Eq '^- Status: `(draft|refining)`' "$repo_root/docs/stories/$id.md" || {
     echo "FAIL child story $id promoted without DoR" >&2
     exit 1
   }
-  grep -q "$id.*\\(draft\\|refining\\)" "$repo_root/docs/backlog.md" || {
+  grep -Eq "$id.*(draft|refining)" "$repo_root/docs/backlog.md" || {
     echo "FAIL child story $id missing/refinement mismatch in backlog" >&2
     exit 1
   }
