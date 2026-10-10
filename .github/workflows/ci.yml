@@ -270,6 +270,14 @@ jobs:
           diff -u ports/amigaos3/build/oracle-rust-document.txt \
                   ports/amigaos3/build/oracle-c-document.txt
           echo "PASS: original Rust Document shift and opacity vs C99"
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml -- group \
+            > ports/amigaos3/build/oracle-rust-group.txt
+          ports/amigaos3/build/group_oracle \
+            > ports/amigaos3/build/oracle-c-group.txt
+          diff -u ports/amigaos3/build/oracle-rust-group.txt \
+                  ports/amigaos3/build/oracle-c-group.txt
+          echo "PASS: original Rust Group order/clone vs C99"
       - name: Upload PF-SP-002 oracle evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -278,6 +286,8 @@ jobs:
           path: |
             ports/amigaos3/build/oracle-rust-document.txt
             ports/amigaos3/build/oracle-c-document.txt
+            ports/amigaos3/build/oracle-rust-group.txt
+            ports/amigaos3/build/oracle-c-group.txt
           if-no-files-found: ignore
 
   amiga-document-m68k:
