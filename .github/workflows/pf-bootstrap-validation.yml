@@ -1,0 +1,26 @@
+name: PF Bootstrap Docs Preflight
+
+on:
+  # Run on every PR: edits to canonical stories, tests, ADRs, AGENTS.md
+  # or scripts must not bypass the PF bootstrap/static evidence gate.
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pf-bootstrap-static:
+    name: Public PF documentation gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate PF metadata, story state and prefix examples
+        run: sh tools/check-bootstrap-evidence.sh --static-only
+
+# Full POSIX/PowerShell process checks execute only in the private
+# HurricanVD/vd-amiga-dev-process repository; its private source and fixtures
+# must never be vendored into, or exposed by, this public PhotoCraft fork.

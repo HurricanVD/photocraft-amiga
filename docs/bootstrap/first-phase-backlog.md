@@ -1,11 +1,11 @@
 # First Phase Backlog Seed
 
-- Projekt:
-- Phase:
-- Quelle README:
-- Quelle Vision:
-- Quelle Roadmap:
-- Quelle Architektur:
+- Projekt: `HurricanVD/photocraft-amiga` (AmigaOS-3.2-Port)
+- Phase: technische Portgrundlagen vor GUI-Integration
+- Quelle README: `README.md` und `ports/amigaos3/README.md`
+- Quelle Vision: `docs/vision.md`
+- Quelle Roadmap: `docs/roadmap.md` (Original-PhotoCraft)
+- Quelle Architektur: `docs/architecture.md` und `ports/amigaos3/docs/architecture.md`
 
 ## Ableitungsregeln
 
@@ -13,9 +13,9 @@
 - Spaetere Phasen in `docs/roadmap.md` belassen.
 - Unsichere OS-/NDK-/ReAction-Annahmen als Spike markieren.
 - Status initial `draft|refining`, nicht `ready`.
-- Finale IDs folgen `PF-(PO|BG|SP|LL|PR|TD)-NNN`, z. B. `VC-PO-001`.
+- Finale IDs folgen `PF-(PO|BG|SP|LL|PR|TD)-NNN`; reines Formatbeispiel (nicht vergeben): `PF-PO-001`.
 - `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
-- Ohne reservierten Prefix nur Platzhalter wie `PF-PO-001` verwenden.
+- Ohne reservierten Prefix nur Platzhalter wie `<PP>-PO-001` verwenden; der `PF`-Prefix ist inzwischen `reserved`, aber noch nicht `active`.
 - Beim Materialisieren nach `docs/backlog.md` gilt:
   `draft|refining` kommt nach `Offen`, `blocked` nach `Blockiert`,
   `ready` nur mit erfuellter DoR-/Gate-Evidenz nach `Bereit`.

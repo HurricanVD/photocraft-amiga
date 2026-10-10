@@ -1,6 +1,6 @@
 # Backlog Done
 
-ID-Konvention: `PF-(PO|BG|SP|LL|PR|TD)-NNN`, z. B. `VC-PO-001`.
+ID-Konvention: `PF-(PO|BG|SP|LL|PR|TD)-NNN` (Formatbeispiel, **keine zugeteilte Story**: `PF-PO-001`).
 Die Nummer `NNN` bleibt beim Archivieren unveraendert.
 
 ## Abgeschlossen
