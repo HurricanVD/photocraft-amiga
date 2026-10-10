@@ -1,7 +1,7 @@
 # PF-TN-007 — Gray8 LayerMask ownership and COW differential
 
 - Date: 2026-10-10
-- Story: PF-SP-002 (in_progress).
+- Story: `PF-SP-006` (retrospektiv zugeordnet; `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
 - Stacked branch: `feature/pf-sp-002-layer-masks`, based on [group PR #4](https://github.com/HurricanVD/photocraft-amiga/pull/4).
 - Scoped result: **PASS**, verified on source commit `8389d3a56a8c458595c03b6e264710de1f0f61b4` in [CI #38061132027](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061132027). Whole multi-platform CI conclusion must be checked independently.
 - Scope: original Rust LayerMask with **fixed density=1, feather=0** and
@@ -67,3 +67,7 @@ are **not implemented**. These require their own story/review/test evidence.
 - The **overall** PR CI includes additional root Rust/platform/corpus
   jobs and must finish on the frozen PR head before any merge. No native
   MiniGL/WinUAE/QuarkTex NG or shipping-ABI acceptance is implied.
+
+## Retrospektive Story-Traceability (2026-10-11)
+
+Dieser Scoped-Test `PF-TN-007` ist der Child-Story `PF-SP-006` zugeordnet. Das zuvor unter PF-SP-002 erstellte und ausgefuehrte Testartefakt ist nur technische historische Evidenz; es autorisiert **kein** nachtraegliches DoR-/Implementation-/Reviewer-Gate. Die formale Aufteilung steht in [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6). Der kanonische Parent wird dort `blocked` und die PRs #3→#4→#5 bleiben gestapelt.
