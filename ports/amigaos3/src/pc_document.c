@@ -12,6 +12,8 @@ typedef struct PcLayer {
     uint64_t id;
     char *name;
     PcRaster *surface;
+    PcRaster *mask;
+    int mask_enabled,mask_linked;
     int visible;
     float opacity;
     float fill_opacity;
@@ -44,6 +46,7 @@ static void pc_layer_release(PcLayer *layer)
     for(i=0;i<layer->count;++i)pc_layer_release(&layer->children[i]);
     free(layer->children);
     pc_raster_destroy(layer->surface);
+    pc_raster_destroy(layer->mask);
     free(layer->name);
     memset(layer,0,sizeof(*layer));
 }
@@ -65,6 +68,21 @@ static PcLayer *pc_find_layer(PcLayer *items,size_t count,uint64_t id,
     }
     return NULL;
 }
+/* A document owns each PcRaster pointer at most once. Otherwise
+ * cloning or destruction could double-free an aliased mask/surface. */
+static int pc_owns_surface(const PcLayer *items,size_t count,
+                            const PcRaster *surface)
+{
+    size_t i;
+    for(i=0;i<count;++i){
+        if(items[i].surface==surface || items[i].mask==surface)return 1;
+        if(items[i].is_group &&
+           pc_owns_surface(items[i].children,items[i].count,surface))
+            return 1;
+    }
+    return 0;
+}
+
 static PcLayer *pc_group(PcDocument *d,uint64_t id,size_t *depth)
 {
     PcLayer *layer;
@@ -112,6 +130,7 @@ static int pc_document_append(PcDocument *d,uint64_t parent_id,
     if(!d||!name||id==0||(!surface&&!is_group)||(surface&&is_group))
         return 0;
     if(pc_find_layer(d->layers,d->count,id,1,NULL))return 0;
+    if(surface && pc_owns_surface(d->layers,d->count,surface))return 0;
     if(parent_id==0){
         return pc_append(&d->layers,&d->count,&d->capacity,
                          id,name,surface,is_group);
@@ -290,6 +309,102 @@ int pc_document_set_layer_fill_opacity(PcDocument *d,size_t i,float opacity)
     d->layers[i].fill_opacity=opacity;return 1;
 }
 
+/* LayerMask::reveal_all/hide_all in the upstream Rust model are
+ * Gray8 sparse surfaces with default 255/0 and no per-tile allocation. */
+static PcRaster *pc_document_mask_default(uint8_t value)
+{
+    PcPixelFormat fmt={PC_COLOR_GRAY,PC_SAMPLE_U8,0};
+    return pc_raster_new(fmt,&value);
+}
+PcRaster *pc_document_mask_reveal_all(void)
+{
+    return pc_document_mask_default(255);
+}
+PcRaster *pc_document_mask_hide_all(void)
+{
+    return pc_document_mask_default(0);
+}
+int pc_document_attach_mask(PcDocument *d,uint64_t id,PcRaster *mask,
+                            int enabled,int linked)
+{
+    PcPixelFormat fmt;
+    PcLayer *layer;
+    if(!d||!mask||id==0)return 0;
+    if(!pc_raster_get_format(mask,&fmt) ||
+       fmt.mode!=PC_COLOR_GRAY || fmt.sample!=PC_SAMPLE_U8 ||
+       fmt.alpha!=0)return 0;
+    layer=pc_find_layer(d->layers,d->count,id,1,NULL);
+    if(!layer||layer->mask || pc_owns_surface(d->layers,d->count,mask))
+        return 0;
+    /* No operation after this point can fail. */
+    layer->mask=mask;
+    layer->mask_enabled=(enabled!=0);
+    layer->mask_linked=(linked!=0);
+    return 1;
+}
+PcRaster *pc_document_layer_mask(PcDocument *d,uint64_t id)
+{
+    PcLayer *layer;
+    if(!d||id==0)return NULL;
+    layer=pc_find_layer(d->layers,d->count,id,1,NULL);
+    return layer?layer->mask:NULL;
+}
+PcRaster *pc_document_detach_mask(PcDocument *d,uint64_t id)
+{
+    PcLayer *layer;
+    PcRaster *mask;
+    if(!d||id==0)return NULL;
+    layer=pc_find_layer(d->layers,d->count,id,1,NULL);
+    if(!layer)return NULL;
+    mask=layer->mask;
+    layer->mask=NULL;
+    layer->mask_enabled=0;
+    layer->mask_linked=0;
+    return mask;
+}
+int pc_document_mask_enabled(const PcDocument *d,uint64_t id)
+{
+    PcLayer *layer;
+    if(!d||id==0)return -1;
+    layer=pc_find_layer(((PcDocument *)d)->layers,d->count,id,1,NULL);
+    return layer&&layer->mask?layer->mask_enabled:-1;
+}
+int pc_document_set_mask_enabled(PcDocument *d,uint64_t id,int enabled)
+{
+    PcLayer *layer;
+    if(!d||id==0)return 0;
+    layer=pc_find_layer(d->layers,d->count,id,1,NULL);
+    if(!layer||!layer->mask)return 0;
+    layer->mask_enabled=(enabled!=0);
+    return 1;
+}
+int pc_document_mask_linked(const PcDocument *d,uint64_t id)
+{
+    PcLayer *layer;
+    if(!d||id==0)return -1;
+    layer=pc_find_layer(((PcDocument *)d)->layers,d->count,id,1,NULL);
+    return layer&&layer->mask?layer->mask_linked:-1;
+}
+int pc_document_set_mask_linked(PcDocument *d,uint64_t id,int linked)
+{
+    PcLayer *layer;
+    if(!d||id==0)return 0;
+    layer=pc_find_layer(d->layers,d->count,id,1,NULL);
+    if(!layer||!layer->mask)return 0;
+    layer->mask_linked=(linked!=0);
+    return 1;
+}
+int pc_document_mask_value_u8(const PcDocument *d,uint64_t id,
+                              int32_t x,int32_t y,uint8_t *out)
+{
+    PcLayer *layer;
+    if(!d||id==0||!out)return 0;
+    layer=pc_find_layer(((PcDocument *)d)->layers,d->count,id,1,NULL);
+    if(!layer||!layer->mask)return 0;
+    if(!layer->mask_enabled){*out=255;return 1;}
+    return pc_raster_read_pixel(layer->mask,x,y,out,1);
+}
+
 /* Recursive clone terminates at PC_DOCUMENT_MAX_GROUP_DEPTH, preserving
  * independent child arrays/names and refcounted COW raster snapshots. */
 static int pc_layer_clone(PcLayer *out,const PcLayer *src)
@@ -303,9 +418,15 @@ static int pc_layer_clone(PcLayer *out,const PcLayer *src)
     out->opacity=src->opacity;
     out->fill_opacity=src->fill_opacity;
     out->is_group=src->is_group;
+    out->mask_enabled=src->mask_enabled;
+    out->mask_linked=src->mask_linked;
     if(src->surface){
         out->surface=pc_raster_clone(src->surface);
         if(!out->surface)goto fail;
+    }
+    if(src->mask){
+        out->mask=pc_raster_clone(src->mask);
+        if(!out->mask)goto fail;
     }
     if(src->count){
         if(src->count>SIZE_MAX/sizeof(*out->children))goto fail;
