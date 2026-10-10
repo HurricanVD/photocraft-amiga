@@ -224,3 +224,42 @@ jobs:
         with:
           name: fuzz-${{ matrix.target.crate }}-${{ matrix.target.name }}
           path: crates/${{ matrix.target.crate }}/fuzz/artifacts
+
+  amiga-document-parity:
+    # Portable PF-SP-002 regression gate on main PRs, distinct from the
+    # optional GCC13/vamos m68k profile in amigaos3-host.yml.
+    name: PF-SP-002 flat Document C99 vs original Rust
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      CARGO_PROFILE_DEV_DEBUG: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: C99 host contract and sanitizer
+        run: |
+          make -C ports/amigaos3 host-test
+          make -C ports/amigaos3 host-core-sanitize
+      - name: Unmodified original Rust Document unit tests
+        run: cargo test -p photocraft-doc --locked --lib
+      - name: Differential flat-layer Document output
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml -- document \
+            > ports/amigaos3/build/oracle-rust-document.txt
+          ports/amigaos3/build/document_oracle \
+            > ports/amigaos3/build/oracle-c-document.txt
+          diff -u ports/amigaos3/build/oracle-rust-document.txt \
+                  ports/amigaos3/build/oracle-c-document.txt
+          echo "PASS: original Rust Document shift and opacity vs C99"
+      - name: Upload PF-SP-002 oracle evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pf-sp-002-document-parity
+          path: |
+            ports/amigaos3/build/oracle-rust-document.txt
+            ports/amigaos3/build/oracle-c-document.txt
+          if-no-files-found: ignore
