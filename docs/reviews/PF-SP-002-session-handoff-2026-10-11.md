@@ -37,3 +37,13 @@ Alle drei PR-Branches sind gestapelt und zuletzt ohne GitHub-Text-Mergekonflikt 
 - Keine eigenmaechtige `ready`-/`done`-Promotion, kein erfundenes finales Approval.
 - Ein automatischer Review-Finding-Loop oder gruenes Snapshot-CI ist keine Lizenz-/IP-/Produktfreigabe.
 - Falls Checks, Codex-Review oder Branch-Integration noch offen sind, bleiben die zugehoerigen PRs offen. Status bei erneuter Arbeit anhand exakter PR-SHA und GitHub Actions aktualisieren.
+
+## Finaler Sitzungsabschluss nach Merge (2026-10-11)
+
+- **Öffentliche Governance:** [PhotoCraft PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6) nach `main` gemergt, Merge-SHA `e335905da0e4d905705a0963c16cc2e0cd40dee0`.
+- **Privates Prozess-Gate:** [VD-PR #20](https://github.com/HurricanVD/vd-amiga-dev-process/pull/20) nach `main` gemergt, Merge-SHA `42476fb734e6377767346f91fa39c92026087e97`.
+- PF-Atomisierung und Child-IDs sind damit auf `main` dokumentiert, und die private Prozessvalidierung arbeitet auf dem getrennt gepinnten, überprüften Consumer-SHA.
+- Bootstrap-Preflight, Dokumentation sowie private VD-Full-Snapshot-/Bash-/PowerShell-Gates waren erfolgreich. **Transparente Ausnahme:** Die umfassende öffentliche Rust-/Corpus-CI für den letzten öffentlichen Governance-Head [#38095999201](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38095999201) war beim Merge noch `in_progress`, also zu diesem Zeitpunkt **nicht** als vollständig erfolgreich belegt. Die spätere `main`-CI muss separat kontrolliert werden; keine rückdatierte CI-Freigabe.
+- Implementierungs-PRs #3 (PF-SP-004), #4 (PF-SP-005) und #5 (PF-SP-006) bleiben **offen und Draft**. Unaufgelöst vor Review/Merge: komplette Rust-Semantik für verschachtelte `Document::shift`/rekursive Layerzählung (PR #4), Masken-Rust-Differential in der kanonischen `main`-Lane und Child-Job-Namen/Artefakte (PR #5), sowie eigenständige Story-DoR-/Implementation-/Review-Gates.
+- Nicht umgesetzt: automatische Release-/Produktfreigabe, Auswahl eines Shipping-Compilers, MiniGL/WinUAE-/native GUI-Laufzeitfreigabe.
+- Direktes Dokumentations-Follow-up dieses Statusabschnitts wurde nach den Merges auf public `main` committet; ausschließlich Audit-/Handoff-Text, kein Produktcode.
