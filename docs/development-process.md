@@ -116,7 +116,7 @@ portlokales Register: `ports/amigaos3/docs/os-deviation-log.md`.
 - C99-Port unter `ports/amigaos3/`, kanonische PF-Stories/Tests
   unter `docs/stories/` bzw. `docs/tests/`; historische Portpfade
   bleiben als Nachweis erhalten.
-- `PF-SP-001`: blocked (MiniGL). `PF-SP-002`: in_progress (Core).
+- `PF-SP-001`: blocked (MiniGL). `PF-SP-002`: blocked (split_required, historical core baseline); Child-Stories PF-SP-004..009 und PF-TD-001 unter `refining|draft` bis zu eigenen DoR-/Implementation-Gates.
   `PF-SP-003`: done (GCC13/vamos).
 - `make -C ports/amigaos3 host-test` und `host-core-sanitize`
   sowie GCC13 HUNK/vamos und Rust-Originalvergleich in CI.

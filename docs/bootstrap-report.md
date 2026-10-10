@@ -58,13 +58,13 @@
 
 ## First-Phase-Seed
 
-- Materialisierung: `canonical_materialized` for existing PF-SP-001/002/003; future PO stories remain seed-only.
+- Materialisierung: Initial PF-SP-001/002/003 kanonisch. Seit 2026-10-11 PF-SP-002 `blocked` (split_required), PF-SP-004..009 und PF-TD-001 `refining|draft` im Backlog; keine DoR-Freigabe.
 - Naechste Rolle: `Product Owner/Refinement`
 
 | Story | Titel | Typ | Status | Quelle |
 |---|---|---|---|---|
 | PF-SP-001 | MiniGL/QuarkTex NG validation | SP | blocked | `docs/stories/PF-SP-001.md` |
-| PF-SP-002 | PhotoCraft native core parity | SP | in_progress | `docs/stories/PF-SP-002.md` |
+| PF-SP-002 | PhotoCraft native core parity (historischer Parent) | SP | blocked (`split_required`, 2026-10-11) | `docs/stories/PF-SP-002.md` |
 | PF-SP-003 | GCC13 HUNK/vamos + Rust oracle | SP | done | `docs/stories/done/PF-SP-003.md` |
 
 ## ADR-Entscheidungen
