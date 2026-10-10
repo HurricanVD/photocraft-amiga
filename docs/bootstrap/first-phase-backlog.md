@@ -15,7 +15,7 @@
 - Status initial `draft|refining`, nicht `ready`.
 - Finale IDs folgen `PF-(PO|BG|SP|LL|PR|TD)-NNN`; reines Formatbeispiel (nicht vergeben): `PF-PO-001`.
 - `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
-- Ohne reservierten Prefix nur Platzhalter wie `<PP>-PO-001` verwenden; der `PF`-Prefix ist inzwischen `reserved`, aber noch nicht `active`.
+- Ohne registrierten Prefix nur Platzhalter wie `<PP>-PO-001` verwenden; `PF` ist seit dem zentralen Registry-Merge PR #19 (`2026-10-10`) `active`. Neue Story-IDs werden weiterhin nur nach dem regulaeren Refinement-/DoR-Gate vergeben.
 - Beim Materialisieren nach `docs/backlog.md` gilt:
   `draft|refining` kommt nach `Offen`, `blocked` nach `Blockiert`,
   `ready` nur mit erfuellter DoR-/Gate-Evidenz nach `Bereit`.
