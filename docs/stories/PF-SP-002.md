@@ -141,3 +141,29 @@ retaining the COW raster surface contract.
   [CI #38042365174](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042365174).
   See [PF-TN-006](../tests/PF-TN-006.md). Whole-PR final-head CI
   and review remain separate. `PF-SP-002` stays `in_progress`.
+
+## Gray8 layer-mask ownership and sampling slice (2026-10-10)
+
+The next experimental increment, stacked after the nested group tree,
+models **a deliberately narrow subset** of the original Rust
+`LayerMask` record: `surface` (only Gray8/U8 encoded samples),
+`enabled` and `linked`. It creates sparse reveal-all (255) or hide-all
+(0) masks, validates formats, attaches exactly one mask to a raster or
+nested group layer by globally unique ID, rejects duplicate ownership,
+returns ownership on detach and clones mask surfaces using the existing
+reference-counted tile COW contract. Disabled masks sample as 255.
+
+- Source: unchanged `crates/doc/src/lib.rs` `LayerMask::reveal_all`,
+  `hide_all`, `value` at default density=1 and feather=0;
+  `crates/raster/src/lib.rs` Gray8 sparse default and samples.
+- Implementation: `ports/amigaos3/include/pc_document.h`,
+  `src/pc_document.c`; encoded format accessor in `pc_raster.h/.c`.
+- Tests: extended `pc_document_test.c`, independent C99
+  `tests/mask_oracle.c` and original Rust oracle `-- mask`;
+  see [PF-TN-007](../tests/PF-TN-007.md).
+- Scope limit: density is fixed at 1, feather is fixed at 0; **no**
+  numeric density adjustment, feathering, compositing/blending or
+  Photoshop/PSD mask persistence. The mask API is not a released ABI.
+
+`PF-SP-002` remains `in_progress`; full source/target CI and reviewer
+acceptance are independent of prior group and flat-layer results.
