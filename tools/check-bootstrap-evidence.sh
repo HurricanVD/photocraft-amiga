@@ -51,6 +51,16 @@ pf_backlog_row() {
     END { exit !(count==1 && correct==1) }
   ' "$repo_root/docs/backlog.md"
 }
+pf_active_count() {
+  awk -F'|' -v target="$1" '
+    /^\\|/ {
+      id=$2
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", id)
+      if (id==target) count++
+    }
+    END { print count+0 }
+  ' "$repo_root/docs/backlog.md"
+}
 pf_done_count() {
   awk -F'|' -v target="$1" '
     /^\|/ {
@@ -107,7 +117,7 @@ for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001;
   if [ "$status" = done ] || { [ "$status" = rejected ] && [ "$story" = "$archived" ]; }; then
     [ "$story" = "$archived" ] || { echo "FAIL terminal child not archived $id" >&2; exit 1; }
     [ "$(pf_done_count "$id")" -eq 1 ] || { echo "FAIL missing/duplicate done row $id" >&2; exit 1; }
-    if grep -Fq "| $id |" "$repo_root/docs/backlog.md"; then echo "FAIL stale active row $id" >&2; exit 1; fi
+    [ "$(pf_active_count "$id")" -eq 0 ] || { echo "FAIL stale or duplicate active row $id" >&2; exit 1; }
   else
     [ "$story" = "$active" ] || { echo "FAIL non-done child archived $id" >&2; exit 1; }
     pf_backlog_row "$id" "$status" "$section" || { echo "FAIL backlog status/section $id: $status" >&2; exit 1; }
