@@ -14,6 +14,15 @@ static void pix(const PcRaster *r,const uint8_t expected[4])
 }
 /* Original Rust doc::Document::shift direction, Layer defaults and clone
  * metadata. This is a flat-raster subset only, not full Document parity. */
+static int same_float(float a,float b)
+{
+    uint32_t aa,bb;
+    if(sizeof(a)!=sizeof(aa))return 0;
+    memcpy(&aa,&a,sizeof(aa));
+    memcpy(&bb,&b,sizeof(bb));
+    return aa==bb;
+}
+
 static void test_layer_contract(void)
 {
     PcPixelFormat f={PC_COLOR_RGB,PC_SAMPLE_U8,1};
@@ -50,10 +59,10 @@ static void test_layer_contract(void)
     assert(pc_document_layer_raster(d,1)==r0);
     assert(pc_document_layer_raster(d,2)==r2);
 
-    assert(pc_document_layer_opacity(d,0)==1.0f);
-    assert(pc_document_layer_fill_opacity(d,0)==1.0f);
-    assert(pc_document_layer_opacity(NULL,0)==-1.0f);
-    assert(pc_document_layer_fill_opacity(d,3)==-1.0f);
+    assert(same_float(pc_document_layer_opacity(d,0),1.0f));
+    assert(same_float(pc_document_layer_fill_opacity(d,0),1.0f));
+    assert(same_float(pc_document_layer_opacity(NULL,0),-1.0f));
+    assert(same_float(pc_document_layer_fill_opacity(d,3),-1.0f));
     assert(pc_document_set_layer_opacity(d,0,0.0f));
     assert(pc_document_set_layer_fill_opacity(d,0,0.75f));
     assert(pc_document_set_layer_opacity(d,1,0.5f));
@@ -65,15 +74,15 @@ static void test_layer_contract(void)
     assert(!pc_document_set_layer_fill_opacity(d,0,-0.01f));
     assert(!pc_document_set_layer_opacity(NULL,0,0.5f));
     assert(!pc_document_set_layer_fill_opacity(d,SIZE_MAX,0.5f));
-    assert(pc_document_layer_opacity(d,0)==0.0f);
-    assert(pc_document_layer_fill_opacity(d,0)==0.75f);
+    assert(same_float(pc_document_layer_opacity(d,0),0.0f));
+    assert(same_float(pc_document_layer_fill_opacity(d,0),0.75f));
 
     assert(pc_raster_write_pixel(pc_document_layer_raster(d,1),2,3,a,4));
     snap=pc_document_clone(d);
     assert(snap && pc_document_layer_count(snap)==3);
     assert(pc_document_layer_id(snap,1)==11);
-    assert(pc_document_layer_opacity(snap,0)==0.0f);
-    assert(pc_document_layer_fill_opacity(snap,1)==0.25f);
+    assert(same_float(pc_document_layer_opacity(snap,0),0.0f));
+    assert(same_float(pc_document_layer_fill_opacity(snap,1),0.25f));
     assert(pc_document_shift_layer(snap,33,-2));
     assert(pc_document_set_layer_visible(snap,2,0));
     assert(pc_document_set_layer_opacity(snap,1,1.0f));
@@ -81,8 +90,8 @@ static void test_layer_contract(void)
     assert(pc_document_layer_id(snap,0)==33);
     assert(pc_document_layer_id(d,0)==22);
     assert(pc_document_layer_visible(d,2)==1);
-    assert(pc_document_layer_opacity(d,1)==0.5f);
-    assert(pc_document_layer_fill_opacity(d,1)==0.25f);
+    assert(same_float(pc_document_layer_opacity(d,1),0.5f));
+    assert(same_float(pc_document_layer_fill_opacity(d,1),0.25f));
     pix(pc_document_layer_raster(snap,2),a);
     pc_document_destroy(d);
     pix(pc_document_layer_raster(snap,2),a);
