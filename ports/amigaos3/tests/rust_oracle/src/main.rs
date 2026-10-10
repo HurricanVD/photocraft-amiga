@@ -3,7 +3,7 @@
 //! observes public Rust crate APIs. Its output is compared with C99.
 
 use photocraft_color::{ColorMode, PixelFormat, SampleType};
-use photocraft_doc::{Document, Layer, LayerContent, LayerId};
+use photocraft_doc::{Document, Layer, LayerContent, LayerId, LayerMask};
 use photocraft_geom::{Rect, Size, TileCoord};
 use photocraft_raster::Surface;
 
@@ -149,7 +149,76 @@ fn group_main() {
     println!("snapshot {lo} {hi}");
 }
 
+/* Original Rust LayerMask::value, LayerMask::reveal_all and clone.
+ * Only density=1, feather=0, Gray8 are within the current C99 slice. */
+fn sample_mask_u8(doc: &Document, x: i32, y: i32) -> u8 {
+    let LayerContent::Group(ref root) = doc.layers[0].content else {
+        unreachable!("mask fixture needs a group");
+    };
+    let mask=root.children[0].mask.as_ref().expect("attached nested mask");
+    (mask.value(x,y).clamp(0.0,1.0)*255.0+0.5) as u8
+}
+fn mask_main() {
+    let mut doc=Document::new("Mask document",Size::new(20,30),
+                              ColorMode::Rgb,SampleType::U8);
+    let mut leaf=Layer::raster("Nested",PixelFormat::RGBA8);
+    leaf.id=LayerId(102);
+    leaf.mask=Some(LayerMask::reveal_all());
+    let mut parent=Layer::group("Parent",vec![leaf]);
+    parent.id=LayerId(101);
+    doc.layers.push(parent);
+
+    println!("default {}",sample_mask_u8(&doc,300,-300));
+    {
+        let LayerContent::Group(ref mut group)=doc.layers[0].content else {
+            unreachable!();
+        };
+        let mask=group.children[0].mask.as_mut().expect("mask");
+        mask.surface.write_pixel(-1,256,&[0.0]);
+    }
+    println!("painted {}",sample_mask_u8(&doc,-1,256));
+    {
+        let LayerContent::Group(ref mut group)=doc.layers[0].content else {
+            unreachable!();
+        };
+        let mask=group.children[0].mask.as_mut().expect("mask");
+        mask.enabled=false;
+    }
+    println!("disabled {}",sample_mask_u8(&doc,-1,256));
+    {
+        let LayerContent::Group(ref mut group)=doc.layers[0].content else {
+            unreachable!();
+        };
+        let mask=group.children[0].mask.as_mut().expect("mask");
+        mask.enabled=true;
+        mask.linked=false;
+        println!("linked {}",mask.linked as u8);
+    }
+    println!("enabled {}",sample_mask_u8(&doc,-1,256));
+    let mut snapshot=doc.clone();
+    {
+        let LayerContent::Group(ref mut group)=snapshot.layers[0].content else {
+            unreachable!();
+        };
+        let mask=group.children[0].mask.as_mut().expect("mask");
+        mask.surface.write_pixel(-1,256,&[128.0/255.0]);
+    }
+    println!("clone {}",sample_mask_u8(&snapshot,-1,256));
+    println!("original {}",sample_mask_u8(&doc,-1,256));
+    {
+        let LayerContent::Group(ref mut group)=doc.layers[0].content else {
+            unreachable!();
+        };
+        println!("detached {}",group.children[0].mask.take().is_some() as u8);
+    }
+    println!("snapshot-after-detach {}",sample_mask_u8(&snapshot,-1,256));
+}
+
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("mask") {
+        mask_main();
+        return;
+    }
     if std::env::args().nth(1).as_deref() == Some("group") {
         group_main();
         return;
