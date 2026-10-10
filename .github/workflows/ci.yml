@@ -277,7 +277,17 @@ jobs:
             > ports/amigaos3/build/oracle-c-group.txt
           diff -u ports/amigaos3/build/oracle-rust-group.txt \
                   ports/amigaos3/build/oracle-c-group.txt
+            ports/amigaos3/build/oracle-rust-mask.txt
+            ports/amigaos3/build/oracle-c-mask.txt
           echo "PASS: original Rust Group order/clone vs C99"
+          cargo run --quiet --manifest-path \
+            ports/amigaos3/tests/rust_oracle/Cargo.toml -- mask \
+            > ports/amigaos3/build/oracle-rust-mask.txt
+          ports/amigaos3/build/mask_oracle \
+            > ports/amigaos3/build/oracle-c-mask.txt
+          diff -u ports/amigaos3/build/oracle-rust-mask.txt \
+                  ports/amigaos3/build/oracle-c-mask.txt
+          echo "PASS: original Rust LayerMask Gray8 value/COW vs C99"
       - name: Upload PF-SP-002 oracle evidence
         if: always()
         uses: actions/upload-artifact@v4
