@@ -7,6 +7,8 @@ typedef struct PcLayer {
     char *name;
     PcRaster *surface;
     int visible;
+    float opacity;
+    float fill_opacity;
 } PcLayer;
 struct PcDocument {
     char *name;
@@ -68,6 +70,8 @@ int pc_document_append_raster(PcDocument *d,uint64_t id,
     d->layers[d->count].id=id;
     d->layers[d->count].name=label;
     d->layers[d->count].visible=1;
+    d->layers[d->count].opacity=1.0f;
+    d->layers[d->count].fill_opacity=1.0f;
     d->layers[d->count].surface=owned;
     ++d->count;
     return 1;
@@ -93,6 +97,56 @@ int pc_document_set_layer_visible(PcDocument *d,size_t i,int visible)
     if(!d||i>=d->count)return 0;
     d->layers[i].visible=(visible!=0);return 1;
 }
+/* The indices and ordering mirror Rust doc::Document::shift:
+ * 0 is bottom; a positive delta raises a layer. The range checks avoid
+ * signed overflow (including INT_MIN) and forbid any partial mutation. */
+int pc_document_shift_layer(PcDocument *d,uint64_t id,int delta)
+{
+    size_t from,to,i,steps;
+    PcLayer moved;
+    if(!d || id==0)return 0;
+    for(from=0;from<d->count && d->layers[from].id!=id;++from){}
+    if(from==d->count)return 0;
+    if(delta>=0){
+        steps=(size_t)delta;
+        if(steps>=d->count-from)return 0;
+        to=from+steps;
+    }else{
+        steps=(size_t)(-(int64_t)delta);
+        if(steps>from)return 0;
+        to=from-steps;
+    }
+    if(from==to)return 1;
+    moved=d->layers[from];
+    if(to>from){
+        for(i=from;i<to;++i)d->layers[i]=d->layers[i+1];
+    }else{
+        for(i=from;i>to;--i)d->layers[i]=d->layers[i-1];
+    }
+    d->layers[to]=moved;
+    return 1;
+}
+float pc_document_layer_opacity(const PcDocument *d,size_t i)
+{
+    return d&&i<d->count?d->layers[i].opacity:-1.0f;
+}
+int pc_document_set_layer_opacity(PcDocument *d,size_t i,float opacity)
+{
+    if(!d||i>=d->count||!(opacity>=0.0f && opacity<=1.0f))return 0;
+    d->layers[i].opacity=opacity;
+    return 1;
+}
+float pc_document_layer_fill_opacity(const PcDocument *d,size_t i)
+{
+    return d&&i<d->count?d->layers[i].fill_opacity:-1.0f;
+}
+int pc_document_set_layer_fill_opacity(PcDocument *d,size_t i,float opacity)
+{
+    if(!d||i>=d->count||!(opacity>=0.0f && opacity<=1.0f))return 0;
+    d->layers[i].fill_opacity=opacity;
+    return 1;
+}
+
 PcDocument *pc_document_clone(const PcDocument *orig)
 {
     PcDocument *d;
@@ -107,6 +161,8 @@ PcDocument *pc_document_clone(const PcDocument *orig)
             pc_raster_destroy(copy);pc_document_destroy(d);return NULL;
         }
         d->layers[i].visible=orig->layers[i].visible;
+        d->layers[i].opacity=orig->layers[i].opacity;
+        d->layers[i].fill_opacity=orig->layers[i].fill_opacity;
     }
     return d;
 }
