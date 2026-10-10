@@ -3,7 +3,7 @@
 - Date: 2026-10-10
 - Story: PF-SP-002 (in_progress).
 - Stacked branch: `feature/pf-sp-002-layer-masks`, based on [group PR #4](https://github.com/HurricanVD/photocraft-amiga/pull/4).
-- State: `pending` until the exact commit's checks finish.
+- Scoped result: **PASS**, verified on source commit `8389d3a56a8c458595c03b6e264710de1f0f61b4` in [CI #38061132027](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061132027). Whole multi-platform CI conclusion must be checked independently.
 - Scope: original Rust LayerMask with **fixed density=1, feather=0** and
   a sparse Gray8/U8 default surface, `enabled` and `linked` flags.
   Not a compositor, generic grayscale format or shipping C ABI.
@@ -43,7 +43,27 @@ mask conversions, mask transforms, masks in PSD import/export, history/undo,
 zero-copy surface APIs, production allocator/ABI and MiniGL/WinUAE hardware
 are **not implemented**. These require their own story/review/test evidence.
 
-## Actual evidence
+## Executed evidence — 2026-10-10
 
-Pending CI URLs, exact reviewed commit, test logs and reviewer disposition.
-Do not infer PASS from PF-TN-005/006.
+- Tested implementation source: `8389d3a56a8c458595c03b6e264710de1f0f61b4`.
+- [GitHub Actions #38061132027](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061132027)
+  scoped job `PF-SP-002 flat Document C99 vs original Rust`:
+  **completed/success**. Portable host C99, ASan+UBSan, 51 unchanged
+  original `photocraft-doc` unit tests and the byte-for-byte `-- mask`
+  original Rust/C99 oracle passed.
+- Observed log markers: `PASS: PhotoCraft Gray8 LayerMask ownership/defaults/flags/deep COW`
+  and `PASS: original Rust LayerMask Gray8 value/COW vs C99`.
+- Same run, scoped job `PF-SP-002 GCC13 m68k Document O0/O2 vamos`:
+  **completed/success**. Six real m68k HUNK binaries passed the format
+  verifier; extended mask-aware `pc_document_test` passed pinned
+  `vamos` at both `-O0` and `-O2`.
+- Compiler opt-in test profile: Bebbo GCC `13.3.0`, image
+  `stefanreinauer/amiga-gcc:gcc-v13.3-20260622`,
+  digest `sha256:f9d09422a89f317a2f59d5db46227ad9bd8d753d5c9fe41553fcfdc6ecf60ce8`.
+- First CI attempt [#38061023830](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061023830)
+  exposed a shell orchestration error: mask artifact lines were inserted
+  between group-oracle commands. The workflow was corrected in
+  `8389d3a`; it did not represent a failing mask algorithm.
+- The **overall** PR CI includes additional root Rust/platform/corpus
+  jobs and must finish on the frozen PR head before any merge. No native
+  MiniGL/WinUAE/QuarkTex NG or shipping-ABI acceptance is implied.
