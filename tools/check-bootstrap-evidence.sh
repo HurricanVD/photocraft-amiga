@@ -13,10 +13,7 @@ for required in \
   docs/stories/PF-SP-001.md docs/stories/PF-SP-002.md docs/stories/done/PF-SP-003.md \
   docs/tests/PF-TN-001.md docs/tests/PF-TN-002.md docs/tests/PF-TN-004.md \
   docs/tests/done/PF-TN-003.md \
-  docs/reviews/PF-SP-002-atomization-report-2026-10-11.md \
-  docs/stories/PF-SP-004.md docs/stories/PF-SP-005.md docs/stories/PF-SP-006.md \
-  docs/stories/PF-SP-007.md docs/stories/PF-SP-008.md docs/stories/PF-SP-009.md \
-  docs/stories/PF-TD-001.md
+  docs/reviews/PF-SP-002-atomization-report-2026-10-11.md
 do
   if [ ! -f "$repo_root/$required" ]; then
     echo "FAIL missing consumer file: $required" >&2
@@ -41,15 +38,38 @@ grep -q 'PF-SP-001.*blocked' "$repo_root/docs/backlog.md" || { echo 'FAIL PF-SP-
 grep -q 'PF-SP-002.*blocked' "$repo_root/docs/backlog.md" || { echo 'FAIL PF-SP-002 split freeze missing' >&2; exit 1; }
 grep -q '^- Status: blocked' "$repo_root/docs/stories/PF-SP-002.md" || { echo 'FAIL PF-SP-002 canonical freeze missing' >&2; exit 1; }
 grep -q 'decision: `split_required`' "$repo_root/docs/reviews/PF-SP-002-atomization-report-2026-10-11.md" || { echo 'FAIL retrospective atomization decision missing' >&2; exit 1; }
+# This is a snapshot-consistency check, NOT a DoR or review approval.
+# No child status is frozen at draft/refining: all VD lifecycle transitions
+# are handled by the story gate and must remain possible.
 for id in PF-SP-004 PF-SP-005 PF-SP-006 PF-SP-007 PF-SP-008 PF-SP-009 PF-TD-001; do
-  grep -Eq '^- Status: `(draft|refining)`' "$repo_root/docs/stories/$id.md" || {
-    echo "FAIL child story $id promoted without DoR" >&2
-    exit 1
-  }
-  grep -Eq "$id.*(draft|refining)" "$repo_root/docs/backlog.md" || {
-    echo "FAIL child story $id missing/refinement mismatch in backlog" >&2
-    exit 1
-  }
+  active="$repo_root/docs/stories/$id.md"
+  archived="$repo_root/docs/stories/done/$id.md"
+  if [ -f "$active" ] && [ -f "$archived" ]; then
+    echo "FAIL duplicated child $id" >&2; exit 1
+  fi
+  if [ -f "$active" ]; then
+    story="$active"
+  elif [ -f "$archived" ]; then
+    story="$archived"
+  else
+    echo "FAIL missing child $id" >&2; exit 1
+  fi
+  status=$(sed -n 's/^- Status: [`]*\([a-z_]*\)[`]*.*/\1/p' "$story" | head -n 1)
+  case "$status" in
+    draft|refining|ready|in_progress|review|blocked|rejected|done) ;;
+    *) echo "FAIL invalid child status $id: $status" >&2; exit 1 ;;
+  esac
+  if [ "$status" = done ]; then
+    [ "$story" = "$archived" ] || { echo "FAIL done child not archived $id" >&2; exit 1; }
+    grep -Fq "| $id |" "$repo_root/docs/backlog-done.md" || {
+      echo "FAIL child $id absent from backlog-done" >&2; exit 1
+    }
+  else
+    [ "$story" = "$active" ] || { echo "FAIL non-done child archived $id" >&2; exit 1; }
+    grep -F "| $id |" "$repo_root/docs/backlog.md" | grep -Eq "\|[[:space:]]*$status[[:space:]]*\|" || {
+      echo "FAIL child $id backlog status does not match $status" >&2; exit 1
+    }
+  fi
 done
 grep -q 'PF-SP-003.*2026-10-09' "$repo_root/docs/backlog-done.md" || { echo 'FAIL PF-SP-003 missing from done' >&2; exit 1; }
 echo 'STATIC_BOOTSTRAP_DOCS=PASS'
