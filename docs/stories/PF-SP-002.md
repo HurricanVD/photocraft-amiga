@@ -112,3 +112,29 @@ ownership. Both opacity fields default to `1.0f`, accept finite values in
 commands/undo, allocator rollback, production performance, native AmigaOS GUI
 and selection of a shipping toolchain are still open. PF-SP-002 remains
 `in_progress` and this incremental C99 interface is not an approved ABI.
+
+## Nested raster-group follow-up (2026-10-10, stacked implementation)
+
+A separate, additive branch builds on the flat-layer implementation to
+introduce a **bounded tree** corresponding only to the original Rust
+`LayerContent::Group { children }` layout. Parent and child siblings are
+bottom-first; root document indexes keep their existing contract.
+New APIs add root/group containers, append raster/group children by unique ID,
+query children by parent ID and reorder only siblings. The group hierarchy is
+limited to `MAX_GROUP_DEPTH=100` from the original Rust model. On failed
+append, raster ownership remains with the caller, and no partial parent
+mutation is allowed. Cloning recursively duplicates groups/names while
+retaining the COW raster surface contract.
+
+- C implementation: `ports/amigaos3/src/pc_document.c`,
+  `include/pc_document.h`; existing flat-layer ABI remains experimental.
+- Source semantics: unchanged `crates/doc/src/lib.rs` (`Group`,
+  `LayerContent::Group`, `Document::shift`, `MAX_GROUP_DEPTH`).
+- Regression protocol: `docs/tests/PF-TN-006.md`, C unit tests,
+  original Rust `-- group` oracle and independent C group oracle.
+- This does **not** implement group compositing, masks, group
+  passthrough-blending, expanded/artboard state, changing parents,
+  serialization, effects, undo or clipping. Group-specific metadata
+  beyond child ordering and names is a future design task.
+- `PF-SP-002` remains `in_progress`; do not merge or mark tests passed
+  until exact branch CI evidence is verified.
