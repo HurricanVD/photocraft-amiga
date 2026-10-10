@@ -40,7 +40,7 @@
 - Registry-Status nach Materialisierung: `reserved` (unchanged)
 - Registry-Transition: `n/a`
 - Prefix-Aktivierung: `follow_up_required`
-- Aktivierungs-Evidenz: project-metadata, bootstrap-report, canonical PF paths, reserved ID range and pinned private process CI [run #38004848964](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38004848964) (success on consumer `43cea705`); **independent final process review outstanding**.
+- Aktivierungs-Evidenz: project-metadata, bootstrap-report, canonical PF paths, reserved ID range and pinned private VD process validation [run #38007435077](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38007435077), successful on consumer snapshot `1167e6f7` and process `0566a39c` (0.2.1). **Future commits require their own final-head validation; independent process acceptance remains outstanding**.
 - Registry-Update-Owner: `HurricanVD/vd-amiga-dev-process` maintainers/owner
 - Prefix-Aktivierung-Naechster-Schritt: review the completed pinned smoke / Bash / PowerShell logs and final PR diff independently; only after approval submit a separate central registry transition `reserved -> active`.
 - Story-ID-Format: `PF-(PO|BG|SP|LL|PR|TD)-NNN`
@@ -101,10 +101,10 @@
 - Prozessversion-Drift-Check PowerShell: `pass` (GitHub Actions Ubuntu/pwsh, pinned process baseline; not evidence for the user's WSL2 workstation)
 - Prozessversion-Drift-Check POSIX: `pass` (GitHub Actions Ubuntu, pinned process baseline)
 - Anwendbare lokale Checks: canonical PF documents/ID and reserved registry, POSIX and PowerShell process version drift, PowerShell bootstrap fixture, exhaustive POSIX bootstrap fixture, shared process `make check`, official disposable consumer-input bootstrap smoke. Existing Rust/C99/HUNK/vamos CI remains separate product evidence.
-- Check-Runtime-Blocker: `n/a` in private GitHub Actions run #38004848964; local user-machine WSL2/NDK/MiniGL environment still unverified and is not implied by CI.
-- Check-Failure: `n/a` for pinned process CI checks; run #38004848964 ended `completed/success` and emitted all required PASS markers.
-- Check-Rerun-Plan: from the *private* process repository CI at process commit `0566a39c28ee73285463f33eb72b210b5d215db4`, check out the exact public consumer commit under `apps/photocraft-amiga`; run `sh apps/photocraft-amiga/tools/check-bootstrap-evidence.sh`. Do not check private process code into public PhotoCraft, or invoke official bootstrap in-place with `--force`/`--activate-prefix`.
-- Available process CI evidence: [private PF gate #38004848964](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38004848964) successful (consumer `43cea705`, process `0566a39`, `VERSION=0.2.1`); `STATIC_BOOTSTRAP_DOCS`, `POSIX_DRIFT`, `POWERSHELL_DRIFT`, `POWERSHELL_BOOTSTRAP_FIXTURE`, `BOOTSTRAP_FIXTURE`, `PROCESS_FULL_CHECK`, `CONSUMER_INPUT_SMOKE` and `PF_BOOTSTRAP_VALIDATION` all `PASS`. Public [PF static preflight #38004817978](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38004817978) success. [AmigaOS core test #37920223129](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37920223129) is separate product evidence.
+- Check-Runtime-Blocker: `n/a` for the validated private GitHub Actions environment; local workstation/WSL2, NDK and MiniGL remain unverified.
+- Check-Failure: `n/a` for the evaluated commit `1167e6f7` in private run #38007435077 (`completed/success`); exact head-specific evidence must be re-checked for later updates.
+- Check-Rerun-Plan: in the *private* process repository, check out process baseline `0566a39c28ee73285463f33eb72b210b5d215db4` and exact public consumer review SHA; run the private process-owned `tools/check-photocraft-bootstrap.sh` rather than executing public validation scripts. Only pinned byte-matched VD drift templates are used. Never use `--force` or `--activate-prefix` on the real PhotoCraft worktree.
+- Available process CI evidence: [private PF gate #38007435077](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38007435077) successful for consumer `1167e6f7` against pinned VD `0566a39c`; `STATIC_BOOTSTRAP_DOCS`, `POSIX_DRIFT`, `POWERSHELL_DRIFT`, `POWERSHELL_BOOTSTRAP_FIXTURE`, `BOOTSTRAP_FIXTURE`, `PROCESS_FULL_CHECK`, `CONSUMER_INPUT_SMOKE`, `FULL_CONSUMER_SNAPSHOT`, and `PF_BOOTSTRAP_VALIDATION` all `PASS`. Public [PF preflight #38007321095](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38007321095) passed on `28f7b97c` (newer revision). The product [AmigaOS core test #37920223129](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37920223129) is separate evidence.
 
 ## Starter-App-Build-Evidenz
 
@@ -119,6 +119,6 @@
 
 ## Offene Annahmen und Nacharbeiten
 
-- Official bootstrap tool was successfully smoke-tested on an isolated four-input snapshot and generated its report. It was **not** applied over the existing PhotoCraft worktree; full in-place generated-output comparison was not performed (preservation of upstream inputs). POSIX/PowerShell drift and exhaustive fixtures passed in private CI. **Independent final architecture/process evidence review is still required before PF activation.**
+- Official VD bootstrap was tested on the four-input fixture **and** on a complete temporary Git checkout of consumer `1167e6f7`, with `--force`/`--activate-prefix` disabled. The full snapshot changed only `docs/bootstrap-report.md` and introduced `docs/adr/ADR-0001-bootstrap-baseline.md`; original README/architecture, accepted `ADR-0001..0003`, canonical PF records, overlays and backlog remained unchanged. These two regenerated artifacts are **proposed PhotoCraft process-overlay exceptions**: the templated report would replace tailored CI/acceptance evidence, and a second generic ADR-0001 would conflict with the accepted port ADR-0001. The actual checkout must not be overwritten. Independent review must accept or reject these specific exceptions before PF activation. Fresh validation needed for later PR commits; native AmigaOS/product claims remain excluded.
 - Real AmigaOS/ReAction/RTG/MiniGL/WinUAE/QuarkTex/PiStorm3D tests and product compiler choice are **not** implied by this repository bootstrap.
 - Canonical stories/tests are the primary status records; port-local originals remain historical copies until a later link-drift cleanup.
