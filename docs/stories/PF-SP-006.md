@@ -77,3 +77,10 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
+
+## Technischer Implementierungsstand aus PR #5 (retrospektiv)
+
+- Experimentelle Gray8/U8 LayerMask für Raster-/Gruppen-Knoten mit 255/0 Sparse-Default, enabled/linked, Format-/Aliasing-Guards, Attach/Detach und COW-Masken-Snapshot. Fixed density=1 und feather=0.
+- Das ist ausschließlich ein unveröffentlichter Host-/m68k-Spike. Keine echte Compositing-/Feather-/16-Bit-/PSD-Unterstützung oder stabile C-ABI.
+- Bereits vorhandene Tests aus [CI #38061426376](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061426376) PASS: C99/ASan+UBSan, Original-Rust-LayerMask-vs-C99-Differential, GCC13 HUNK/vamos O0/O2, PF-TN-007.
+- Child PF-SP-006 bleibt `refining` bis zum getrennten aktuellen Architektur-/DoR- und Implementation-Gate; dies dokumentiert vergangene Implementierung ohne erfundene vorzeitige Freigabe.

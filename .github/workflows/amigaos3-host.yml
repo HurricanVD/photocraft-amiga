@@ -73,6 +73,15 @@ jobs:
             ports/amigaos3/src/pc_document.c \
             ports/amigaos3/tests/document_oracle.c \
             -o ports/amigaos3/build/document_oracle
+          for oracle in group mask; do
+            cc -std=c99 -O2 -Wall -Wextra -Werror -pedantic \
+              -Iports/amigaos3/include \
+              ports/amigaos3/src/pc_core.c \
+              ports/amigaos3/src/pc_raster.c \
+              ports/amigaos3/src/pc_document.c \
+              "ports/amigaos3/tests/${oracle}_oracle.c" \
+              -o "ports/amigaos3/build/${oracle}_oracle"
+          done
       - name: Compare original Rust outputs with C99 outputs
         run: |
           set -eu
@@ -96,12 +105,22 @@ jobs:
             > ports/amigaos3/build/oracle-c-document.txt
           diff -u ports/amigaos3/build/oracle-rust-document.txt \
                   ports/amigaos3/build/oracle-c-document.txt
-          echo "PASS: original PhotoCraft Rust geom/color/raster/doc match C99 scoped oracles"
+          for kind in group mask; do
+            cargo run --quiet --manifest-path \
+              ports/amigaos3/tests/rust_oracle/Cargo.toml -- "$kind" \
+              > "ports/amigaos3/build/oracle-rust-${kind}.txt"
+            "ports/amigaos3/build/${kind}_oracle" \
+              > "ports/amigaos3/build/oracle-c-${kind}.txt"
+            diff -u "ports/amigaos3/build/oracle-rust-${kind}.txt" \
+                    "ports/amigaos3/build/oracle-c-${kind}.txt"
+            echo "PASS: original PhotoCraft Rust ${kind} vs C99"
+          done
+          echo "PASS: original PhotoCraft Rust geom/color/raster/doc/group/mask vs C99"
       - name: Upload differential outputs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: photocraft-rust-vs-c-core
+          name: photocraft-rust-c-native-scopes
           path: |
             ports/amigaos3/build/oracle-rust.txt
             ports/amigaos3/build/oracle-c.txt
@@ -109,6 +128,10 @@ jobs:
             ports/amigaos3/build/oracle-c-typed.txt
             ports/amigaos3/build/oracle-rust-document.txt
             ports/amigaos3/build/oracle-c-document.txt
+            ports/amigaos3/build/oracle-rust-group.txt
+            ports/amigaos3/build/oracle-c-group.txt
+            ports/amigaos3/build/oracle-rust-mask.txt
+            ports/amigaos3/build/oracle-c-mask.txt
           if-no-files-found: ignore
 
   gcc13-vamos:
@@ -124,7 +147,7 @@ jobs:
       - name: Download verified original Rust oracle
         uses: actions/download-artifact@v4
         with:
-          name: photocraft-rust-vs-c-core
+          name: photocraft-rust-c-native-scopes
           path: ports/amigaos3/build
       - name: Pull specific GCC13.3 image and record digest
         shell: bash

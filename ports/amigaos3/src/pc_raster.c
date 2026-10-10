@@ -110,6 +110,12 @@ void pc_raster_destroy(PcRaster *r)
 }
 size_t pc_raster_tile_count(const PcRaster *r){return r?r->count:0;}
 size_t pc_raster_bytes_per_pixel(const PcRaster *r){return r?r->bpp:0;}
+int pc_raster_get_format(const PcRaster *r,PcPixelFormat *out)
+{
+    if(!r||!out)return 0;
+    *out=r->format;
+    return 1;
+}
 int pc_raster_read_pixel(const PcRaster *r,int32_t x,int32_t y,
                          uint8_t *out,size_t len)
 {
