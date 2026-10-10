@@ -5,8 +5,8 @@
 - Prozess-Repo: `HurricanVD/vd-amiga-dev-process`
 - Prozessversion: `0.2.1` (exact pinned shared baseline, main VERSION previously verified)
 - Bootstrap-Profil: `process-overlay`
-- Ausfuehrender: Repository integration via connected GitHub; **official bootstrap on the existing consumer checkout not executed**. Non-destructive official tool smoke executed only on disposable four-input snapshot in private process CI.
-- Bootstrap status: **materialized / official isolated bootstrap smoke and process checks PASS; independent final process review pending**. No in-place bootstrap execution or PF activation claimed.
+- Ausfuehrender: Repository integration via connected GitHub. Official bootstrap smoke on a disposable four-input seed and a non-destructive official bootstrap on a complete temporary consumer Git snapshot in private process CI. No official in-place bootstrap run over the existing PhotoCraft worktree.
+- Bootstrap status: **materialized / isolated official smoke + full consumer snapshot and POSIX/PowerShell gates PASS; PF registry active via separate owner-authorized process PR #19**. The two tailored `process-overlay` exceptions have been explicitly accepted by the owner; no independent native reviewer subagent was used.
 - Workstream and IP boundary: public PhotoCraft fork, no proprietary Dunkelkammer or private VD process sources vendored.
 
 ## Eingangsdokumente
@@ -37,12 +37,13 @@
 - Story-ID-Prefix: `PF`
 - Test-ID-Prefix: `PF`
 - Registry-Status vor Bootstrap: `reserved`
-- Registry-Status nach Materialisierung: `reserved` (unchanged)
-- Registry-Transition: `n/a`
-- Prefix-Aktivierung: `follow_up_required`
-- Aktivierungs-Evidenz: project-metadata, bootstrap-report, canonical PF paths, reserved ID range and pinned private VD process validation [run #38007435077](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38007435077), successful on consumer snapshot `1167e6f7` and process `0566a39c` (0.2.1). **Future commits require their own final-head validation; independent process acceptance remains outstanding**.
+- Registry-Status nach Materialisierung: `reserved` (historical initial bootstrap state)
+- Aktueller Registry-Status: `active` (2026-10-10, process repo merge `1c32299`)
+- Registry-Transition: `reserved -> active` (separately reviewed process PR [#19](https://github.com/HurricanVD/vd-amiga-dev-process/pull/19), merge [`1c32299`](https://github.com/HurricanVD/vd-amiga-dev-process/commit/1c32299deeb1b120703769f71ee0ae427370cc48))
+- Prefix-Aktivierung: `done` (central PF registry entry now `active`)
+- Aktivierungs-Evidenz: project-metadata, this bootstrap-report, canonical PF story/test paths without placeholders, reserved ID range, final-head private [Bootstrap gate #38007610665](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38007610665) (success on merged consumer PR head `394134731` and process 0.2.1 pin `0566a39`), [PhotoCraft main CI #38009180757](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38009180757) success, owner acceptance of tailored overlay exceptions, and central [PF activation PR #19](https://github.com/HurricanVD/vd-amiga-dev-process/pull/19) merged.
 - Registry-Update-Owner: `HurricanVD/vd-amiga-dev-process` maintainers/owner
-- Prefix-Aktivierung-Naechster-Schritt: review the completed pinned smoke / Bash / PowerShell logs and final PR diff independently; only after approval submit a separate central registry transition `reserved -> active`.
+- Prefix-Aktivierung-Naechster-Schritt: `n/a` — registry transition is completed; revisit the two `process-overlay` exceptions on a future VD process pin upgrade or changed Bootstrap/ADR templates.
 - Story-ID-Format: `PF-(PO|BG|SP|LL|PR|TD)-NNN`
 - Story-ID-Beispiel: `PF-SP-001`
 - Test-ID-Format: `PF-TN-NNN`
@@ -102,9 +103,9 @@
 - Prozessversion-Drift-Check POSIX: `pass` (GitHub Actions Ubuntu, pinned process baseline)
 - Anwendbare lokale Checks: canonical PF documents/ID and reserved registry, POSIX and PowerShell process version drift, PowerShell bootstrap fixture, exhaustive POSIX bootstrap fixture, shared process `make check`, official disposable consumer-input bootstrap smoke. Existing Rust/C99/HUNK/vamos CI remains separate product evidence.
 - Check-Runtime-Blocker: `n/a` for the validated private GitHub Actions environment; local workstation/WSL2, NDK and MiniGL remain unverified.
-- Check-Failure: `n/a` for the evaluated commit `1167e6f7` in private run #38007435077 (`completed/success`); exact head-specific evidence must be re-checked for later updates.
+- Check-Failure: `n/a` for the merged consumer PR head `394134731` in private run #38007610665 (`completed/success`) and main consumer CI #38009180757 (success). New changes still require new head-specific evidence.
 - Check-Rerun-Plan: in the *private* process repository, check out process baseline `0566a39c28ee73285463f33eb72b210b5d215db4` and exact public consumer review SHA; run the private process-owned `tools/check-photocraft-bootstrap.sh` rather than executing public validation scripts. Only pinned byte-matched VD drift templates are used. Never use `--force` or `--activate-prefix` on the real PhotoCraft worktree.
-- Available process CI evidence: [private PF gate #38007435077](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38007435077) successful for consumer `1167e6f7` against pinned VD `0566a39c`; `STATIC_BOOTSTRAP_DOCS`, `POSIX_DRIFT`, `POWERSHELL_DRIFT`, `POWERSHELL_BOOTSTRAP_FIXTURE`, `BOOTSTRAP_FIXTURE`, `PROCESS_FULL_CHECK`, `CONSUMER_INPUT_SMOKE`, `FULL_CONSUMER_SNAPSHOT`, and `PF_BOOTSTRAP_VALIDATION` all `PASS`. Public [PF preflight #38007321095](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38007321095) passed on `28f7b97c` (newer revision). The product [AmigaOS core test #37920223129](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37920223129) is separate evidence.
+- Available process CI evidence: [private PF gate #38007610665](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38007610665) successful for merged consumer PR head `394134731` against pinned VD `0566a39` (0.2.1). `STATIC_BOOTSTRAP_DOCS`, `POSIX_DRIFT`, `POWERSHELL_DRIFT`, `POWERSHELL_BOOTSTRAP_FIXTURE`, `BOOTSTRAP_FIXTURE`, `PROCESS_FULL_CHECK`, `CONSUMER_INPUT_SMOKE`, `FULL_CONSUMER_SNAPSHOT`, and `PF_BOOTSTRAP_VALIDATION` all `PASS`. Consumer [main CI #38009180757](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38009180757) success. Registry PR #19 central [process check #38030964284](https://github.com/HurricanVD/vd-amiga-dev-process/actions/runs/38030964284) success. Product [AmigaOS core test #37920223129](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37920223129) is separate evidence.
 
 ## Starter-App-Build-Evidenz
 
@@ -119,6 +120,6 @@
 
 ## Offene Annahmen und Nacharbeiten
 
-- Official VD bootstrap was tested on the four-input fixture **and** on a complete temporary Git checkout of consumer `1167e6f7`, with `--force`/`--activate-prefix` disabled. The full snapshot changed only `docs/bootstrap-report.md` and introduced `docs/adr/ADR-0001-bootstrap-baseline.md`; original README/architecture, accepted `ADR-0001..0003`, canonical PF records, overlays and backlog remained unchanged. These two regenerated artifacts are **proposed PhotoCraft process-overlay exceptions**: the templated report would replace tailored CI/acceptance evidence, and a second generic ADR-0001 would conflict with the accepted port ADR-0001. The actual checkout must not be overwritten. Independent review must accept or reject these specific exceptions before PF activation. Fresh validation needed for later PR commits; native AmigaOS/product claims remain excluded.
+- Official VD bootstrap was tested on the four-input fixture **and** on a complete temporary Git checkout of consumer `394134731`, with `--force`/`--activate-prefix` disabled. The full snapshot changed only `docs/bootstrap-report.md` and introduced `docs/adr/ADR-0001-bootstrap-baseline.md`; original README/architecture, accepted `ADR-0001..0003`, canonical PF records, overlays and backlog remained unchanged. These two regenerated artifacts are **proposed PhotoCraft process-overlay exceptions**: the templated report would replace tailored CI/acceptance evidence, and a second generic ADR-0001 would conflict with the accepted port ADR-0001. The actual checkout must not be overwritten. Independent review must accept or reject these specific exceptions before PF activation. Fresh validation needed for later PR commits; native AmigaOS/product claims remain excluded.
 - Real AmigaOS/ReAction/RTG/MiniGL/WinUAE/QuarkTex/PiStorm3D tests and product compiler choice are **not** implied by this repository bootstrap.
 - Canonical stories/tests are the primary status records; port-local originals remain historical copies until a later link-drift cleanup.
