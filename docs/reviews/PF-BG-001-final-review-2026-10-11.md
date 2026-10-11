@@ -15,7 +15,7 @@
 - `regression_test: pass` — gleiche Rasteradresse im selben und in anderem Dokument, falsche IDs, Clones/COW, Destroy; keine UAF-/Double-Free-Findings aus den ausgefuehrten Sanitizer-Jobs.
 - Ausgenommen/Follow-up: PF-TD-001 OOM/Fault-Injection sowie PF-SP-004..006 Group-/Mask-Attach-/Detach-/Clone-Integration. Diese `refining/draft`-Stories bleiben unveraendert und sind **kein** versteckter Teil der Freigabe.
 - Dokumentation/Changelog: Archiv `docs/stories/done/PF-BG-001.md`, Test `docs/tests/done/PF-TN-012.md`, `backlog-done.md` und `CHANGELOG.md` aktualisiert; `OS deviation: n/a`.
-- `agent_model_plan:` Sequential consultant review using connected GitHub records; external reviewer delegation not available; Codex advisory review evidence retained; no fictitious delegated reviewer or independent APPPROVE.
+- `agent_model_plan:` Sequential consultant review using connected GitHub records; external reviewer delegation not available; Codex advisory review evidence retained; no fictitious delegated reviewer or independent APPROVE.
 - `skill_usage_evidence:` baseline VD v0.2.1 story-lifecycle and review-report template read from central process repo; no installed port-specific reviewer skill used (`n/a`).
 - `full_check:` final PR-head CI green; Archiv-/Statusdokumentationscheck auf Closure-PR separat. `check_path_parity:` static PF docs check in CI; privater PowerShell-Full-Check nur bei vorhandener Runtime, kein faelschliches lokales PASS.
 - `commit_closure:` BG-spezifischer Archiv-/Backlog-/Review-Commit auf `docs/pf-bg-001-td-002-close-2026-10-11`; endgueltige Commit-SHA in der Git-History/PR, kein erdachter lokaler Worktree-Commit.
