@@ -4,7 +4,7 @@
 - Story-ID: PF-SP-001
 - Typ: technischer Spike (SP)
 - Status: **blocked** (Hostanteil umgesetzt, Zielsystem-Evidenz fehlt)
-- Priorität: P1
+- Priorität: `P2`
 - Datum: 2026-10-08
 - Auftrag: "setze das um"
 - Architektur: akzeptierte ADR-0001, port-lokaler VD-Prozess 0.2.1
@@ -34,3 +34,9 @@ Ein natives 68k/MiniGL-Testprogramm für QuarkTex NG und später PiStorm3D mit r
 
 ## Fortsetzung
 Im WSL2-Workspace SDK und Bebbo-GCC bereitstellen, `make amiga-preflight` und `make amiga-smoke` ausführen und unter WinUAE GL-01..04 prüfen. PF-TN-001 nach realem Run ergänzen. Erst danach die Story zum Review/finalen Abschluss bringen.
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P2` — MiniGL/QuarkTex als optionaler, aktuell blockierter Grafikpfad; RTG kann unabhaengig vorbereitet werden.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
