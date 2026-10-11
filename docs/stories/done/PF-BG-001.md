@@ -97,7 +97,7 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 ## 12. Review-Handoff (2026-10-11)
 
 - [Change Summary](../../reviews/PF-BG-001-change-summary-2026-10-11.md) und [PF-TN-012](../../tests/done/PF-TN-012.md) mit Host-, Sanitizer- und m68k/vamos-Ergebnissen.
-- Historischer Review-Handoff; nun abgeschlossen durch [finalen Reviewbericht](../../../reviews/PF-BG-001-final-review-2026-10-11.md) und Merge #8 (`4fa6ca6`).
+- Historischer Review-Handoff; nun abgeschlossen durch [finalen Reviewbericht](../../reviews/PF-BG-001-final-review-2026-10-11.md) und Merge #8 (`4fa6ca6`).
 - PR #7 und #8 sind integriert; PF-SP-004/005/006 bleiben separat `refining` und nicht freigegeben.
 
 ## 13. Finaler Story-Abschluss — 2026-10-11
