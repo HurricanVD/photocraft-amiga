@@ -2,6 +2,17 @@
 
 Status: draft v1 (2026-09-30). This plan does not assume a final UI toolkit. The candidates are discussed in [`rust-framework-options.md`](rust-framework-options.md).
 
+> **PhotoCraft-Amiga fork boundary (2026-10-12):** This file still
+> specifies the upstream Rust desktop/web design. The
+> [fully autonomous AmigaOS 3.2/m68k port](../ports/amigaos3/docs/architecture.md)
+> lives only under `ports/amigaos3/`; it uses a PhotoCraft-parity C99
+> engine and a native ReAction / software-RTG shell, optionally later
+> replacing locally suitable C modules with verified Rust/m68k.
+> Dunkelkammer owner code is MIT (merge PR #9) and may supply only platform
+> adapters under retained license/provenance notices, never the
+> document/raster semantics. Upstream Cargo crates and the Rust-only
+> baseline remain unchanged.
+>
 This plan sets out:
 - the Cargo workspace,
 - the rules that keep the engine independent of the UI,

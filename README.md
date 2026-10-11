@@ -8,6 +8,18 @@
 </p>
 
 <h1 align="center">PhotoCraft</h1>
+> **Native AmigaOS 3.2 roadmap (2026-10-12, fork only):** The
+> [isolated Amiga port](ports/amigaos3/README.md) targets a **completely
+> standalone/offline m68k editor**, not a host-connected Rust service.
+> The original PhotoCraft Rust workspace remains the reference and is kept
+> syncable; the local C99 core and a MIT-sourced Dunkelkammer ReAction/RTG
+> UI are the fastest route to an initial native editor. See the
+> [native port architecture](ports/amigaos3/docs/architecture.md),
+> [canonical ready backlog](docs/backlog.md) and
+> [source/provenance matrix](ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md).
+> **No working AmigaOS editor, native GUI-runtime PASS or product compiler has
+> been demonstrated.**
+>
 > **Experimental AmigaOS 3.2 port:** This fork contains an isolated [AmigaOS port workspace](ports/amigaos3/README.md) on `main`; `amigaos32` also exists as a development branch. The C99 raster/document prototypes and headless m68k tests **are not a working AmigaOS PhotoCraft editor**. The original Rust desktop/web code is unchanged. For current port priorities and story statuses, see the [canonical backlog](docs/backlog.md); the former umbrella story [PF-SP-002](docs/stories/PF-SP-002.md) is `blocked` following its 2026-10-11 split.
 
 

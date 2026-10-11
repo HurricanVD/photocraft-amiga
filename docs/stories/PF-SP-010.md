@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-010`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `draft` (keine Implementierungsfreigabe)
+- Status: `ready` (Pre-ready-Audit 2026-10-12; no implementation)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -25,7 +25,7 @@ Der experimentelle Port besitzt einen MiniGL-Smoke, aber noch keine nutzbare nat
 
 - Fertige ReAction-Editor-UI, Menues, PSD-Import, Effekte oder GPU-Filter.
 - Ersatz von PhotoCraft-256x256-Tiles durch ein anderes Dokumentmodell.
-- Behauptete WinUAE-Laufzeitergebnisse ohne manuellen Test; keine proprietaeren Dunkelkammer-Quellen/Assets uebernehmen.
+- Behauptete WinUAE-Laufzeitergebnisse ohne manuellen Test; keine Dunkelkammer-Quellen/Assets ohne dokumentierte oeffentliche Lizenz-/Provenienzfreigabe uebernehmen.
 
 ## 4. User Story
 
@@ -50,9 +50,9 @@ Als AmigaOS-3.2-Nutzer moechte ich gerenderte PhotoCraft-Pixel auch ohne MiniGL 
 ## 7. refinement_note / refinement_triage
 
 - Aenderungsachse: reine RTG-Software-Praesentation, nicht die UI-Shell und nicht die CPU-Komposition.
-- `refinement_triage`: `needs_architecture`.
+- `refinement_triage`: `pass`
 - `atomization_report.decision`: `keep_single_story` (vorlaeufig; formales Audit offen).
-- `arch_review.initial`: `pending`; exakte RTG-/OS-Baseline noch festzulegen.
+- `arch_review.initial`: `pass`
 - Spike-Bedarf: ja; `no implementation authorized`.
 
 ## 8. Abhaengigkeiten und Testnachweis
@@ -63,8 +63,8 @@ Als AmigaOS-3.2-Nutzer moechte ich gerenderte PhotoCraft-Pixel auch ohne MiniGL 
 
 ## 9. Review und Gate-Status
 
-- `arch_review.pre_ready_final`: `pending`
-- `dor_check`: `pending`
+- `arch_review.pre_ready_final`: `pass`
+- `dor_check`: `pass`
 - `implementation_gate_report`: `pending`
 - `review_report`: `pending`
 - `done`: `not_authorized`
@@ -74,3 +74,25 @@ Als AmigaOS-3.2-Nutzer moechte ich gerenderte PhotoCraft-Pixel auch ohne MiniGL 
 - Prioritaet: `P1` — Native RTG-Softwareausgabe ist die MiniGL-unabhaengige Voraussetzung fuer AmigaOS-Viewport.
 - Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
+
+## Dunkelkammer-M2-Wiederverwendung (Planung 2026-10-12)
+
+- Ausgangsquelle: privates `HurricanVD/dunkelkammer` @ `26295506ba363b1bd52bfca1852b0230ffb2bad9`, `src/platform/dk_present.c/.h` und `docs/adr/ADR-0007-rtg-present-model.md`; die unter MIT freigegebene, historische `libamiga2d`-/`vxplatform`-Present-Variante ist vor einer weiteren Kopie zu bevorzugen, sofern sie dieselben erforderlichen Operationen abdeckt.
+- Wiederverwendung ist vom Eigentuemer fuer Entwicklung erlaubt; direkt uebernommener Code benoetigt vor oeffentlicher Publikation den dateibezogenen Lizenz- und Provenienznachweis aus [PF-SP-012](PF-SP-012.md). Kein Source-Import in dieser Story-Aktualisierung.
+- Der PhotoCraft-RGBA8-CPU-/256x256-Tile-Kern bleibt Eigentuemer der Pixel; RTG/M2 ist nur Presenter. Der Adapter stellt explizit RGBA8 -> ARGB32, Stride, Buffer-Ownership, Clip/Overflow, OOM/Fallback und Cache-Invalidierung sicher.
+- Das Dunkelkammer-Benchmark unter WinUAE ist eine historische Fremdprojekt-Messung, **kein** PhotoCraft-Laufzeitnachweis. Ein synthetisches Canvas-Muster darf den Presenter vor [PF-SP-007](PF-SP-007.md) testen, echte Composite-Pixel erst nach dessen abgeschlossenem Gate.
+- Keine zusaetzliche RTG-Implementierungsstory neben PF-SP-010; PF-TN-013 bleibt unveraendert `not_run`. 
+
+## MIT-Nachweis 2026-10-12
+
+- Die Lizenz der Dunkelkammer-Eigenanteile ist seit [Merge PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9) am Commit `70897e91c94214421b0595b3e858446d6b3586ea` **MIT** (Copyright 2026 Virtual Dimension). UI-Quellenstand: `26295506ba363b1bd52bfca1852b0230ffb2bad9`.
+- Kopien lizenzierter Eigenanteile sind unter den MIT-Bedingungen moeglich. Vor Quellimport: Herkunft je Datei, MIT-Copyright-/Permission-Notice, VirtualCommander-/vxplatform-Anteile und unlizenzierte Fremdassets kontrollieren; [Quellmatrix](../../ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md).
+- Keine kopierten Quellen oder Tests in diesem Dokumentations-PR. Story weiterhin `draft`, Umsetzungsgates und WinUAE-Evidenz `not_run`.
+
+## Pre-ready delta 2026-10-12
+
+- Reviewed design and acceptance: Native M2 WritePixelArray/offscreen cached blits; explicit RGBA8 to ARGB32 staging, stride/clip/OOM and manual WinUAE acceptance. No mandatory MiniGL.
+- Architecture: accepted ADR-0001/0002/0003; native offline 68040+ / 32 MiB RAM. Rust upstream remains the oracle, never a remote runtime. This limited, independent spike is `keep_single_story`.
+- Evidence: [PF-all-open-ready-review](../reviews/PF-all-open-ready-review-2026-10-12.md). Initial architecture / scope refinement / separate final pre-ready review and DoR pass are **planning checks**, not product runtime results.
+- IP: original PhotoCraft semantics are reference-only; any reused Dunkelkammer source is MIT for owner material (merge PR #9), retain each copyright and third-party notice.
+- Next stage: individual `implementation_gate_report` before work, unmet dependency verification as applicable. All actual native tests and target GUI checks still `not_run`.
