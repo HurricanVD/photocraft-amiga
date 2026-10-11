@@ -22,6 +22,12 @@ void pc_document_destroy(PcDocument *document);
 size_t pc_document_layer_count(const PcDocument *document);
 /* Explicit root-only count, for root-indexed layer_id/name/raster getters. */
 size_t pc_document_root_layer_count(const PcDocument *document);
+/* On success, document owns the PcRaster object's sole lifetime;
+ * no manual destruction or re-append by the caller. On failure, ownership
+ * remains unchanged and no object is consumed. A rejected already-owned
+ * pointer stays with its original document. Clones own independent raster
+ * objects and may share COW tile data, not object ownership.
+ */
 int pc_document_append_raster(PcDocument *document,uint64_t id,
                               const char *name,PcRaster *owned_surface);
 /* Append group at the document root; id must be unique across the tree. */

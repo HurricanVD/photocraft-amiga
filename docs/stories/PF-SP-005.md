@@ -44,7 +44,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 ## 6. Architektur / Tests / Grenzen
 
 - Betroffene Module: `ports/amigaos3/` und Original-Rust-Oracles (read-only); auf den PR-Scope begrenzt.
-- Architekturquelle: akzeptierte ADR-0001/0002/0003; gesonderter Child-`pre_ready_final`-Review `pending`.
+- Architekturquelle: akzeptierte ADR-0001/0002/0003; gesonderter aktueller [Child-Pre-ready-Review](../reviews/PF-SP-005-ready-gates-2026-10-11.md) `pass`.
 - Test-Traceability: `PF-TN-006`.
 - Implementierungszuordnung: [PR #4](https://github.com/HurricanVD/photocraft-amiga/pull/4) (bereits vor Atomisierung umgesetzt, noch nicht gemergt).
 - Test-Evidenz: ausgeführt auf PR-Head f7ff7802; formaler Story-/Review-Abschluss fehlt.
@@ -57,8 +57,8 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
-- Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
-- Refinement-Ergebnis: `ready_for_architecture`, **nicht** `ready`.
+- Spike-/Design-Bedarf: historisch vorgezogene Gruppen-Codebasis; aktuelle Nachintegration mit Pre-ready- und Implementation-Gates separat dokumentiert.
+- Refinement-Ergebnis 2026-10-11: DoR ist bestanden, Gruppen-Nachintegration `in_progress`.
 
 ## 8. atomization_report
 
@@ -66,7 +66,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - parent_decision: `PF-SP-002: split_required`.
 - Aenderungsachse: Verschachtelte Rastergruppen und Deep-COW.
 - Dependencies: PF-SP-004 als Basis; ADR-0002.
-- Lifecycle-Blocker: initiales/finales Architekturreview, DoR/IP-Triage, Implementation-Gate und finales Reviewer-Gate offen.
+- Lifecycle: initiales/finales Architekturreview, DoR und Implementation-Gate jetzt `pass`; CI auf neuem Head und finaler Review noch nicht abgeschlossen.
 
 ## 9. Review und Gate-Status
 
@@ -76,7 +76,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
-- Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
+- Naechster Schritt: Gruppen-Diff auf neuem P0/Layer-Head mit ASan, original Rust Group-Oracle und GCC13/vamos bestaetigen und final reviewen.
 
 ## Priorisierung 2026-10-11
 
