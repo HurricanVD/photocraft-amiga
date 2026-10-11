@@ -22,7 +22,7 @@
 This test covers no group insertion, masks, blending, compositing, ICC,
 PSD save/load, command routing, undo, WinUAE/MiniGL/QuarkTex NG or PiStorm3D.
 No product compiler, shipping rights or full-port acceptance is implied.
-`PF-SP-002` stays `in_progress`; full original Rust document semantics
+`PF-SP-002` was historically `in_progress` at that test snapshot; the current canonical parent is `blocked` following `split_required`. Full original Rust document semantics
 require further implementation and verification.
 
 ## Executed evidence and engineering correction

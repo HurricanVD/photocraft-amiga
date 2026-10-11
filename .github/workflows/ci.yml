@@ -242,7 +242,7 @@ jobs:
 
   amiga-document-parity:
     # Run the portable oracle when the Amiga port or Rust semantics change.
-    name: PF Document C99 vs original Rust (SP-004/005/006)
+    name: PF-SP-004/005 flat and group C99 vs original Rust
     needs: platforms
     if: needs.platforms.outputs.port == 'true'
     runs-on: ubuntu-24.04
@@ -282,7 +282,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pf-document-rust-c-parity
+          name: pf-sp-004-005-document-parity
           path: |
             ports/amigaos3/build/oracle-rust-document.txt
             ports/amigaos3/build/oracle-c-document.txt
@@ -291,7 +291,7 @@ jobs:
           if-no-files-found: ignore
 
   amiga-document-m68k:
-    name: PF Document GCC13 O0/O2 vamos (SP-004/005/006)
+    name: PF-SP-004/005 GCC13 Document O0/O2 vamos
     needs: [platforms, amiga-document-parity]
     if: needs.platforms.outputs.port == 'true'
     runs-on: ubuntu-24.04
@@ -351,6 +351,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pf-document-gcc13-vamos
+          name: pf-sp-004-005-gcc13-vamos
           path: ports/amigaos3/build/m68k-gcc13/**/logs/pc_document_test.log
           if-no-files-found: ignore
