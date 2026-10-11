@@ -3,7 +3,7 @@
 - Story-ID: `PF-TD-002`
 - Story-Art: `TD`
 - Typ: `tech_debt`
-- Status: `ready` (DoR am 2026-10-11 geprueft; vor der Umsetzung Implementation-Gate erforderlich)
+- Status: `in_progress` (Implementation-Gate dokumentiert; finaler Dokumentationstest und Review offen)
 - Prioritaet: `P2`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -63,7 +63,7 @@ Als Projektbeteiligter moechte ich aus README und kanonischem Backlog den gleich
 - `arch_review.initial`: `pass` (2026-10-11; [Pre-ready-Review](../reviews/PF-TD-002-pre-ready-review-2026-10-11.md))
 - `arch_review.pre_ready_final`: `pass` (2026-10-11; ADRs und kanonische Statusquellen geprueft)
 - `dor_check`: `pass` (2026-10-11; siehe Pre-ready-Review)
-- `implementation_gate_report`: `pending`
+- `implementation_gate_report`: `pass` ([dokumentiertes Eintrittsgate](../reviews/PF-TD-002-implementation-gate-2026-10-11.md))
 - `review_report`: `pending`
 - `done`: `not_authorized`
 
@@ -80,3 +80,9 @@ Als Projektbeteiligter moechte ich aus README und kanonischem Backlog den gleich
 - Prioritaet: `P2` — Dokumentationskorrektur ist unabhaengig und ready, aber weniger kritisch als Core-/Speichersicherheit.
 - Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
+
+## 11. Umsetzungsstand (2026-10-11)
+
+- Umsetzung auf `docs/pf-td-002-readme-status`: Root-README benennt den realen `main`-Port, Port-README markiert historische 2026-10-09-Aussagen und verlinkt die kanonische PF-SP-002-`blocked`-Akte.
+- Der ursprüngliche Rust-Upstream, alle binären APIs, Buildpfade und AmigaOS-Komponenten bleiben unverändert.
+- Regression: [PF-TN-015](../tests/PF-TN-015.md), Docs-/Backlog-Checks und finaler PR-Review sind noch auszuführen.
