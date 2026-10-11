@@ -68,3 +68,9 @@ Als PhotoCraft-Portentwickler moechte ich eine kleine AmigaOS-Fenster- und Event
 - `implementation_gate_report`: `pending`
 - `review_report`: `pending`
 - `done`: `not_authorized`
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P2` — ReAction-Shell baut auf RTG-Presenter auf; OS-Capability/IP-/Target-Gates offen.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
