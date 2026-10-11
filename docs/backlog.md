@@ -28,7 +28,6 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 | ID | Titel | Typ | Prioritaet | Status | Notiz |
 |---|---|---|---|---|---|
 | PF-TD-001 | Tile-Lookup, RAM/OOM-Rollback | TD | P1 | draft | 32MiB-/Allocator-Fault-/Performance-Gate; OOM-Region-Transaktionen und Tile-Index bereits hier erfasst |
-| PF-SP-004 | Flat-Layer-Reihenfolge und Deckkraft | SP | P1 | refining | PF-TN-005 / PR #3; vorlaeufige Implementierung, DoR offen |
 | PF-SP-005 | Verschachtelte Rastergruppen und Deep-COW | SP | P1 | refining | PF-TN-006 / PR #4; haengt von PF-SP-004 ab |
 | PF-SP-006 | Gray8-LayerMask-Sparse-COW | SP | P1 | refining | PF-TN-007 / PR #5; haengt von PF-SP-005 ab |
 | PF-SP-007 | CPU-Compositor-Paritaetsspike | SP | P1 | draft | Nach Gruppen-/Masken-Basis, keine Implementation |
@@ -48,7 +47,8 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 
 | ID | Titel | Art | Priorität | Status |
 |---|---|---|---|---|
+| PF-SP-004 | Flat-Layer-Reihenfolge und Deckkraft | SP | P1 | review |
 
-Statusquelle: [PF-SP-002-Atomisierung](reviews/PF-SP-002-atomization-report-2026-10-11.md) und [Prioritaets-/Ready-Audit 2026-10-11](reviews/PF-backlog-priority-ready-audit-2026-10-11.md). `PF-BG-001` und `PF-TD-002` haben dokumentierte DoR/Pre-ready-Nachweise. PF-SP-004/005/006 bleiben `refining` (Draft-PRs #3/#4/#5 ohne Child-Freigabe). `ready` ist **keine** Freigabe fuer `in_progress`, Merge oder Release. PF-SP-002 bleibt blocked/frozen; WIP-Limit VD v0.2.1 beachten.
+Statusquelle: [PF-SP-002-Atomisierung](reviews/PF-SP-002-atomization-report-2026-10-11.md) und [Prioritaets-/Ready-Audit 2026-10-11](reviews/PF-backlog-priority-ready-audit-2026-10-11.md). `PF-BG-001` und `PF-TD-002` haben dokumentierte DoR/Pre-ready-Nachweise. PF-SP-004 ist nach aktuellem Child-DoR und Implementation-Gate im `review` (PR #3, noch nicht gemergt); PF-SP-005/006 erhalten separate Gate- und Integrationsnachweise auf ihren Stack-Branches. Der alte Parent PF-SP-002 bleibt `blocked`. `ready` ist **keine** Freigabe fuer `in_progress`, Merge oder Release. PF-SP-002 bleibt blocked/frozen; WIP-Limit VD v0.2.1 beachten.
 
 Hinweis zu späteren Lifecycle-Änderungen: `draft|refining` gehören unter **Offen**, `ready` unter **Bereit**, `blocked|rejected` unter **Blockiert**, `in_progress|review` in die **Aktive PF-Stories**-Tabelle; abgeschlossene IDs wandern ausschließlich nach `docs/backlog-done.md` und `docs/stories/done/`. Die PF-Validierung verlangt vor jeder `ready`-Promotion `refinement_triage: pass`, `arch_review.pre_ready_final: pass` und `dor_check: pass`; vor `in_progress` zusätzlich `implementation_gate_report: pass`, vor `done` außerdem `review_report: approve`. Diese Marker dürfen nur nach real dokumentierten Gates gesetzt werden.

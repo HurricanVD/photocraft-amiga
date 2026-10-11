@@ -1,0 +1,11 @@
+# PF-SP-004 — Implementation-Gate 2026-10-11
+- story_id: PF-SP-004; from_status: ready; to_status: in_progress.
+- story_status_check: pass; backlog_status_check: pass; wip_limit_check: pass (1/2).
+- dor_check: pass; initial/pre_ready_final: pass (review file PF-SP-004-ready-gates).
+- ip_provenance_gate: pass; reference_only, no foreign code/asset copy.
+- implementation_allowed: yes for current post-gate integration only, not retrospective historical PR code.
+- write_scope: portable flat doc API, document tests, original Rust differential oracle and port CI, PF-SP-004 Story/Test/Review evidence.
+- integration_constraint: preserve PF-BG-001 global PcRaster claim; no groups/masks, product compiler/ABI or editor UI.
+- test_plan: new full PR-head C99/ASan/UBSan/Rust parity, real HUNK/vamos O0/O2; all currently not_run on new integration.
+- repo_root_verified: HurricanVD/photocraft-amiga, branch feature/pf-sp-002-layer-semantics based on main 3cf6434980e80d870ede5f06cb107d61976f1da3.
+- review_report: pending, done: not_authorized.
