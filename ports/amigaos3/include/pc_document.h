@@ -13,6 +13,14 @@ PcDocument *pc_document_new(const char *name,uint32_t width,uint32_t height);
 PcDocument *pc_document_clone(const PcDocument *document);
 void pc_document_destroy(PcDocument *document);
 size_t pc_document_layer_count(const PcDocument *document);
+/* On successful append the document exclusively owns owned_surface;
+ * callers must not manually destroy or append that object again.
+ * On failure (including OOM/duplicate ID or already-owned raster), no
+ * ownership is transferred. An already-owned raster remains with its
+ * original document, not the caller of the rejected append.
+ * pc_raster_clone() creates an independent, initially unowned wrapper.
+ * C99 object ownership is not the same as shared COW tile storage.
+ */
 int pc_document_append_raster(PcDocument *document,uint64_t id,
                               const char *name,PcRaster *owned_surface);
 uint64_t pc_document_layer_id(const PcDocument *document,size_t index);
