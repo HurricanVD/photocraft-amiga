@@ -154,3 +154,34 @@ gcc13-check-hunks: gcc13-check-typed-hunks
 
 gcc13-vamos-typed-tests:
 	@VAMOS="$(VAMOS)" M68K_BUILD_DIR="$(GCC13_BUILD)" RUST_ORACLE_TYPED="$(RUST_ORACLE_TYPED)" sh scripts/vamos-typed-tests.sh
+
+# PF-SP-007: bounded normal CPU compositor, flat RGBA8 subset.
+COMPOSE_TEST := $(BUILD)/pc_compose_test
+$(COMPOSE_TEST): tests/pc_compose_test.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c include/pc_compose.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_compose_test.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c
+
+.PHONY: host-compose-test gcc13-build-compose gcc13-vamos-compose
+host-compose-test: $(COMPOSE_TEST)
+	./$(COMPOSE_TEST)
+host-test: host-compose-test
+
+host-core-sanitize:
+	$(HOST_CC) -std=c99 -g -O1 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude -o $(BUILD)/pc_compose_test_san tests/pc_compose_test.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c
+	./$(BUILD)/pc_compose_test_san
+
+gcc13-build-compose: gcc13-preflight
+	@set -eu; for opt in O0 O2; do \
+	  mkdir -p "$(GCC13_BUILD)/$$opt"; \
+	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -Iinclude $(GCC13_LDFLAGS) \
+	  tests/pc_compose_test.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/pc_compose_test"; \
+	done
+
+gcc13-check-hunks:
+	@python3 scripts/check-hunk.py $(GCC13_BUILD)/O0/pc_compose_test $(GCC13_BUILD)/O2/pc_compose_test
+
+gcc13-vamos-compose:
+	@set -eu; for opt in O0 O2; do \
+	  "$(VAMOS)" -S -C 20 -m 8192 -s 128 "$(GCC13_BUILD)/$$opt/pc_compose_test" > "$(GCC13_BUILD)/$$opt/compose.log" 2>&1; \
+	  grep -q '^PASS: PhotoCraft scoped flat RGBA8 normal compositor/opacity/mask$$' "$(GCC13_BUILD)/$$opt/compose.log"; \
+	  cat "$(GCC13_BUILD)/$$opt/compose.log"; \
+	done
