@@ -4,7 +4,7 @@ This directory is a fork-specific, isolated native AmigaOS 3.2 port. It is an ex
 
 - Keep PhotoCraft's original Rust document model, pixel formats, command semantics, and CPU compositor the authoritative reference. Do not silently substitute Dunkelkammer's DkDocument or its 128x128 tiles for PhotoCraft's 256x256 tiles.
 - Separate platform services, rendering, UI, and portable algorithms. No direct OS calls in portable code. Follow the VD Amiga development process when implementing product features.
-- Do not copy proprietary Dunkelkammer sources or assets into this PUBLIC repository without an explicit redistribution/relicensing decision by their copyright holder and a provenance entry.
+- Dunkelkammer-owned code is now MIT (merge PR #9, 2026-10-12); when importing into this PUBLIC fork preserve copyright/MIT permission notices and record exact source SHA, modifications and separate third-party licenses. Never copy unlicensed product assets, third-party binaries, SDKs, fonts or ROMs.
 - Do not vendor MiniGL SDK, Windows DLLs, fonts, AmigaOS NDK or ROMs. Keep all local toolchain paths configurable.
 - Prefer deterministic host-side C tests, m68k HUNK/vamos checks, then manual WinUAE+QuarkTex NG and PiStorm3D evidence. Never present unrun checks as passing.
 - Do not invoke automated WinUAE UI/broker/capture scripts from vd-amiga-dev-process while the process marks that path disabled_by_process.

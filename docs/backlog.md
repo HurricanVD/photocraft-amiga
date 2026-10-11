@@ -63,3 +63,8 @@ Hinweis zu späteren Lifecycle-Änderungen: `draft|refining` gehören unter **Of
 - Rueckgriff auf `HurricanVD/dunkelkammer` Quellstand `26295506ba363b1bd52bfca1852b0230ffb2bad9`; keine Codekopie, Assets oder Lizenzentscheidung in dieser Planungsintegration. Vor direkter Quelluebernahme ist PF-SP-012 nachweislich abzuschliessen. Native GUI-/Presenter-Abnahme ausschliesslich nach echten Zielsystemtests.
 - Technische Kette: synthetischer RTG-Presenter (PF-SP-010) -> Fenster-Testansicht (PF-SP-011) -> Navigation (PF-SP-014) und Layeranzeige (PF-SP-013) -> Command-Anbindung (PF-SP-015) -> Dialog/Popup (PF-SP-016). Fuer echte PhotoCraft-Komposition ist PF-SP-007 erforderlich; PF-SP-008 fuer reversible Befehle. PF-TD-001 bleibt eigenstaendiges RAM/OOM-Gate.
 - Prioritaetsanpassung: PF-SP-011 von P2 auf P1, weil eine erste sichtbar lauffaehige native ReAction-Shell Teil des kritischen Lieferpfads ist. Kein `ready`, `in_progress` oder `done` ohne separate Prozessgates; WIP-Limit unveraendert.
+
+## Dunkelkammer-MIT-Lizenz 2026-10-12
+
+- [Dunkelkammer PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9) ist gemergt; MIT fuer Rechteinhaber-Eigenanteile bei `70897e91c94214421b0595b3e858446d6b3586ea`, Codekandidaten aus `26295506ba363b1bd52bfca1852b0230ffb2bad9`.
+- PF-SP-012 behaelt die Datei-/Drittanbieter-/MIT-Notice-Gates; UI-Stories bleiben `draft`. [Quellinventar](../ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md), [PF-TN-016](tests/PF-TN-016.md) (geplant).

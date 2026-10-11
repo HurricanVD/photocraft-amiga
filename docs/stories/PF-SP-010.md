@@ -82,3 +82,9 @@ Als AmigaOS-3.2-Nutzer moechte ich gerenderte PhotoCraft-Pixel auch ohne MiniGL 
 - Der PhotoCraft-RGBA8-CPU-/256x256-Tile-Kern bleibt Eigentuemer der Pixel; RTG/M2 ist nur Presenter. Der Adapter stellt explizit RGBA8 -> ARGB32, Stride, Buffer-Ownership, Clip/Overflow, OOM/Fallback und Cache-Invalidierung sicher.
 - Das Dunkelkammer-Benchmark unter WinUAE ist eine historische Fremdprojekt-Messung, **kein** PhotoCraft-Laufzeitnachweis. Ein synthetisches Canvas-Muster darf den Presenter vor [PF-SP-007](PF-SP-007.md) testen, echte Composite-Pixel erst nach dessen abgeschlossenem Gate.
 - Keine zusaetzliche RTG-Implementierungsstory neben PF-SP-010; PF-TN-013 bleibt unveraendert `not_run`. 
+
+## MIT-Nachweis 2026-10-12
+
+- Die Lizenz der Dunkelkammer-Eigenanteile ist seit [Merge PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9) am Commit `70897e91c94214421b0595b3e858446d6b3586ea` **MIT** (Copyright 2026 Virtual Dimension). UI-Quellenstand: `26295506ba363b1bd52bfca1852b0230ffb2bad9`.
+- Kopien lizenzierter Eigenanteile sind unter den MIT-Bedingungen moeglich. Vor Quellimport: Herkunft je Datei, MIT-Copyright-/Permission-Notice, VirtualCommander-/vxplatform-Anteile und unlizenzierte Fremdassets kontrollieren; [Quellmatrix](../../ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md).
+- Keine kopierten Quellen oder Tests in diesem Dokumentations-PR. Story weiterhin `draft`, Umsetzungsgates und WinUAE-Evidenz `not_run`.

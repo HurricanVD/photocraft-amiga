@@ -59,7 +59,7 @@ Als PhotoCraft-Nutzer moechte ich meine Ebenen und Gruppen in einer nativen Amig
 
 - `refinement_triage: needs_architecture`; `atomization_report.decision: keep_single_story` (vorlaeufig, formaler Scope-/IP-/Architekturreview offen).
 - Aenderungsachse: BOOPSI-Ebenenliste aus Dunkelkammer fuer PhotoCraft adaptieren.
-- `rights_status: pending_PF-SP-012`.
+- `rights_status: owner_MIT_confirmed; PF-SP-012_notices_pending`.
 - `arch_review.initial: pending`.
 - Vor `ready`: separate `arch_review.pre_ready_final: pass` und `dor_check: pass` mit echten Belegen erforderlich; WIP-Limit bleibt unveraendert.
 
@@ -71,3 +71,9 @@ Als PhotoCraft-Nutzer moechte ich meine Ebenen und Gruppen in einer nativen Amig
 - `review_report: pending`
 - `test_evidence: not_run`
 - `done: not_authorized`
+
+## MIT-Nachweis 2026-10-12
+
+- Die Lizenz der Dunkelkammer-Eigenanteile ist seit [Merge PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9) am Commit `70897e91c94214421b0595b3e858446d6b3586ea` **MIT** (Copyright 2026 Virtual Dimension). UI-Quellenstand: `26295506ba363b1bd52bfca1852b0230ffb2bad9`.
+- Kopien lizenzierter Eigenanteile sind unter den MIT-Bedingungen moeglich. Vor Quellimport: Herkunft je Datei, MIT-Copyright-/Permission-Notice, VirtualCommander-/vxplatform-Anteile und unlizenzierte Fremdassets kontrollieren; [Quellmatrix](../../ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md).
+- Keine kopierten Quellen oder Tests in diesem Dokumentations-PR. Story weiterhin `draft`, Umsetzungsgates und WinUAE-Evidenz `not_run`.

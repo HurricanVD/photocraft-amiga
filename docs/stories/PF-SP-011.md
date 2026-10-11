@@ -82,3 +82,9 @@ Als PhotoCraft-Portentwickler moechte ich eine kleine AmigaOS-Fenster- und Event
 - Entwicklungserlaubnis zur Wiederverwendung vom Eigentuemer ist gegeben; oeffentliche Lizenz-/Provenienzpruefung vor direkter Codekopie als [PF-SP-012](PF-SP-012.md). Keine vererbten Logos/Icons/Fonts/SDKs.
 - Der Shell-Test darf einen synthetischen Presenter-Frame anzeigen, unabhaengig vom noch offenen CPU-Compositor [PF-SP-007](PF-SP-007.md). Der native Layer-/Pointer-/Command-Ausbau erfolgt in [PF-SP-013](PF-SP-013.md), [PF-SP-014](PF-SP-014.md) und [PF-SP-015](PF-SP-015.md), Kontextmenues/Dialoge in [PF-SP-016](PF-SP-016.md).
 - ReAction/Intuition-Open/Close, Resize, Refresh, Workbench-Start sowie kontrollierter Stack-/OOM-Fallback muessen auf echter AmigaOS-3.2-Zielumgebung nachgewiesen werden. PF-TN-014 bleibt bis dahin `not_run`.
+
+## MIT-Nachweis 2026-10-12
+
+- Die Lizenz der Dunkelkammer-Eigenanteile ist seit [Merge PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9) am Commit `70897e91c94214421b0595b3e858446d6b3586ea` **MIT** (Copyright 2026 Virtual Dimension). UI-Quellenstand: `26295506ba363b1bd52bfca1852b0230ffb2bad9`.
+- Kopien lizenzierter Eigenanteile sind unter den MIT-Bedingungen moeglich. Vor Quellimport: Herkunft je Datei, MIT-Copyright-/Permission-Notice, VirtualCommander-/vxplatform-Anteile und unlizenzierte Fremdassets kontrollieren; [Quellmatrix](../../ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md).
+- Keine kopierten Quellen oder Tests in diesem Dokumentations-PR. Story weiterhin `draft`, Umsetzungsgates und WinUAE-Evidenz `not_run`.
