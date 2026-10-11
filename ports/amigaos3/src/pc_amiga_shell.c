@@ -139,7 +139,7 @@ int main(void)
     if (!area) goto finish;
     SetAttrs(pc_root,LAYOUT_AddChild,(ULONG)area,TAG_END);
     pc_root_owned=1; /* root is handed to window object on construction */
-    wt[11].ti_Data=(ULONG)pc_root;
+    wt[10].ti_Data=(ULONG)pc_root;
     pc_winobj=NewObjectA(WINDOW_GetClass(),0,wt);
     if (!pc_winobj) { pc_root_owned=0; goto finish; }
     pc_window=RA_OpenWindow(pc_winobj);
