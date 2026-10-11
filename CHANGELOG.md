@@ -5,6 +5,8 @@ fuer dieses App-Repository werden hier gepflegt.
 
 ## [Unreleased]
 
+- PF-SP-004 abgeschlossen: Flat-Layer-Reihenfolge/Opacity mit COW-Ownership/Original-Rust- und GCC13/vamos-Paritaet auf aktuellem Code-Head integriert.
+
 - PF-TD-002 abgeschlossen: README-/Port-Branch- und kanonische Story-Statusdarstellung korrigiert, Dokumentations- und CI-Nachweise archiviert.
 
 - PF-BG-001 abgeschlossen: Mehrfaches Raster-Ownership ueber Dokumentgrenzen verhindert; Host-/ASan-/GCC13-vamos-Regressionsgrenzen dokumentiert. Weitere Masken-/Gruppenintegration erfolgt getrennt.
