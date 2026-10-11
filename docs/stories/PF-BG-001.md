@@ -4,7 +4,7 @@
 - Story-Art: `BG`
 - Typ: `bug`
 - Status: `ready` (DoR am 2026-10-11 geprueft; Eintritt in `in_progress` separat gegated)
-- Prioritaet: `P0` (potenzieller Double-Free / Use-after-free)
+- Prioritaet: `P0`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
 - Herkunft: statische Codepruefung von `main`, `ports/amigaos3/src/pc_document.c`
@@ -80,3 +80,9 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 - Testplan: gleiches Raster zweimal im selben Dokument und in zwei Dokumenten, Clone/Destroy, fehlgeschlagene Claims, Allokationsfehler, ASan/UBSan. **Noch nicht ausgefuehrt**.
 - Provenienz: `reference_only`, vorhandenes Portregister; keine Software, Assets oder SDK aus Drittquellen kopieren.
 - Offene Gates: `implementation_gate_report` und der abschliessende PR-/Test-/Reviewer-Gate. Der jetzige PASS gilt ausschliesslich fuer DoR.
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P0` — Speicherkorruptionsrisiko; vor Integration weiterer Layer-Implementierungen.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
