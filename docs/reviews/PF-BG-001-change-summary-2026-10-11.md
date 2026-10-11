@@ -1,5 +1,7 @@
 # PF-BG-001 — change_summary und technischer Teststand
 
+> Historischer Bericht aus der Implementierungs-/Review-Phase. Die unten genannten offenen Freigaben beschreiben den damaligen Zeitpunkt; seit 2026-10-11 liegt der [finale Review](PF-BG-001-final-review-2026-10-11.md) mit `recommendation: approve`, die gemergte PR #8 und die Archivierung vor.
+
 - Datum: 2026-10-11
 - Story: [PF-BG-001](../stories/done/PF-BG-001.md), P0
 - Implementierungs-PR: [#8](https://github.com/HurricanVD/photocraft-amiga/pull/8), Stackbasis [#7](https://github.com/HurricanVD/photocraft-amiga/pull/7)
@@ -36,3 +38,9 @@
 - PR #7 (Story-Governance) zuerst integrieren, #8 passend retargeten und den aktualisierten `main`-Stand validieren.
 - `PF-SP-004/005/006` Gruppen-/Masken-APIs muessen `claim/clone/detach` ausdruecklich in ihrer **eigenen** Implementierung anpassen, bevor diese PRs gemergt werden.
 - `review_report: pending`, `done: not_authorized`, keine Produktrelease-Freigabe.
+
+
+## Finaler Nachtrag 2026-10-11
+
+- PR #8 ist gemergt; die Testläufe [CI #38140374511](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374511) und [AmigaOS Host #38140374487](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374487) sind abgeschlossen mit `success`.
+- Die fachliche `review_report: approve`-Empfehlung und ausgenommene Bereiche stehen im [Finalreview](PF-BG-001-final-review-2026-10-11.md); Story und Test unter `done/`, kein Editor-/Release-PASS.
