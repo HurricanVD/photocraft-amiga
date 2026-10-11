@@ -165,9 +165,11 @@ host-compose-test: $(COMPOSE_TEST)
 	./$(COMPOSE_TEST)
 host-test: host-compose-test
 
-host-core-sanitize:
+.PHONY: host-compose-sanitize
+host-compose-sanitize: | $(BUILD)
 	$(HOST_CC) -std=c99 -g -O1 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude -o $(BUILD)/pc_compose_test_san tests/pc_compose_test.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c
 	./$(BUILD)/pc_compose_test_san
+host-core-sanitize: host-compose-sanitize
 
 gcc13-build-compose: gcc13-preflight
 	@set -eu; for opt in O0 O2; do \
@@ -176,8 +178,11 @@ gcc13-build-compose: gcc13-preflight
 	  tests/pc_compose_test.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/pc_compose_test"; \
 	done
 
-gcc13-check-hunks:
+.PHONY: gcc13-check-compose-hunks
+gcc13-check-compose-hunks:
 	@python3 scripts/check-hunk.py $(GCC13_BUILD)/O0/pc_compose_test $(GCC13_BUILD)/O2/pc_compose_test
+
+gcc13-check-hunks: gcc13-check-compose-hunks
 
 gcc13-vamos-compose:
 	@set -eu; for opt in O0 O2; do \

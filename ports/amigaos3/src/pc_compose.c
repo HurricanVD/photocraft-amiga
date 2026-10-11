@@ -49,7 +49,7 @@ int pc_compose_rgba8_region(const PcDocument *doc,PcRect r,
         r.x1<0 || r.y1<0 ||
         (uint32_t)r.x1>pc_document_width(doc) ||
         (uint32_t)r.y1>pc_document_height(doc)) return 0;
-    if ((size_t)pc_rect_width(r)>SIZE_MAX/4U) return 0;
+    if (pc_rect_width(r)>UINT32_MAX/4U) return 0;
     rowbytes=(size_t)pc_rect_width(r)*4U;
     if (stride<rowbytes || cap<rowbytes ||
         ((size_t)pc_rect_height(r)-1U)>(cap-rowbytes)/stride) return 0;
