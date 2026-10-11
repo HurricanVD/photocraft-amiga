@@ -12,6 +12,13 @@ PcDocument *pc_document_new(const char *name,uint32_t width,uint32_t height);
 PcDocument *pc_document_clone(const PcDocument *document);
 void pc_document_destroy(PcDocument *document);
 size_t pc_document_layer_count(const PcDocument *document);
+/* On success, document takes exclusive lifetime ownership of owned_surface.
+ * Do not re-append or manually destroy an owned raster in any document.
+ * On failure no ownership is taken or released; an already-owned raster
+ * remains owned by its original document (not by the rejected caller).
+ * A pc_raster_clone() result is an independent, initially unowned raster.
+ * This experimental API is single-threaded and is not a stable public ABI.
+ */
 int pc_document_append_raster(PcDocument *document,uint64_t id,
                               const char *name,PcRaster *owned_surface);
 uint64_t pc_document_layer_id(const PcDocument *document,size_t index);
