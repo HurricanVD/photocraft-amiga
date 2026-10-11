@@ -1,4 +1,5 @@
 #include "pc_document.h"
+#include "pc_raster_owner_internal.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -64,6 +65,14 @@ int pc_document_append_raster(PcDocument *d,uint64_t id,
         array=(PcLayer *)realloc(d->layers,n*sizeof(*array));
         if(!array){free(label);return 0;}
         d->layers=array;d->capacity=n;
+    }
+    /* Claim only after all fallible allocations have succeeded. A failed
+     * claim leaves the existing owner intact (even across documents).
+     * Clone creates its own unclaimed raster object, so doc snapshots work.
+     */
+    if (!pc_raster_claim_document_ownership(owned)) {
+        free(label);
+        return 0;
     }
     d->layers[d->count].id=id;
     d->layers[d->count].name=label;

@@ -10,7 +10,8 @@ on:
       - "crates/color/**"
       - "crates/raster/**"
   pull_request:
-    branches: [amigaos32]
+    # Run port regressions for every PR that changes the isolated port,
+    # including stacked governance/bugfix branches and later main-targeted PRs.
     paths:
       - "ports/amigaos3/**"
       - ".github/workflows/amigaos3-host.yml"
