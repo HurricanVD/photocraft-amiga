@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-004`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `refining` (PF-SP-002 split_required; nicht `ready`)
+- Status: `ready` (2026-10-11; neuer Child-Pre-ready-Audit, historische PR-Umsetzung nicht rückwirkend freigegeben)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -53,7 +53,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 ## 7. refinement_note / refinement_triage
 
 - Trennung: genau eine fachliche Aenderungsachse und eigene Testnachweise.
-- `refinement_triage`: `needs_architecture`.
+- `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
 - Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
@@ -69,18 +69,21 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pending`
-- `arch_review.pre_ready_final`: `pending`
-- `implementation_gate_report`: `missing/pending` (kein nachtraeglich erfundenes PASS)
+- `arch_review.initial`: `pass`
+- `arch_review.pre_ready_final`: `pass`
+- `dor_check`: `pass`
+- `implementation_gate_report`: `pending` (vor der neuen Integration)
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
 
-## Retrospektiver Implementierungsnachweis (PR #3, keine historische DoR-Fiktion)
+## Priorisierung 2026-10-11
 
-- Vor dem Atomisierungsbericht unter dem zu breiten Parent implementiert; nun der eigenstaendigen Story PF-SP-004 zugeordnet.
-- Die experimentelle C99-Implementierung `pc_document.h/.c` bietet bottom-first Root-Reordering (`Document::shift`) und unabhaengige `opacity/fill_opacity` als IEEE-754 f32, ohne native UI oder stabilen ABI.
-- Grenzen: Invalid-ID/INT_MIN/INT_MAX, NaN/INF und Bereichsfehler werden ohne mutation zurueckgewiesen; Clone-Ebenen teilen Raster nur als COW.
-- Unveraendertes Rust-Original: `crates/doc/src/lib.rs`; PF-TN-005 und Rust/C99-Differential sowie C99/ASan/UBSan und GCC13 13.3 O0/O2 HUNK/vamos im früheren [CI #38033843306](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38033843306) PASS fuer den damaligen Stand.
-- **Kein** automatisches `pre_ready_final`, DoR, Implementation-Gate oder `done` durch uebernommene Testevidenz. Aktuelle Child-Story bleibt `refining` bis zum getrennten Architektur-/Lifecycle-Review.
-- Zusätzliche Zeilen im ursprünglichen Parent-PR wurden **nicht** in den kanonischen gesperrten Parent zurückgeschrieben; dessen historische Original-Raster-Evidenz bleibt erhalten.
+- Prioritaet: `P1` — PR #3 ist erster technisch bereits bearbeiteter Layer-Baustein der Abhaengigkeitskette.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
+
+## Child-Gates 2026-10-11
+
+- Separater aktueller [Refinement-/Architektur- und DoR-Audit](../reviews/PF-SP-004-ready-gates-2026-10-11.md). Keine Rueckdatierung der historischen PR3-Code-Commits.
+- Bestehender Layer-Code wird auf aktuellem main mit PF-BG-001-Ownership erneut integriert und auf aktuellem Head neu getestet.

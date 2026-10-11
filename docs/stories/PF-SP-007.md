@@ -75,3 +75,9 @@ Als PhotoCraft-Portentwickler moechte ich kleiner cpu-compositor-paritätsspike 
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P1` — Erster CPU-Compositor ist Voraussetzung fuer echten PhotoCraft-Viewport.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.

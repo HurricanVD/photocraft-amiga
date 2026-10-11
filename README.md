@@ -8,7 +8,7 @@
 </p>
 
 <h1 align="center">PhotoCraft</h1>
-> **Experimental AmigaOS 3.2 port:** This fork maintains an isolated [AmigaOS port workspace](ports/amigaos3/README.md) on the `amigaos32` branch. It is not yet a working PhotoCraft editor, and the upstream Rust desktop/web code remains unchanged.
+> **Experimental AmigaOS 3.2 port:** This fork contains an isolated [AmigaOS port workspace](ports/amigaos3/README.md) on `main`; `amigaos32` also exists as a development branch. The C99 raster/document prototypes and headless m68k tests **are not a working AmigaOS PhotoCraft editor**. The original Rust desktop/web code is unchanged. For current port priorities and story statuses, see the [canonical backlog](docs/backlog.md); the former umbrella story [PF-SP-002](docs/stories/PF-SP-002.md) is `blocked` following its 2026-10-11 split.
 
 
 <p align="center">
