@@ -4,7 +4,7 @@
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
 - Status: `draft` (PF-SP-002 split_required; nicht `ready`)
-- Prioritaet: `P2`
+- Prioritaet: `P3`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
 - Parent: `PF-SP-002`; [atomization_report](../reviews/PF-SP-002-atomization-report-2026-10-11.md)
@@ -74,3 +74,9 @@ Als PhotoCraft-Portentwickler moechte ich kleiner dokument-serialisierungs-round
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P3` — Persistenz folgt nach Layer-/Gruppen-/Masken-Semantik und Formatentscheid.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
