@@ -22,3 +22,14 @@
 - Regression-Test-Review: `pending`
 
 Es ist **keine** produktive AmigaOS-GUI, MiniGL- oder PSD-Testabdeckung behauptet.
+
+## Ausgefuehrte Regression 2026-10-11 — GitHub Actions
+
+- Code-/Teststand: `ae3102f10be2bd4d021f356ad023826243d6e4e6`
+- [AmigaOS 3.2 Host Core Run #38125707879](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38125707879), Job `Portable C99 + ASan/UBSan` ID `114429524447`: **success**.
+- `make -C ports/amigaos3 host-test`: PASS; `pc_document_test` mit neuen gleichen/dokumentuebergreifenden Raster-Claim-Faellen sowie Clone/Destroy PASS.
+- `make -C ports/amigaos3 host-core-sanitize`: PASS mit `-fsanitize=address,undefined`, einschliesslich `pc_document_test_san`. Keine Fehlerdiagnose im ausgefuehrten Joblog.
+- Job `Rust originals vs C99 port` ID `114429524610`: **success**, `PASS: original PhotoCraft Rust crates match C99 port and typed oracle`. Die Rust/C99-Oracles decken weiterhin ihren bestehenden Scope ab; der C-exklusive Ownership-Test besitzt keinen neuen Rust-originaeren Ownership-Oracle.
+- m68k GCC13/vamos: zum Zeitpunkt dieses Eintrags **in_progress**, noch kein PASS.
+- OOM-Allocator-Fault-Injection: **not_run / ausserhalb dieses Bugfix-Regressionsjobs**; bleibt in `PF-TD-001` fuer spaetere deterministische Allokationsfehler offen.
+- Ein finaler unabhängiger Review, vollstaendiges CI und PR-/Merge-Freigabe fehlen weiterhin.
