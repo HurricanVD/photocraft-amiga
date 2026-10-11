@@ -1,7 +1,7 @@
 # PF-TN-006 — Nested raster groups and deep-COW document tree
 
 - Date: 2026-10-10
-- Story: `PF-SP-005` (retrospektiv zugeordnet; `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
+- Story: `PF-SP-005` (2026-10-10 historisch noch `refining` laut [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); aktuelle Child-Story am 2026-10-11 nach neuer Gate-/CI-/Review-Evidenz `done`)
 - Branch: `feature/pf-sp-002-group-tree`, **stacked on PR #3** (flat-layer/opacity increment)
 - Scoped verification: **PASS** against source commit `c67bbca4325668daace0cc8cfddd060ef0495469` in [CI #38042365174](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042365174); overall multi-platform CI is recorded separately. Subsequent documentation commits do not inherit this source SHA automatically.
 - Accepted scope: ADR-0002 PhotoCraft bottom-first group semantics,
@@ -66,3 +66,12 @@ state, cross-parent moves, command history and native AmigaOS UI are excluded.
 ## Retrospektive Story-Traceability (2026-10-11)
 
 Dieser Scoped-Test `PF-TN-006` ist der Child-Story `PF-SP-005` zugeordnet. Die technische Ausfuehrung auf dem damals eingefrorenen PF-SP-002-Implementierungs-SHA bleibt historische Evidenz, **keine** nachtraegliche DoR-/Implementation-/Reviewer-Freigabe. Governance-Korrektur: [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); kanonischer Parent wird dort `blocked`. Die PR-Stack-Abhaengigkeiten bleiben bestehen.
+
+## Finale Child-Regression / Archiv — 2026-10-11
+
+- Story: [PF-SP-005](../../stories/done/PF-SP-005.md); `status: pass` auf neuem Gruppen-Head `b2f6290f9fa81d8f0ccd5c269972ea341d399cfa` mit exklusivem PF-BG-001-Owner-Claim und eigenen Claims rekursiver Clones.
+- [CI #38159390811](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159390811) `success` mit original Rust Group-/Document-Differential, Host-/ASan-Grenzen und m68k-Document-O0/O2.
+- [AmigaOS Host #38159390900](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159390900) `success`: portable C99, ASan/UBSan, Rust-Oracle, GCC13 HUNK/vamos O0/O2. [Docs #38159390847](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159390847), [PF #38159390824](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159390824), [Packaging #38159390888](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159390888) jeweils `success`.
+- Verifiziert: Root-/Nested-Append, ID-Duplikate, 100er Tiefengrenze, Bottom-first-Sibling-Shift, Root/Descendant-Count und Deep-COW/Destroy; neuer gruppenuebergreifender Cross-Document-Owner-Test.
+- Manueller AmigaOS GUI-/WinUAE-Test `n/a` fuer headless C99-Tree. Masken/PSD/Compositor/Produkt-ABI nicht Bestandteil.
+- [Finalreview](../../reviews/PF-SP-005-final-review-2026-10-11.md) empfiehlt `approve` fuer diesen Teilumfang.

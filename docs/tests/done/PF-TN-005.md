@@ -1,8 +1,8 @@
 # PF-TN-005 — Flat Document shift and layer opacity parity
 
-- Story: `PF-SP-004` (retrospektiv zugeordnet; `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
+- Story: `PF-SP-004` (2026-10-10 historisch noch `refining` laut [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); aktuelle Child-Story am 2026-10-11 nach neuer Gate-/CI-/Review-Evidenz `done`)
 - Started: 2026-10-10.
-- Decision basis: [accepted ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../adr/ADR-0003-amigaos-toolchain-and-verification.md).
+- Decision basis: [accepted ADR-0002](../../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../../adr/ADR-0003-amigaos-toolchain-and-verification.md).
 - Scope: experimental flat-raster `PcDocument` metadata. This is **not** the product `doc::Document`, an approved C ABI or a native GUI.
 - Scoped verification result: **PASS** for the implementation commit `8926cb9046b3c8a69cdd0dbe3e4f49de196a0995` on [CI #38033507546](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38033507546). The broader multi-platform/root CI result remains separate from these completed jobs.
 
@@ -56,3 +56,12 @@ claiming a complete PR or merge status.
 ## Retrospektive Story-Traceability (2026-10-11)
 
 Dieser Scoped-Test `PF-TN-005` ist der Child-Story `PF-SP-004` zugeordnet. Die technische Ausfuehrung auf dem damals eingefrorenen PF-SP-002-Implementierungs-SHA bleibt historische Evidenz, **keine** nachtraegliche DoR-/Implementation-/Reviewer-Freigabe. Governance-Korrektur: [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); kanonischer Parent wird dort `blocked`. Die PR-Stack-Abhaengigkeiten bleiben bestehen.
+
+## Finale Child-Regression / Archiv — 2026-10-11
+
+- Story: [PF-SP-004](../../stories/done/PF-SP-004.md); `status: pass` auf aktuellem integrierten Head `40ec4a17d023954a6e2752b4f676d77ba35a2143`, vorherige PR-SP-002-Historie bleibt nur Referenz.
+- [CI #38159331127](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159331127): gesamte Matrix inklusive ursprünglichem PhotoCraft-Rust-Document-Differential und GCC13-Document O0/O2 `success`.
+- [AmigaOS Host #38159331128](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159331128): C99 Host/ASan/UBSan, originale Rust-Oracle, GCC13-HUNK/vamos O0/O2 `success`.
+- [Documentation #38159331123](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159331123), [PF Preflight #38159331153](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159331153), [Packaging #38159331130](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159331130): `success`.
+- Quell-IP: original Rust als Oracle, keine fremden Bibliotheken/Assets. Manuelle Workbench-/WinUAE-/MiniGL-Pruefung nicht Bestandteil dieses Headless-Scopes.
+- Review [Finalreport](../../reviews/PF-SP-004-final-review-2026-10-11.md) fachlich `approve` empfohlen; keine Produktrelease-Freigabe.
