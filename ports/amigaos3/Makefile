@@ -200,6 +200,7 @@ host-compose-test: $(COMPOSE_ORACLE)
 
 gcc13-build-compose-oracle: gcc13-preflight
 	@set -eu; for opt in O0 O2; do \
+	  mkdir -p "$(GCC13_BUILD)/$opt"; \
 	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -Iinclude $(GCC13_LDFLAGS) \
 	    tests/compose_oracle.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/compose_oracle"; \
 	done
