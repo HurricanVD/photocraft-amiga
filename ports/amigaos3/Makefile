@@ -168,3 +168,12 @@ host-test: host-present-convert-test
 host-core-sanitize:
 	$(HOST_CC) -std=c99 -g -O1 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude -o $(BUILD)/pc_present_convert_san tests/pc_present_convert_test.c src/pc_present_convert.c src/pc_tile_convert.c
 	./$(BUILD)/pc_present_convert_san
+
+# PF-SP-010: compile native M2 with the same pinned GCC13/NDK lane.
+# This is compile-only evidence, NOT a WinUAE graphics runtime PASS.
+.PHONY: gcc13-m2-compile
+gcc13-m2-compile: gcc13-preflight
+	@mkdir -p $(GCC13_BUILD)/m2
+	"$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -O2 -Iinclude -c src/pc_present_convert.c -o $(GCC13_BUILD)/m2/pc_present_convert.o
+	"$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -O2 -Iinclude -c src/pc_present_m2.c -o $(GCC13_BUILD)/m2/pc_present_m2.o
+	@echo "COMPILE_ONLY: RTG M2 target objects; no WinUAE result"
