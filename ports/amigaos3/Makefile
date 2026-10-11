@@ -97,7 +97,7 @@ TYPED_ORACLE := $(BUILD)/typed_oracle
 $(RASTER_TEST): tests/pc_raster_test.c src/pc_raster.c src/pc_core.c include/pc_raster.h include/pc_core.h | $(BUILD)
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_raster_test.c src/pc_raster.c src/pc_core.c
 
-$(DOCUMENT_TEST): tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_core.c include/pc_document.h | $(BUILD)
+$(DOCUMENT_TEST): tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_raster_owner_internal.h src/pc_core.c include/pc_document.h | $(BUILD)
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_document_test.c src/pc_document.c src/pc_raster.c src/pc_core.c
 
 $(TYPED_ORACLE): tests/typed_oracle.c src/pc_raster.c src/pc_core.c include/pc_raster.h | $(BUILD)
