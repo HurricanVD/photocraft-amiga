@@ -74,3 +74,9 @@ Als Projektbeteiligter moechte ich aus README und kanonischem Backlog den gleich
 - Architektur / OS-API / Capability / NDK / vxlibs: `n/a` fuer reine Markdown-Korrektur. Keine neue ADR noetig.
 - Testfall `PF-TN-015` ist geplant und weiterhin `not_run`; Umsetzung und Dokumentations-/Link-Checks stehen noch aus.
 - `implementation_gate_report: pending`; `review_report: pending`; keine Merge- oder Done-Freigabe.
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P2` — Dokumentationskorrektur ist unabhaengig und ready, aber weniger kritisch als Core-/Speichersicherheit.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
