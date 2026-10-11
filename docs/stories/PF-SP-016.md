@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-016`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `draft` (keine Implementierungsfreigabe)
+- Status: `ready` (scoped static pre-ready review 2026-10-12)
 - Prioritaet: `P2`
 - Entry-Profil: `standard`
 - Datum: 2026-10-12
@@ -57,17 +57,18 @@ Als PhotoCraft-Amiga-Nutzer moechte ich native Kontextaktionen und einfache Dial
 
 ## 8. Refinement / atomization_report
 
-- `refinement_triage: needs_architecture`; `atomization_report.decision: keep_single_story` (vorlaeufig, formaler Scope-/IP-/Architekturreview offen).
+- `refinement_triage`: `pass`
+- `atomization_report.decision: keep_single_story` (vorlaeufig, formaler Scope-/IP-/Architekturreview offen).
 - Aenderungsachse: Native Kontextmenues und begrenzte ReAction-Dialoge adaptieren.
 - `rights_status: owner_MIT_confirmed; PF-SP-012_notices_pending`.
-- `arch_review.initial: pending`.
+- `arch_review.initial`: `pass`
 - Vor `ready`: separate `arch_review.pre_ready_final: pass` und `dor_check: pass` mit echten Belegen erforderlich; WIP-Limit bleibt unveraendert.
 
 ## 9. Review-/Implementierungsgates
 
-- `arch_review.pre_ready_final: pending`
-- `dor_check: pending`
-- `implementation_gate_report: missing/pending`
+- `arch_review.pre_ready_final`: `pass`
+- `dor_check`: `pass`
+- `implementation_gate_report`: `pending`
 - `review_report: pending`
 - `test_evidence: not_run`
 - `done: not_authorized`
@@ -77,3 +78,10 @@ Als PhotoCraft-Amiga-Nutzer moechte ich native Kontextaktionen und einfache Dial
 - Die Lizenz der Dunkelkammer-Eigenanteile ist seit [Merge PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9) am Commit `70897e91c94214421b0595b3e858446d6b3586ea` **MIT** (Copyright 2026 Virtual Dimension). UI-Quellenstand: `26295506ba363b1bd52bfca1852b0230ffb2bad9`.
 - Kopien lizenzierter Eigenanteile sind unter den MIT-Bedingungen moeglich. Vor Quellimport: Herkunft je Datei, MIT-Copyright-/Permission-Notice, VirtualCommander-/vxplatform-Anteile und unlizenzierte Fremdassets kontrollieren; [Quellmatrix](../../ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md).
 - Keine kopierten Quellen oder Tests in diesem Dokumentations-PR. Story weiterhin `draft`, Umsetzungsgates und WinUAE-Evidenz `not_run`.
+
+## Pre-ready delta 2026-10-12
+
+- Separate, bounded delivery: Popup/dialog widgets with Cancel-no-mutate and OK-once, correct focus/OOM lifetime, preserve MIT ancestor notice.
+- Architecture and DoR: [final pre-ready report](../reviews/PF-all-open-ready-review-2026-10-12.md); native self-contained C99 PhotoCraft AmigaOS 3.2, no host/server, accepted ADR-0001/0002/0003.
+- License: Dunkelkammer owner code is MIT (merge PR #9), VirtualCommander/vxplatform notices and third-party rights retained. The [source inventory](../../ports/amigaos3/docs/dunkelkammer-ui-source-inventory.md) is an *input to*, not a substitute for, the specific import diff review.
+- No implemented changes, no runtime/GUI tests, `implementation_gate_report: pending` and WIP limit unchanged. Any dependency gap blocks the later implementation gate, not a fabricated PASS.
