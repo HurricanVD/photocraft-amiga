@@ -9,7 +9,7 @@
 - Datum: 2026-10-11
 - Herkunft: statische Codepruefung von `main`, `ports/amigaos3/src/pc_document.c`
 - Backlog: `docs/backlog.md`
-- Test-Traceability: `PF-TN-012` (geplant; noch nicht ausgefuehrt)
+- Test-Traceability: `PF-TN-012` (Host und ASan/UBSan ausgefuehrt PASS; 68k/vamos noch offen)
 
 ## 1. Problem / Nutzerwert
 
@@ -47,7 +47,7 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 - Bestehende Referenz: `pc_document_append_raster`, `pc_document_destroy`, `pc_document_clone`.
 - Rust-Original dient als Semantikreferenz; C-spezifisches Pointer-Aliasing hat keine zwingend identische Rust-Testsequenz.
 - Kein AmigaOS-SDK oder MiniGL fuer den Host-Regressionstest notwendig.
-- Evidenz: `not_run`; keine Implementierungs-PR.
+- Evidenz: Host-/ASan-Run #38125707879 (scope-limitiert PASS); [Implementierungs-PR #8](https://github.com/HurricanVD/photocraft-amiga/pull/8) Draft; kein finaler Merge-/Review-Abschluss.
 
 ## 7. refinement_note / refinement_triage
 
@@ -91,5 +91,5 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 
 - Separater Branch: `fix/pf-bg-001-raster-ownership` (Stack-Basis `docs/pf-open-findings-2026-10-11`).
 - C99-Änderung: internes Object-Ownership-Claim in `pc_raster.c`, expliziter `pc_document_append_raster`-Transfer, Regression fuer gleichen und fremden Document-Owner, COW-Clone.
-- `PF-TN-012`: Implementierung in `tests/pc_document_test.c` angelegt; **Testlauf und ASan/CI bis zur Ausfuehrung nicht als erfolgreich zaehlen**.
+- `PF-TN-012`: Implementierung in `tests/pc_document_test.c`; Host-C99/ASan/UBSan am 2026-10-11 im Run #38125707879 PASS. GCC13/vamos und neuer finaler Branch-Head laufen separat.
 - PR-/Final-Review und etwaige 68k/vamos-Regressionsnachweise weiterhin offen.
