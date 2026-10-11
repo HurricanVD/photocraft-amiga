@@ -3,7 +3,7 @@
 - Story-ID: `PF-BG-001`
 - Story-Art: `BG`
 - Typ: `bug`
-- Status: `in_progress` (Implementation-Gate 2026-10-11 dokumentiert; Merge/Review/Done noch ausstehend)
+- Status: `review` (Implementierung plus Host/ASan/UBSan/GCC13-vamos nachweislich abgeschlossen; unabhängiger Review/Merge noch offen)
 - Prioritaet: `P0`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -91,5 +91,11 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 
 - Separater Branch: `fix/pf-bg-001-raster-ownership` (Stack-Basis `docs/pf-open-findings-2026-10-11`).
 - C99-Änderung: internes Object-Ownership-Claim in `pc_raster.c`, expliziter `pc_document_append_raster`-Transfer, Regression fuer gleichen und fremden Document-Owner, COW-Clone.
-- `PF-TN-012`: Implementierung in `tests/pc_document_test.c`; Host-C99/ASan/UBSan am 2026-10-11 im Run #38125707879 PASS. GCC13/vamos und neuer finaler Branch-Head laufen separat.
+- `PF-TN-012`: Host-C99/ASan+UBSan und GCC13/vamos O0/O2 am 2026-10-11 in [CI #38125707879](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38125707879) PASS auf Code-SHA `ae3102f`. Finaler PR-/Main-Integrations-Review ausstehend.
 - PR-/Final-Review und etwaige 68k/vamos-Regressionsnachweise weiterhin offen.
+
+## 12. Review-Handoff (2026-10-11)
+
+- [Change Summary](../reviews/PF-BG-001-change-summary-2026-10-11.md) und [PF-TN-012](../tests/PF-TN-012.md) mit Host-, Sanitizer- und m68k/vamos-Ergebnissen.
+- Stand: `review` nach abgeschlossenem begrenztem Code-Scope; **kein** `review_report: approve`, kein `done`, kein Merge.
+- Vor Integration muessen PR #7, der neu integrierte Main-Head, die aktuelle CI-/Doku-Lage und die Cross-Document-Gruppen-/Masken-Gates #3/#4/#5 getrennt bewertet werden.
