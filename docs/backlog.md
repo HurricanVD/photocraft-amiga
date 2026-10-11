@@ -21,7 +21,7 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 | ID | Titel | Typ | Prioritaet | Status | Notiz |
 |---|---|---|---|---|---|
 
-| PF-TD-002 | README-/Story-Status abgleichen | TD | P2 | ready | PF-TN-015 geplant; main/Branch/Lifecycle-Dokumentation korrigieren |
+
 
 ## Offen
 
@@ -48,6 +48,7 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 
 | ID | Titel | Art | Priorität | Status |
 |---|---|---|---|---|
+| PF-TD-002 | README-/Story-Status abgleichen | TD | P2 | review |
 | PF-BG-001 | Raster-Ownership beim Append absichern | BG | P0 | review |
 
 Statusquelle: [PF-SP-002-Atomisierung](reviews/PF-SP-002-atomization-report-2026-10-11.md) und [Prioritaets-/Ready-Audit 2026-10-11](reviews/PF-backlog-priority-ready-audit-2026-10-11.md). `PF-BG-001` und `PF-TD-002` haben dokumentierte DoR/Pre-ready-Nachweise. PF-SP-004/005/006 bleiben `refining` (Draft-PRs #3/#4/#5 ohne Child-Freigabe). `ready` ist **keine** Freigabe fuer `in_progress`, Merge oder Release. PF-SP-002 bleibt blocked/frozen; WIP-Limit VD v0.2.1 beachten.

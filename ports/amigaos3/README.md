@@ -1,6 +1,8 @@
 # PhotoCraft for AmigaOS 3.2 (experimental)
 
-This directory is the native AmigaOS 3.2 port workspace for the upstream **PhotoCraft** editor in this fork. This is **not yet a working editor**. The initial code comprises a portable ARGB-to-RGBA staging primitive with tests and a standalone MiniGL graphics smoke program.
+This directory is the experimental native AmigaOS 3.2 port workspace for upstream **PhotoCraft**, present on this fork's `main` branch (the separate `amigaos32` branch also exists). **This is not yet a working editor.** The workspace contains portable C99 geometry, encoded sparse-raster/COW and flat-layer prototypes, ARGB-to-RGBA staging tests, and a standalone optional MiniGL graphics smoke program. Host and m68k/`vamos` tests do **not** establish a ReAction application, a verified WinUAE graphics runtime, or a selected shipping toolchain.
+
+> **Current canonical status (2026-10-11):** [PF-SP-002](../../docs/stories/PF-SP-002.md) is `blocked` after `split_required` atomization. Its original raster baseline and historical test reports remain valid only for their stated scope. The active planning source is the [fork backlog](../../docs/backlog.md), including the separate child stories PF-SP-004..009 and PF-TD-001. Dated `in_progress` claims below describe the **2026-10-09 historical snapshot**, not current authorization to implement, merge or release. [PF-SP-001](../../docs/stories/PF-SP-001.md) remains blocked awaiting real MiniGL/QuarkTex NG/WinUAE target evidence.
 
 ## Contract and direction
 
