@@ -3,7 +3,7 @@
 - Story-ID: `PF-TD-002`
 - Story-Art: `TD`
 - Typ: `tech_debt`
-- Status: `draft` (nicht `ready`)
+- Status: `ready` (DoR am 2026-10-11 geprueft; vor der Umsetzung Implementation-Gate erforderlich)
 - Prioritaet: `P2`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -48,10 +48,10 @@ Als Projektbeteiligter moechte ich aus README und kanonischem Backlog den gleich
 ## 7. refinement_note / refinement_triage
 
 - Eine Aenderungsachse: Dokumentationskonsistenz.
-- `refinement_triage`: `pending`.
-- `atomization_report.decision`: `keep_single_story` (vorlaeufig).
+- `refinement_triage`: `pass` (belegte Readme-/Status-Diskrepanz, dokumentationsbeschraenkter Scope).
+- `atomization_report.decision`: `keep_single_story` (Pre-ready-Review 2026-10-11).
 - IP: ausschliesslich eigene Projektdokumentation, keine fremden Quellen/Assets kopieren.
-- Kein impliziter Status- oder Reviewer-PASS.
+- Kein impliziter Implementation-/Test-/Reviewer-PASS; `ready` gilt ausschliesslich aufgrund des dokumentierten Vorab-Reviews.
 
 ## 8. Testtraceability
 
@@ -60,9 +60,17 @@ Als Projektbeteiligter moechte ich aus README und kanonischem Backlog den gleich
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pending`
-- `arch_review.pre_ready_final`: `pending`
-- `dor_check`: `pending`
+- `arch_review.initial`: `pass` (2026-10-11; [Pre-ready-Review](../reviews/PF-TD-002-pre-ready-review-2026-10-11.md))
+- `arch_review.pre_ready_final`: `pass` (2026-10-11; ADRs und kanonische Statusquellen geprueft)
+- `dor_check`: `pass` (2026-10-11; siehe Pre-ready-Review)
 - `implementation_gate_report`: `pending`
 - `review_report`: `pending`
 - `done`: `not_authorized`
+
+## 10. Pre-ready-Abnahme und Restgates
+
+- Evidenz: [Pre-ready-/DoR-Review](../reviews/PF-TD-002-pre-ready-review-2026-10-11.md), aktuellen `main`-/Port-/Backlog-/ADR-Zustand geprueft.
+- `ip_provenance_impact: none` fuer Status-/Link-Dokumentation; keine Fremdcode-/Asset-Uebernahme.
+- Architektur / OS-API / Capability / NDK / vxlibs: `n/a` fuer reine Markdown-Korrektur. Keine neue ADR noetig.
+- Testfall `PF-TN-015` ist geplant und weiterhin `not_run`; Umsetzung und Dokumentations-/Link-Checks stehen noch aus.
+- `implementation_gate_report: pending`; `review_report: pending`; keine Merge- oder Done-Freigabe.
