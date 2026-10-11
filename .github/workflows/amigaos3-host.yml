@@ -164,7 +164,7 @@ jobs:
             /bin/sh -ec '
               compiler="$(command -v m68k-amigaos-gcc)"
               root="$(dirname "$(dirname "$(realpath "$compiler")")")"
-              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed GCC_BEBBO_ROOT="$root"
+              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed gcc13-m2-compile GCC_BEBBO_ROOT="$root"
             '
           make -C ports/amigaos3 gcc13-check-hunks
       - name: Install pinned vamos and machine68k
