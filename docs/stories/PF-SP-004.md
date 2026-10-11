@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-004`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `ready` (2026-10-11; neuer Child-Pre-ready-Audit, historische PR-Umsetzung nicht rückwirkend freigegeben)
+- Status: `in_progress` (separates Implementation-Gate fuer aktuelle PR3-Reintegration, 2026-10-11)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -72,7 +72,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 - `arch_review.initial`: `pass`
 - `arch_review.pre_ready_final`: `pass`
 - `dor_check`: `pass`
-- `implementation_gate_report`: `pending` (vor der neuen Integration)
+- `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
@@ -87,3 +87,5 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 
 - Separater aktueller [Refinement-/Architektur- und DoR-Audit](../reviews/PF-SP-004-ready-gates-2026-10-11.md). Keine Rueckdatierung der historischen PR3-Code-Commits.
 - Bestehender Layer-Code wird auf aktuellem main mit PF-BG-001-Ownership erneut integriert und auf aktuellem Head neu getestet.
+
+- [Implementation-Gate](../reviews/PF-SP-004-implementation-gate-2026-10-11.md) erfasst; Scope: Overlay P0-Owner-Safety, Flat-Shift/Opacity, Rust-Oracle, Host/68k, keine Gruppen/Masken.
