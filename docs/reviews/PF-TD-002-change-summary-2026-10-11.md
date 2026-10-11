@@ -1,5 +1,7 @@
 # PF-TD-002 — Change summary (2026-10-11)
 
+> Historischer Change Summary aus der Review-Phase. Die alten Status- und CI-Pending-Aussagen bleiben als damaliger Stand erhalten; der [Finalreview](PF-TD-002-final-review-2026-10-11.md) dokumentiert den späteren Abschluss.
+
 - Story: [PF-TD-002](../stories/done/PF-TD-002.md)
 - Branch: `docs/pf-td-002-readme-status`
 - Review Stage: `review`, **not** `done`
@@ -19,3 +21,10 @@
 - Vollstaendiger General-CI-Run #38126908016 bei Erstfassung noch nicht abgeschlossen. Kein `review_report: approve` und kein behaupteter `done`-Status.
 - Alle Details: [PF-TN-015](../tests/done/PF-TN-015.md).
 - Kein Changelog/-Release-/Abhaengigkeits- oder OS-API-Effekt.
+
+
+## Finaler Nachtrag 2026-10-11
+
+- PR #10 ist unter Merge `7621c7fe814d73aec58ec7561e7ef612e23e185e` auf `main` integriert.
+- Der finale PR-Head hat [CI #38141046023](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38141046023), [Docs #38141046048](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38141046048) und [PF Preflight #38141046033](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38141046033) erfolgreich abgeschlossen.
+- Die Story und `PF-TN-015` sind unter `done/` archiviert; [Finalreview](PF-TD-002-final-review-2026-10-11.md) empfiehlt `approve` fuer den reinen Dokumentationsscope, nicht fuer Release.
