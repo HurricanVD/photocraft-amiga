@@ -198,15 +198,21 @@ $(COMPOSE_ORACLE): tests/compose_oracle.c src/pc_compose.c src/pc_document.c src
 host-compose-test: $(COMPOSE_ORACLE)
 	./$(COMPOSE_ORACLE) > $(BUILD)/oracle-c-compose.txt
 
-gcc13-build-compose: gcc13-preflight
+gcc13-build-compose-oracle: gcc13-preflight
 	@set -eu; for opt in O0 O2; do \
 	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -Iinclude $(GCC13_LDFLAGS) \
 	    tests/compose_oracle.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/compose_oracle"; \
 	done
-gcc13-check-compose-hunks:
+gcc13-check-compose-oracle-hunks:
 	@python3 scripts/check-hunk.py $(GCC13_BUILD)/O0/compose_oracle $(GCC13_BUILD)/O2/compose_oracle
-gcc13-vamos-compose:
+gcc13-vamos-compose-oracle:
 	@set -eu; for opt in O0 O2; do \
 	  "$(VAMOS)" -S -C 20 -m 8192 -s 128 "$(GCC13_BUILD)/$$opt/compose_oracle" > "$(GCC13_BUILD)/$$opt/oracle-c-compose.txt" 2>&1; \
 	  python3 scripts/compare-compose.py "$(RUST_COMPOSE_ORACLE)" "$(GCC13_BUILD)/$$opt/oracle-c-compose.txt"; \
 	done
+
+# Additive prerequisites: preserve the previous compositor tests, and
+# add the independent original-Rust oracle, without overriding recipes.
+gcc13-build-compose: gcc13-build-compose-oracle
+gcc13-check-compose-hunks: gcc13-check-compose-oracle-hunks
+gcc13-vamos-compose: gcc13-vamos-compose-oracle
