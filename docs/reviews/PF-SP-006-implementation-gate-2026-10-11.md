@@ -1,0 +1,11 @@
+# PF-SP-006 — Implementation-Gate 2026-10-11
+- story_id: PF-SP-006; from_status: ready; to_status: in_progress.
+- story_status_check: pass; backlog_status_check: pass; wip_limit_check: pass (PF-SP-005+PF-SP-006 in_progress, PF-SP-004 review).
+- dor_check: pass, arch_review.initial / arch_review.pre_ready_final: pass per PF-SP-006-ready-gates.
+- implementation_allowed: yes fuer aktuellen, begrenzten Masken-Safety-Integrationscommit; historische PR5-WIP nicht rueckdatiert.
+- write_scope: C99 mask API, internal raster ownership-release, Clone-/Detach-Safety, targeted tests, Rust oracle, mask CI, PF-SP-006 Story/Test/Review.
+- ip_provenance_gate: pass, reference_only Rust-Oracle und kein Drittmaterialimport.
+- COW/claim invariant: global claim at attach, release on detach, clone mask wrapper gets unique claim, same Raster* cannot be reused in two documents.
+- WIP policy: max 2 in_progress, review does not consume slot.
+- target tests planned: Host/ASan/UBSan, Rust LayerMask differential, actual GCC13/vamos O0/O2 on new PR head.
+- repo_root_verified: HurricanVD/photocraft-amiga branch feature/pf-sp-002-layer-masks; no UI/NDK/ABI/release approval.

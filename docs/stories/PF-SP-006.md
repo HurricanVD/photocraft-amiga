@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-006`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `ready` (2026-10-11; neuer Child-Pre-ready-Audit fuer Masken-Safety-Integration)
+- Status: `in_progress` (2026-10-11; separat autorisierte Masken-Integration nach P0/Layer/Group)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -74,7 +74,7 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 - `arch_review.initial`: `pass`
 - `arch_review.pre_ready_final`: `pass`
 - `dor_check`: `pass`
-- `implementation_gate_report`: `pending`
+- `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.

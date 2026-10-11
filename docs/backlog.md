@@ -20,7 +20,6 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 
 | ID | Titel | Typ | Prioritaet | Status | Notiz |
 |---|---|---|---|---|---|
-| PF-SP-006 | Gray8-LayerMask-Sparse-COW | SP | P1 | ready | Pre-ready-Review, Owner-Claim-Detach-Architektur und Tests getrennt |
 
 
 
@@ -46,6 +45,7 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 
 | ID | Titel | Art | Priorität | Status |
 |---|---|---|---|---|
+| PF-SP-006 | Gray8-LayerMask-Sparse-COW | SP | P1 | in_progress |
 | PF-SP-005 | Verschachtelte Rastergruppen und Deep-COW | SP | P1 | in_progress |
 | PF-SP-004 | Flat-Layer-Reihenfolge und Deckkraft | SP | P1 | review |
 
