@@ -21,14 +21,14 @@ int main(void)
       (unsigned long long)pc_document_group_child_id(d,101,1));
     printf("inner %llu\n",
       (unsigned long long)pc_document_group_child_id(d,103,0));
-    printf("shift %d\n",pc_document_group_shift_child(d,101,103,-1));
+    printf("shift %d\n",pc_document_shift_layer(d,103,-1));
     printf("after %llu %llu\n",
       (unsigned long long)pc_document_group_child_id(d,101,0),
       (unsigned long long)pc_document_group_child_id(d,101,1));
     clone=pc_document_clone(d);
     assert(clone);
     printf("clone-shift %d\n",
-           pc_document_group_shift_child(clone,101,103,1));
+           pc_document_shift_layer(clone,103,1));
     printf("original %llu %llu\n",
       (unsigned long long)pc_document_group_child_id(d,101,0),
       (unsigned long long)pc_document_group_child_id(d,101,1));
