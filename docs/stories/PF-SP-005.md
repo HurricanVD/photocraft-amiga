@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-005`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `ready` (2026-10-11; neuer Child-Pre-ready-Audit, historische Gruppen-WIP nicht rueckwirkend freigegeben)
+- Status: `in_progress` (2026-10-11; separat gegatete post-P0-Gruppenintegration)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -73,7 +73,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - `arch_review.initial`: `pass`
 - `arch_review.pre_ready_final`: `pass`
 - `dor_check`: `pass`
-- `implementation_gate_report`: `pending`
+- `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
