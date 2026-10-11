@@ -16,3 +16,10 @@
 - `test_evidence: not_run`
 - `runtime_evidence: none`
 - `release_authorization: no`
+
+## Implementierungs-Nachweis 2026-10-12 (PR #14; eingeschraenkt)
+
+- C99 Host RGBA8 -> numerisches ARGB32: PASS auf CI [AmigaOS 3.2 Host Core #38182485235](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38182485235), inkludiert Host- und ASan/UBSan-Gates fuer den Konverter.
+- GCC/Bebbo 13.3 RTG-M2-Module `pc_present_convert.c` / `pc_present_m2.c`: Cross-Compile PASS (gleicher CI-Workflow), SHA `664c4932f537f1c8c24a1ebef7245e2a0f6fed59`. **Compile-only**: noch kein PhotoCraft-HUNK-Fenster in dieser Story.
+- MIT/Provenienz: `NOTICE-DUNKELKAMMER-MIT.txt`, Original `HurricanVD/dunkelkammer@26295506`, MIT-Merge `70897e91`; keine Fremdassets oder DkDocument.
+- Fehlend: echter WinUAE/P96/CGX-Grafiklauf, Pixelvergleich auf RTG, Failover ohne RTG und reale 32 MiB-Peakmessung. `manual_target: not_run`; Story nicht `done`.
