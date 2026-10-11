@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-004`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `in_progress` (separates Implementation-Gate fuer aktuelle PR3-Reintegration, 2026-10-11)
+- Status: `review` (Flat-Layer-Integration umgesetzt, Port-CI und GCC13/vamos bestanden; gesamte CI und Abschlussreview getrennt)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -89,3 +89,8 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 - Bestehender Layer-Code wird auf aktuellem main mit PF-BG-001-Ownership erneut integriert und auf aktuellem Head neu getestet.
 
 - [Implementation-Gate](../reviews/PF-SP-004-implementation-gate-2026-10-11.md) erfasst; Scope: Overlay P0-Owner-Safety, Flat-Shift/Opacity, Rust-Oracle, Host/68k, keine Gruppen/Masken.
+
+## Integrations-Review-Handoff 2026-10-11
+
+- Post-Gate-C99-Code und Tests auf PR #3 integriert, P0-Claim erhalten. [Port-Run #38158436702](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38158436702) Host/ASan/UBSan, originale Rust-Parity, GCC13 HUNK/vamos O0/O2 success. [Root-CI #38158436706](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38158436706) noch als einzelne allgemeine Jobs in Bearbeitung zum Handoff; nicht als full PASS bezeichnet.
+- `review_report` und `done` stehen bis finalem Scope-/Testreview und Archivierung aus.
