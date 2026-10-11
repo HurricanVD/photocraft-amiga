@@ -5,6 +5,8 @@ fuer dieses App-Repository werden hier gepflegt.
 
 ## [Unreleased]
 
+- PF-TD-002 abgeschlossen: README-/Port-Branch- und kanonische Story-Statusdarstellung korrigiert, Dokumentations- und CI-Nachweise archiviert.
+
 - PF-BG-001 abgeschlossen: Mehrfaches Raster-Ownership ueber Dokumentgrenzen verhindert; Host-/ASan-/GCC13-vamos-Regressionsgrenzen dokumentiert. Weitere Masken-/Gruppenintegration erfolgt getrennt.
 
 - Kanonische PF-TN-002/004-Baseline-Tests historisch markiert; Live-Statusquellen widerspruchsfrei. Das Bootstrap-Gate validiert explizit aktuelle Backlog-Spalte/Sektion und verlangt vorhandene DoR-/Implementation-/Review-Gate-Marker vor Story-Promotion; die Marker werden durch diese Korrektur nicht selbst erteilt.

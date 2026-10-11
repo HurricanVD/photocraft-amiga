@@ -1,6 +1,6 @@
 # PF-TD-002 — Change summary (2026-10-11)
 
-- Story: [PF-TD-002](../stories/PF-TD-002.md)
+- Story: [PF-TD-002](../stories/done/PF-TD-002.md)
 - Branch: `docs/pf-td-002-readme-status`
 - Review Stage: `review`, **not** `done`
 - Tracked in [PR #10](https://github.com/HurricanVD/photocraft-amiga/pull/10)
@@ -17,5 +17,5 @@
 - [PF Bootstrap Docs Preflight #38126908022](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38126908022): `success`.
 - [Documentation/mdBook #38126908029](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38126908029): `success`.
 - Vollstaendiger General-CI-Run #38126908016 bei Erstfassung noch nicht abgeschlossen. Kein `review_report: approve` und kein behaupteter `done`-Status.
-- Alle Details: [PF-TN-015](../tests/PF-TN-015.md).
+- Alle Details: [PF-TN-015](../tests/done/PF-TN-015.md).
 - Kein Changelog/-Release-/Abhaengigkeits- oder OS-API-Effekt.

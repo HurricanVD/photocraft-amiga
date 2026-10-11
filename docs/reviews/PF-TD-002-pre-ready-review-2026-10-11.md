@@ -1,7 +1,7 @@
 # PF-TD-002 — Refinement und finales Pre-ready-Review
 
 - Datum: 2026-10-11
-- Story: [PF-TD-002](../stories/PF-TD-002.md)
+- Story: [PF-TD-002](../stories/done/PF-TD-002.md)
 - Basis: `main` 4f2b0cc9, `README.md`, `ports/amigaos3/README.md`, `docs/backlog.md`, `docs/stories/PF-SP-002.md`, `docs/adr/ADR-0001..0003`
 - Review-Typ: sequenzieller Dokumentations-/Architektur-Eigenreview; **kein unabhaengiger Maintainer-Review**
 - `refinement_triage: pass`
