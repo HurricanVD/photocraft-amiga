@@ -68,3 +68,9 @@ Als AmigaOS-3.2-Nutzer moechte ich gerenderte PhotoCraft-Pixel auch ohne MiniGL 
 - `implementation_gate_report`: `pending`
 - `review_report`: `pending`
 - `done`: `not_authorized`
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P1` — Native RTG-Softwareausgabe ist die MiniGL-unabhaengige Voraussetzung fuer AmigaOS-Viewport.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
