@@ -93,7 +93,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 ## Integrations-Review-Handoff 2026-10-11
 
 - Post-Gate-C99-Code und Tests auf PR #3 integriert, P0-Claim erhalten. [Port-Run #38158436702](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38158436702) Host/ASan/UBSan, originale Rust-Parity, GCC13 HUNK/vamos O0/O2 success. [Root-CI #38158436706](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38158436706) noch als einzelne allgemeine Jobs in Bearbeitung zum Handoff; nicht als full PASS bezeichnet.
-- `review_report` und `done` stehen bis finalem Scope-/Testreview und Archivierung aus.
+- Historischer Review-Handoff: Damals standen Abschlussreview und Archivierung noch aus; beides ist im späteren finalen Story-Abschluss unten nachgewiesen.
 
 ## Finaler Story-Abschluss — 2026-10-11
 
