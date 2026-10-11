@@ -43,7 +43,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 ## 6. Architektur / Tests / Grenzen
 
 - Betroffene Module: `ports/amigaos3/` und Original-Rust-Oracles (read-only); auf den PR-Scope begrenzt.
-- Architekturquelle: akzeptierte ADR-0001/0002/0003 und [aktueller Pre-ready-Review](../reviews/PF-SP-004-ready-gates-2026-10-11.md) `pass` fuer die neue Integration.
+- Architekturquelle: akzeptierte ADR-0001/0002/0003; gesonderter Child-`pre_ready_final`-Review `pending`.
 - Test-Traceability: `PF-TN-005`.
 - Implementierungszuordnung: [PR #3](https://github.com/HurricanVD/photocraft-amiga/pull/3) (bereits vor Atomisierung umgesetzt, noch nicht gemergt).
 - Test-Evidenz: ausgeführt auf PR-Head f998b9d; formaler Story-/Review-Abschluss fehlt.
@@ -56,8 +56,8 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 - `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
-- Spike-/Design-Bedarf: retrospektiver Code ist historische Evidenz; aktueller Child-Audit und Entry-Gate sind getrennt dokumentiert.
-- Refinement-Ergebnis (2026-10-11): Child-DoR abgeschlossen; auf aktuellem Stack in `review`, noch nicht `done`.
+- Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
+- Refinement-Ergebnis: `ready_for_architecture`, **nicht** `ready`.
 
 ## 8. atomization_report
 
@@ -65,7 +65,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 - parent_decision: `PF-SP-002: split_required`.
 - Aenderungsachse: Flat-Layer-Reihenfolge und Deckkraft.
 - Dependencies: Original-Rust doc::Document und Layer; akzeptierte ADR-0002/0003.
-- Lifecycle: initialer/finaler Architekturreview, DoR und Implementation-Gate inzwischen dokumentiert `pass`; technische Tests/Final-Review/Merge bleiben separate Gates.
+- Lifecycle-Blocker: initiales/finales Architekturreview, DoR/IP-Triage, Implementation-Gate und finales Reviewer-Gate offen.
 
 ## 9. Review und Gate-Status
 
@@ -75,7 +75,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 - `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
-- Naechster Schritt: neue Integrations-CI und formalen finalen PR-/Story-Review abschliessen; historische PF-SP-002-Commits nicht rueckwirkend autorisieren.
+- Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
 
 ## Priorisierung 2026-10-11
 

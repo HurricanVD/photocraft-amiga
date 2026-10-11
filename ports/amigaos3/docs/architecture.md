@@ -91,3 +91,21 @@ Dies **ersetzt keinen vollstaendigen PhotoCraft-Document-Kern** und
 bestaetigt weder Masken, Compositor, Persistenz, ReAction/MiniGL,
 Produktcompiler noch stabile ABI. Historische Tests bleiben auf ihren
 alten Commit beschraenkt; neues CI/Review auf PR4 erforderlich.
+
+## Erweiterung Gray8 LayerMask (PF-SP-006, 2026-10-11)
+
+Die experimentellen Layer-/Gruppen-Knoten besitzen jetzt optional eine
+**separate Gray/U8 NoAlpha-Maske** mit sparse default 255 (reveal) bzw.
+0 (hide), enabled/linked Flags und vordefiniertem density=1/feather=0.
+Der gesamte CPU-Compositor und Photoshop PSD-Roundtrip sind davon
+ausdruecklich **nicht** abgedeckt.
+
+Mask-**Attach** beansprucht nach erfolgreicher Format-, ID- und
+Aliasing-Pruefung den dokumentuebergreifenden PcRaster-Objekt-Owner.
+Das Detach gibt vor Rueckgabe des Masken-Pointers die Owner-Claim
+kontrolliert frei. Deep-Clones besitzen eigene Raster- und Masken-
+Objektansprueche; nur die Tile-Bytes teilen sich ueber COW.
+
+Original-Rust LayerMask-Oracle, Host ASan/UBSan und GCC13-HUNK/vamos
+O0/O2 sind eigenstaendige PF-SP-006-Gates. Kein Produkt-ABI,
+MiniGL/WinUAE-/PiStorm3D-Erfolg oder Release aus diesen Tests ableiten.

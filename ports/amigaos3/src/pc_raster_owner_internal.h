@@ -14,5 +14,7 @@
  * already claimed, the original owning document still owns it.
  */
 int pc_raster_claim_document_ownership(PcRaster *raster);
+/* Only a successful owning detach may release a claimed raster. */
+int pc_raster_release_document_ownership(PcRaster *raster);
 
 #endif

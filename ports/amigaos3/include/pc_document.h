@@ -9,6 +9,8 @@
  * 100, matching Rust MAX_GROUP_DEPTH). Names, IDs and child arrays are
  * owned; raster bytes use COW snapshots. Group masks, artboards,
  * pass-through blending, PSD persistence and history are NOT supported.
+ * Masks are initially a Gray8 ownership/sampling slice at fixed density=1,
+ * feather=0, not a compositor or full LayerMask feature.
  * Opacity and fill opacity are metadata only; there is NO rendering yet.
  */
 typedef struct PcDocument PcDocument;
@@ -22,11 +24,10 @@ void pc_document_destroy(PcDocument *document);
 size_t pc_document_layer_count(const PcDocument *document);
 /* Explicit root-only count, for root-indexed layer_id/name/raster getters. */
 size_t pc_document_root_layer_count(const PcDocument *document);
-/* On success, document owns the PcRaster object's sole lifetime;
- * no manual destruction or re-append by the caller. On failure, ownership
- * remains unchanged and no object is consumed. A rejected already-owned
- * pointer stays with its original document. Clones own independent raster
- * objects and may share COW tile data, not object ownership.
+/* On success a document claims a raster object's exclusive lifetime;
+ * caller must not re-append or destroy it. On failed append the object is
+ * never consumed. Already-claimed objects stay owned by their original doc.
+ * pc_raster_clone() creates a new unclaimed object sharing only COW tiles.
  */
 int pc_document_append_raster(PcDocument *document,uint64_t id,
                               const char *name,PcRaster *owned_surface);
@@ -77,6 +78,33 @@ float pc_document_layer_opacity(const PcDocument *document,size_t index);
 int pc_document_set_layer_opacity(PcDocument *document,size_t index,float opacity);
 float pc_document_layer_fill_opacity(const PcDocument *document,size_t index);
 int pc_document_set_layer_fill_opacity(PcDocument *document,size_t index,float opacity);
+/* Original Rust LayerMask's initial Gray8 contract:
+ * reveal-all default=255, hide-all default=0; enabled=false reveals all.
+ * Fixed density=1, feather=0. No masks are rendered by this API.
+ * Attach accepts only exactly Gray/U8/no alpha. Ownership transfers on
+ * success, otherwise caller retains mask. The same surface pointer must
+ * not be owned elsewhere in this document. An existing mask is rejected. */
+PcRaster *pc_document_mask_reveal_all(void);
+PcRaster *pc_document_mask_hide_all(void);
+/* Attach takes exclusive ownership on success and leaves it with the
+ * caller on failure. Detach relinquishes the document's claim and returns
+ * caller-owned mask; the caller must destroy or transfer it again. */
+int pc_document_attach_mask(PcDocument *document,uint64_t layer_id,
+                            PcRaster *owned_gray8,int enabled,int linked);
+/* Borrowed reference, invalid after detach/destroy; mutating it triggers
+ * PcRaster COW on cloned documents. */
+PcRaster *pc_document_layer_mask(PcDocument *document,uint64_t layer_id);
+/* Detach transfers ownership back to caller; NULL means absent/invalid. */
+PcRaster *pc_document_detach_mask(PcDocument *document,uint64_t layer_id);
+int pc_document_mask_enabled(const PcDocument *document,uint64_t layer_id);
+int pc_document_set_mask_enabled(PcDocument *document,uint64_t layer_id,int enabled);
+int pc_document_mask_linked(const PcDocument *document,uint64_t layer_id);
+int pc_document_set_mask_linked(PcDocument *document,uint64_t layer_id,int linked);
+/* Effective Gray8 coverage at fixed density=1. Disabled masks reveal 255.
+ * Returns 0 for absent/invalid mask, otherwise writes one U8 byte. */
+int pc_document_mask_value_u8(const PcDocument *document,uint64_t layer_id,
+                              int32_t x,int32_t y,uint8_t *out);
+
 uint32_t pc_document_width(const PcDocument *document);
 uint32_t pc_document_height(const PcDocument *document);
 #endif
