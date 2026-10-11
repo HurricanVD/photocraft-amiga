@@ -1,7 +1,7 @@
-# PF-TN-012 — Raster-Ownership-Regression (geplant)
+# PF-TN-012 — Raster-Ownership-Regression (Host verifiziert)
 
 - Story: [PF-BG-001](../stories/PF-BG-001.md)
-- Status: `planned`; Execution: `not_run` (2026-10-11)
+- Status: `technical_pass_on_code_sha` (Host/ASan/UBSan, bestehende Rust-Oracles sowie GCC13/vamos O0/O2 PASS am 2026-10-11; finaler PR-Review/Head-Integration offen)
 - Gate: Regression nach Implementierung, **kein PASS-Nachweis durch die DoR-Freigabe**.
 
 ## Testfaelle
@@ -16,9 +16,25 @@
 ## Nachweispflicht
 
 - Test-Commit SHA, Runner/Compiler-Version und exakte Kommandos:
-- Ausführung/Exitcode: `not_run`
-- Assertion-/Sanitizer-Ergebnis: `not_run`
-- m68k/vamos: `not_run`
+- Ausführung/Exitcode: `PASS` (AmigaOS-Host-Run #38125707879, Job 114429524447)
+- Assertion-/Sanitizer-Ergebnis: `PASS` (Host/ASan/UBSan laut ausgefuehrtem Joblog)
+- m68k/vamos: `PASS` (GCC13.3 HUNK/vamos O0 und O2, Job 114429621096, CI #38125707879)
 - Regression-Test-Review: `pending`
 
 Es ist **keine** produktive AmigaOS-GUI, MiniGL- oder PSD-Testabdeckung behauptet.
+
+## Ausgefuehrte Regression 2026-10-11 — GitHub Actions
+
+- Code-/Teststand: `ae3102f10be2bd4d021f356ad023826243d6e4e6`
+- [AmigaOS 3.2 Host Core Run #38125707879](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38125707879), Job `Portable C99 + ASan/UBSan` ID `114429524447`: **success**.
+- `make -C ports/amigaos3 host-test`: PASS; `pc_document_test` mit neuen gleichen/dokumentuebergreifenden Raster-Claim-Faellen sowie Clone/Destroy PASS.
+- `make -C ports/amigaos3 host-core-sanitize`: PASS mit `-fsanitize=address,undefined`, einschliesslich `pc_document_test_san`. Keine Fehlerdiagnose im ausgefuehrten Joblog.
+- Job `Rust originals vs C99 port` ID `114429524610`: **success**, `PASS: original PhotoCraft Rust crates match C99 port and typed oracle`. Die Rust/C99-Oracles decken weiterhin ihren bestehenden Scope ab; der C-exklusive Ownership-Test besitzt keinen neuen Rust-originaeren Ownership-Oracle.
+- m68k GCC13/vamos: **success**, Job ID `114429621096` in CI #38125707879. GCC/Bebbo 13.3, 12 echte HUNK-Binaries, O0/O2 über `vamos` ausgefuehrt. Überpruefte Doc-Regression meldete jeweils `PASS: PhotoCraft flat raster-layer document ownership/order/COW`; Rust/Core/Typed-Oracles bei O0/O2 stimmten byteidentisch ueberein.
+- OOM-Allocator-Fault-Injection: **not_run / ausserhalb dieses Bugfix-Regressionsjobs**; bleibt in `PF-TD-001` fuer spaetere deterministische Allokationsfehler offen.
+- Ein finaler unabhängiger Review, vollstaendiges CI und PR-/Merge-Freigabe fehlen weiterhin.
+
+## Abschlussgrenze
+
+- Technischer Code-Commit ist mit portabler und emulierter CPU-Regression geprueft; der finale PR bleibt Draft bis zum unabhaengigen Review und kontrollierten Stack-Merge.
+- Native GUI-/Minigl-/WinUAE-/PiStorm-Runtime bleibt ohne Testnachweis (nicht Teil dieses Bugfixes).
