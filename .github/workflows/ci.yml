@@ -242,7 +242,7 @@ jobs:
 
   amiga-document-parity:
     # Run the portable oracle when the Amiga port or Rust semantics change.
-    name: PF-SP-002 flat Document C99 vs original Rust
+    name: PF-SP-004 flat Document C99 vs original Rust
     needs: platforms
     if: needs.platforms.outputs.port == 'true'
     runs-on: ubuntu-24.04
@@ -270,18 +270,18 @@ jobs:
           diff -u ports/amigaos3/build/oracle-rust-document.txt \
                   ports/amigaos3/build/oracle-c-document.txt
           echo "PASS: original Rust Document shift and opacity vs C99"
-      - name: Upload PF-SP-002 oracle evidence
+      - name: Upload PF-SP-004 oracle evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pf-sp-002-document-parity
+          name: pf-sp-004-document-parity
           path: |
             ports/amigaos3/build/oracle-rust-document.txt
             ports/amigaos3/build/oracle-c-document.txt
           if-no-files-found: ignore
 
   amiga-document-m68k:
-    name: PF-SP-002 GCC13 m68k Document O0/O2 vamos
+    name: PF-SP-004 GCC13 m68k Document O0/O2 vamos
     needs: [platforms, amiga-document-parity]
     if: needs.platforms.outputs.port == 'true'
     runs-on: ubuntu-24.04
