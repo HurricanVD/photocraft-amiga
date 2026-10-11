@@ -4,7 +4,7 @@
 - Story ID: PF-SP-002
 - Type: SP (technical spike)
 - Status: blocked (2026-10-11, retrospective `atomization_report: split_required`; bisherige Implementierungsevidenz bleibt historisch erhalten; keine weiteren Aenderungen unter dieser Sammelstory)
-- Priority: P1
+- Priority: `P3`
 - Date: 2026-10-09
 - Architecture: accepted ADR-0001
 - Test evidence: PF-TN-002
@@ -90,3 +90,9 @@ Architecture proposals: [ADR-0002](../adr/ADR-0002-photocraft-core-and-memory-co
 - Eigenstaendige Child-Storys: `PF-SP-004` (Flat Layer, PF-TN-005/PR #3), `PF-SP-005` (Groups, PF-TN-006/PR #4), `PF-SP-006` (Gray8 Mask, PF-TN-007/PR #5), `PF-SP-007` (CPU-Compositor), `PF-SP-008` (History/Undo), `PF-SP-009` (Persistenz), `PF-TD-001` (Memory/OOM/Tile-Index).
 - Child-Implementierung in PRs #3–#5 ist bereits vorhanden, bleibt aber bis zur Child-DoR-/Review-Bewertung **nicht mergefreigegeben**. Das Archiv `PF-SP-003` bleibt unberuehrt.
 - Kanonischer Status hat Vorrang vor der historischen Port-Kopie `ports/amigaos3/docs/stories/PF-SP-002.md`.
+
+## Priorisierung 2026-10-11
+
+- Prioritaet: `P3` — Historischer split_required-Parent, nur administrative Referenz, keine neue Implementierung.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
