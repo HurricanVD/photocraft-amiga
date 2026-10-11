@@ -1,7 +1,7 @@
-# PF-TN-012 — Raster-Ownership-Regression (geplant)
+# PF-TN-012 — Raster-Ownership-Regression (Host verifiziert)
 
 - Story: [PF-BG-001](../stories/PF-BG-001.md)
-- Status: `planned`; Execution: `not_run` (2026-10-11)
+- Status: `partial_verified` (Host/ASan/UBSan sowie bestehende Rust-Oracle PASS am 2026-10-11; GCC13/vamos und finaler Head-Review offen)
 - Gate: Regression nach Implementierung, **kein PASS-Nachweis durch die DoR-Freigabe**.
 
 ## Testfaelle
@@ -16,8 +16,8 @@
 ## Nachweispflicht
 
 - Test-Commit SHA, Runner/Compiler-Version und exakte Kommandos:
-- Ausführung/Exitcode: `not_run`
-- Assertion-/Sanitizer-Ergebnis: `not_run`
+- Ausführung/Exitcode: `PASS` (AmigaOS-Host-Run #38125707879, Job 114429524447)
+- Assertion-/Sanitizer-Ergebnis: `PASS` (Host/ASan/UBSan laut ausgefuehrtem Joblog)
 - m68k/vamos: `not_run`
 - Regression-Test-Review: `pending`
 
