@@ -2,10 +2,10 @@
 
 - Datum: 2026-10-11
 - Basis: `main` 4f2b0cc9eb18d342d4cf63e4cc3668ef595a127a
-- Prozess: VD-Amiga 0.2.1, `ready` erst nach nachweisbarem `refinement_triage`, initialem + finalem `arch_review.pre_ready_final` und `dor_check`.
+- Prozess: VD-Amiga 0.2.1, `ready` erst nach nachweisbarem `refinement_triage: pass`, eigenstaendigem **`arch_review.initial: pass`**, nachfolgendem **`arch_review.pre_ready_final: pass`** und `dor_check: pass`. Beide Architekturreview-Stufen sind unabhaengige Gates.
 - Reviewform: statisches Delta-/Gate-Audit mit GitHub-Diffs und realen CI-Run-/Job-Metadaten; kein lokaler Full-Build oder unabhängiges menschliches Review
 - Ausfuehrung: GitHub-Review-Kommentare in PR #3/#4/#5 vorhanden.
-- **Entscheidung fuer alle drei Child-Stories:** `pre_ready_final: fail/pending_remediation`; `dor_check: fail/pending_remediation`; `status_after_review: refining`; `merge_allowed: no`.
+- **Entscheidung fuer alle drei Child-Stories:** `arch_review.initial: pending_remediation`; `arch_review.pre_ready_final: pending_remediation`; `dor_check: fail/pending_remediation`; `status_after_review: refining`; `merge_allowed: no`.
 - Grund: ungeklärte dokumentuebergreifende Pointer-Ownership-Integration, noch nicht auf aktualisierten Basis-/Fix-Commit integriert, formale Child-Gates fehlen. Keine rückdatierte Zustimmung.
 
 ## Aktuelle technische CI-Evidenz (unabhaengig von Lifecycle)
@@ -24,7 +24,7 @@ Die erfolgreichen Runs sind **echte historische Nachweise auf den obigen Heads**
 - Bewahren: stabile IDs, Reihenfolge bottom-first, F32-Metadaten, Rust-Oracle-Verhalten und Soft-Float-Testprofil.
 - [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6) ist bereits nach `main` gemergt. #3-Diff enthaelt dennoch Governance-/Statusdateien aus dem frueheren Stack. Beim Rebase keine `PF-SP-002 blocked`- bzw. neuen Prioritaetsentscheidungen ueberschreiben.
 - Der P0-Fix [PF-BG-001 / #8](https://github.com/HurricanVD/photocraft-amiga/pull/8) erweitert die gemeinsame `pc_document_append_raster()`-Owning-Grenze. #3 muss gegen den **integrierten** Fix samt neuer Regression und finalem CI neu validiert werden.
-- Entry-Gate: Kindstory-Refinement und echtes finales Pre-ready-Architekturreview fehlen formal noch; derzeit `refining`.
+- Entry-Gate: Kindstory-Refinement, ein eigenstaendiges initiales `arch_review.initial` und das danach ausgefuehrte finale `arch_review.pre_ready_final` fehlen formal noch; derzeit `refining`.
 
 ## 2. PF-SP-005 — Gruppen / Deep-COW (PR #4)
 
@@ -32,7 +32,7 @@ Die erfolgreichen Runs sind **echte historische Nachweise auf den obigen Heads**
 - **Blockierender Sicherheitsbefund:** Vor der neuen P0-Integration ist keine Dokument-uebergreifende Owner-Claim-Pruefung enthalten. Ein `PcRaster*` kann mehreren `PcDocument`-Instanzen gehoeren. Nach Anwendung von #8 muessen **auch** Child-Appends und die direkt zugewiesenen Clones als eigene Owner registriert werden.
 - Die rekursive Clone-Implementierung darf keine unclaimed Clones in Owning-Knoten belassen. Dies muss in ASan/UBSan-Tests fuer Root-/Nested-/Cross-Document- und Clone/Destroy-Szenarien nachgewiesen werden.
 - Erst #3, dann #4 integrieren/retargeten und auf finalem Head erneut alle diff/target/CI-Gates ausfuehren.
-- Formales Child-Architektur-/DoR-Gate weiterhin `pending`.
+- Formales `arch_review.initial`, anschliessendes `arch_review.pre_ready_final` und Child-DoR-Gate weiterhin `pending`.
 
 ## 3. PF-SP-006 — Layer Masks (PR #5)
 
@@ -41,15 +41,15 @@ Die erfolgreichen Runs sind **echte historische Nachweise auf den obigen Heads**
 - `pc_document_detach_mask()` gibt derzeit den Mask-Pointer zurueck; nach Ownership-Claim-Integration muss ein sauber definierter `release`-Pfad den Owner an den Caller zurueckuebertragen (ohne Double-Free, Reattach an ein anderes Dokument muss moeglich bleiben).
 - Rekursiver Mask-Clone: eigener Owner und COW-Isolation; kein unregistriertes zweites Owning.
 - Validierung: derselbe Mask-Pointer in zwei Dokumenten, als Layer-Raster und Maske, Detach/Reattach, Invalid-Format, Clone/Destroy, ASan/UBSan, Rust-Differential und GCC13/vamos auf aktuellem finalen Head.
-- Formales Child-DoR/Architecture-Gate `pending`.
+- Formales `arch_review.initial`, anschliessendes `arch_review.pre_ready_final` und Child-DoR-Gate `pending`.
 
 ## Freigabeplan (keine Freigabe vorgezogen)
 
 1. **Erledigt 2026-10-11:** [PR #7](https://github.com/HurricanVD/photocraft-amiga/pull/7) ist auf `main` gemergt (Merge-SHA `2723b00664ca2ef53d2ab5dc34431e3f097ddd4e`). Kanonische Story-/Prioritaetsakten sind jetzt auf `main` vorhanden.
 2. PR #8 (PF-BG-001) nach vollstaendigen Host-/m68k-/Review-Gates eigenstaendig integrieren und auf `main` erneut pruefen.
-3. #3 auf aktualisiertem `main` mit P0-Fix und ohne veraltete Governance-Rueckschreibungen ausrichten. Child-`refinement_triage`, `arch_review.pre_ready_final`, `dor_check` unabhaengig bestaetigen; dann erst `ready` und anschliessend per Implementation-Gate `in_progress` bzw. `review` dokumentieren.
-4. #4 auf der akzeptierten #3-Basis aktualisieren, Owner-Claim und Clone-Gates implementieren, Child-DoR und erneute komplette CI.
-5. #5 zuletzt auf #4 aktualisieren, Owner-Claim/Detach/Mask-Clone sicher machen, Child-DoR und erneute komplette CI.
+3. #3 auf aktualisiertem `main` mit P0-Fix und ohne veraltete Governance-Rueckschreibungen ausrichten. Child-`refinement_triage`, `arch_review.initial`, `arch_review.pre_ready_final`, `dor_check` einzeln und in dieser Reihenfolge bestaetigen; dann erst `ready` und anschliessend per Implementation-Gate `in_progress` bzw. `review` dokumentieren.
+4. #4 auf der akzeptierten #3-Basis aktualisieren, Owner-Claim und Clone-Gates implementieren, Child-`arch_review.initial` und `arch_review.pre_ready_final`, DoR und erneute komplette CI.
+5. #5 zuletzt auf #4 aktualisieren, Owner-Claim/Detach/Mask-Clone sicher machen, Child-`arch_review.initial` und `arch_review.pre_ready_final`, DoR und erneute komplette CI.
 6. Für jedes Child separate unabhängige Delta- und Abschlussreviews; keine pauschale Freigabe nur aufgrund frueherer Gruen-Laeufe. WIP-Limit 2 wahren.
 
 ## Gate-Fazit
