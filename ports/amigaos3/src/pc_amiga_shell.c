@@ -21,6 +21,7 @@
 #include <gadgets/layout.h>
 #include <gadgets/space.h>
 #include <reaction/reaction.h>
+#include <reaction/reaction_macros.h>
 #include <proto/exec.h>
 #include <proto/intuition.h>
 #include <proto/graphics.h>
