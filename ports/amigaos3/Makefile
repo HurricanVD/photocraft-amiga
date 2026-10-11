@@ -177,3 +177,12 @@ gcc13-m2-compile: gcc13-preflight
 	"$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -O2 -Iinclude -c src/pc_present_convert.c -o $(GCC13_BUILD)/m2/pc_present_convert.o
 	"$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -O2 -Iinclude -c src/pc_present_m2.c -o $(GCC13_BUILD)/m2/pc_present_m2.o
 	@echo "COMPILE_ONLY: RTG M2 target objects; no WinUAE result"
+
+# PF-SP-011: optional real AmigaOS HUNK shell, no MiniGL import library.
+# Link check only; manual WinUAE ReAction/RTG acceptance remains mandatory.
+.PHONY: gcc13-native-shell
+gcc13-native-shell: gcc13-preflight | $(BUILD)
+	@mkdir -p $(GCC13_BUILD)/shell
+	"$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -O2 -Iinclude $(GCC13_LDFLAGS) src/pc_amiga_shell.c src/pc_present_m2.c src/pc_present_convert.c src/pc_tile_convert.c -o $(GCC13_BUILD)/shell/photocraft-m2-smoke
+	@python3 scripts/check-hunk.py $(GCC13_BUILD)/shell/photocraft-m2-smoke
+	@echo "BUILD_ONLY: PhotoCraft ReAction RTG shell HUNK; manual WinUAE pending"
