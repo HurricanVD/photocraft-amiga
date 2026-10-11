@@ -3,7 +3,7 @@
 - Story-ID: `PF-BG-001`
 - Story-Art: `BG`
 - Typ: `bug`
-- Status: `draft` (nicht `ready`, keine Implementation autorisiert)
+- Status: `ready` (DoR am 2026-10-11 geprueft; Eintritt in `in_progress` separat gegated)
 - Prioritaet: `P0` (potenzieller Double-Free / Use-after-free)
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -52,10 +52,10 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 ## 7. refinement_note / refinement_triage
 
 - Eine Aenderungsachse: Raster-Ownership an der Append-Grenze.
-- `refinement_triage`: `pending` (Bug reproduzieren, Scope und Prioritaet bestaetigen).
+- `refinement_triage`: `pass` (statische Ursache, abgrenzbarer Ownership-Kontrakt und Testplan geprueft; Laufzeittest weiterhin `not_run`).
 - IP-Klassifikation: `reference_only`, keine Drittquellenuebernahme; `rights_status`: `not_required`.
-- `atomization_report.decision`: `keep_single_story` (vorlaeufig; formale Pruefung offen).
-- Keine stillschweigende `ready`-/`in_progress`-Freigabe.
+- `atomization_report.decision`: `keep_single_story` (Pre-ready-Review 2026-10-11).
+- `ready`-Freigabe nur fuer den beschriebenen Ownership-Bugfix; kein Implementation-Gate, CI-/Merge- oder Release-PASS.
 
 ## 8. Abhaengigkeiten
 
@@ -65,9 +65,18 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pending`
-- `arch_review.pre_ready_final`: `pending`
-- `dor_check`: `pending`
+- `arch_review.initial`: `pass` (2026-10-11; [Pre-ready-Review](../reviews/PF-BG-001-pre-ready-review-2026-10-11.md))
+- `arch_review.pre_ready_final`: `pass` (2026-10-11; Review umfasst ADR/IP/Scope und geplante Tests)
+- `dor_check`: `pass` (2026-10-11; siehe Pre-ready-Review)
 - `implementation_gate_report`: `pending`
 - `review_report`: `pending`
 - `done`: `not_authorized`
+
+## 10. Verbindlicher Implementierungs-Kontrakt nach Pre-ready-Review
+
+- Ownership: Pro `PcRaster*` maximal ein erfolgreiches Owning-Append, auch ueber Dokumentgrenzen. Ein zweiter Claim muss sicher abgewiesen werden.
+- Bei Erfolg darf der externe Caller das Raster nicht selbst freigeben; bei Fehler verbleibt es beim Caller. Raster-Clones sind eigenstaendige Owner-Objekte mit ggf. geteilten COW-Tiles.
+- Lokal abgeleitete Architektur: privater Owner-/Claim-Zustand des opaken Rasterobjekts oder nachweislich aequivalenter Mechanismus; keine neue stabile oeffentliche ABI und keine volle Raster-Umschreibung.
+- Testplan: gleiches Raster zweimal im selben Dokument und in zwei Dokumenten, Clone/Destroy, fehlgeschlagene Claims, Allokationsfehler, ASan/UBSan. **Noch nicht ausgefuehrt**.
+- Provenienz: `reference_only`, vorhandenes Portregister; keine Software, Assets oder SDK aus Drittquellen kopieren.
+- Offene Gates: `implementation_gate_report` und der abschliessende PR-/Test-/Reviewer-Gate. Der jetzige PASS gilt ausschliesslich fuer DoR.
