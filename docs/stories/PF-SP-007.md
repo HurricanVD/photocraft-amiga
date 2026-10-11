@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-007`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `draft` (PF-SP-002 split_required; nicht `ready`)
+- Status: `ready` (Pre-ready-Audit 2026-10-12; no implementation)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -53,7 +53,7 @@ Als PhotoCraft-Portentwickler moechte ich kleiner cpu-compositor-paritätsspike 
 ## 7. refinement_note / refinement_triage
 
 - Trennung: genau eine fachliche Aenderungsachse und eigene Testnachweise.
-- `refinement_triage`: `needs_architecture`.
+- `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
 - Spike-/Design-Bedarf: `yes; no implementation authorized`.
@@ -69,9 +69,9 @@ Als PhotoCraft-Portentwickler moechte ich kleiner cpu-compositor-paritätsspike 
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pending`
-- `arch_review.pre_ready_final`: `pending`
-- `implementation_gate_report`: `missing/pending` (kein nachtraeglich erfundenes PASS)
+- `arch_review.initial`: `pass`
+- `arch_review.pre_ready_final`: `pass`
+- `implementation_gate_report`: `pending`
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
@@ -81,3 +81,12 @@ Als PhotoCraft-Portentwickler moechte ich kleiner cpu-compositor-paritätsspike 
 - Prioritaet: `P1` — Erster CPU-Compositor ist Voraussetzung fuer echten PhotoCraft-Viewport.
 - Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
+
+- `dor_check`: `pass`
+## Pre-ready delta 2026-10-12
+
+- Reviewed design and acceptance: Local RGBA8 Normal/opacity/mask compositor; row/dirty band output; original Rust differential fixture; no GUI/MiniGL/ICC.
+- Architecture: accepted ADR-0001/0002/0003; native offline 68040+ / 32 MiB RAM. Rust upstream remains the oracle, never a remote runtime. This limited, independent spike is `keep_single_story`.
+- Evidence: [PF-all-open-ready-review](../reviews/PF-all-open-ready-review-2026-10-12.md). Initial architecture / scope refinement / separate final pre-ready review and DoR pass are **planning checks**, not product runtime results.
+- IP: original PhotoCraft semantics are reference-only; any reused Dunkelkammer source is MIT for owner material (merge PR #9), retain each copyright and third-party notice.
+- Next stage: individual `implementation_gate_report` before work, unmet dependency verification as applicable. All actual native tests and target GUI checks still `not_run`.
