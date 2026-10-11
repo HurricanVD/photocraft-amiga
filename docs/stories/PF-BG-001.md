@@ -3,7 +3,7 @@
 - Story-ID: `PF-BG-001`
 - Story-Art: `BG`
 - Typ: `bug`
-- Status: `ready` (DoR am 2026-10-11 geprueft; Eintritt in `in_progress` separat gegated)
+- Status: `in_progress` (Implementation-Gate 2026-10-11 dokumentiert; Merge/Review/Done noch ausstehend)
 - Prioritaet: `P0`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -68,7 +68,7 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 - `arch_review.initial`: `pass` (2026-10-11; [Pre-ready-Review](../reviews/PF-BG-001-pre-ready-review-2026-10-11.md))
 - `arch_review.pre_ready_final`: `pass` (2026-10-11; Review umfasst ADR/IP/Scope und geplante Tests)
 - `dor_check`: `pass` (2026-10-11; siehe Pre-ready-Review)
-- `implementation_gate_report`: `pending`
+- `implementation_gate_report`: `pass` ([Scope- und WIP-Gate](../reviews/PF-BG-001-implementation-gate-2026-10-11.md))
 - `review_report`: `pending`
 - `done`: `not_authorized`
 
@@ -86,3 +86,10 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 - Prioritaet: `P0` — Speicherkorruptionsrisiko; vor Integration weiterer Layer-Implementierungen.
 - Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
+
+## 11. Implementierungsstand 2026-10-11
+
+- Separater Branch: `fix/pf-bg-001-raster-ownership` (Stack-Basis `docs/pf-open-findings-2026-10-11`).
+- C99-Änderung: internes Object-Ownership-Claim in `pc_raster.c`, expliziter `pc_document_append_raster`-Transfer, Regression fuer gleichen und fremden Document-Owner, COW-Clone.
+- `PF-TN-012`: Implementierung in `tests/pc_document_test.c` angelegt; **Testlauf und ASan/CI bis zur Ausfuehrung nicht als erfolgreich zaehlen**.
+- PR-/Final-Review und etwaige 68k/vamos-Regressionsnachweise weiterhin offen.
