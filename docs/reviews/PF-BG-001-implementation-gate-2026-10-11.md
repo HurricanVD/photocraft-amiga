@@ -18,3 +18,11 @@
 - `review_report:` pending; keine Merge-, Done- oder Release-Freigabe
 - `source_claim:` statischer Double-Free-Pfad in `pc_document_append_raster` und `pc_document_destroy` auf `main`
 - `process:` VD Amiga 0.2.1; Dokumentationsnachweis fuer diese **neue** Transition, nicht rueckdatiert
+
+## Kontrollierte Scope-Erweiterung fuer ausfuehrbare PR-Regressionsnachweise
+
+- Vor Bearbeitung des Workflows geprueft: der aktuelle `.github/workflows/amigaos3-host.yml` startet Pull-Request-Checks ausschliesslich bei Basisbranch `amigaos32`, nicht bei `main` oder der gesonderten PF-BG-001-Governance-Stackbasis.
+- Notwendige, **rein testinfrastrukturelle** Aenderung: die vorhandenen `pull_request.paths` beibehalten und den Branchfilter fuer AmigaOS-Hosttests entfernen, damit betroffene Pull Requests unabhaengig vom Target-Branch gleich behandelt werden.
+- Zusätzlicher schreibbarer Pfad: `.github/workflows/amigaos3-host.yml`; keine neue Abhaengigkeit, kein Produkt-Compilerwechsel, keine Rechte-/Quellcodeuebernahme.
+- Ruecknahme: Branchfilter wiederherstellen, falls die Laufzeit-/CI-Kosten gegen die Repo-Policy sprechen.
+- Freigabe bezieht sich auf Testausloesung, nicht auf vorweggenommene Testresultate oder implizites PF-SP-004/005/006-Gate.
