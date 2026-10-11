@@ -154,3 +154,17 @@ gcc13-check-hunks: gcc13-check-typed-hunks
 
 gcc13-vamos-typed-tests:
 	@VAMOS="$(VAMOS)" M68K_BUILD_DIR="$(GCC13_BUILD)" RUST_ORACLE_TYPED="$(RUST_ORACLE_TYPED)" sh scripts/vamos-typed-tests.sh
+
+# PF-SP-010: bounded, host-testable colour/alpha staging for RTG M2.
+PRESENT_CONVERT_TEST := $(BUILD)/pc_present_convert_test
+$(PRESENT_CONVERT_TEST): tests/pc_present_convert_test.c src/pc_present_convert.c src/pc_tile_convert.c include/pc_present_convert.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/pc_present_convert_test.c src/pc_present_convert.c src/pc_tile_convert.c
+
+.PHONY: host-present-convert-test
+host-present-convert-test: $(PRESENT_CONVERT_TEST)
+	./$(PRESENT_CONVERT_TEST)
+
+host-test: host-present-convert-test
+host-core-sanitize:
+	$(HOST_CC) -std=c99 -g -O1 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude -o $(BUILD)/pc_present_convert_san tests/pc_present_convert_test.c src/pc_present_convert.c src/pc_tile_convert.c
+	./$(BUILD)/pc_present_convert_san
