@@ -17,13 +17,17 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 
 | ID | Titel | Typ | Prioritaet | Status | Notiz |
 |---|---|---|---|---|---|
+| PF-BG-001 | Raster-Ownership beim Append absichern | BG | P0 | draft | Potenzieller Double-Free in pc_document_append_raster; PF-TN-012 geplant; vor Layer-PR-Integration prüfen |
 | PF-SP-004 | Flat-Layer-Reihenfolge und Deckkraft | SP | P1 | refining | PF-TN-005 / PR #3; vorlaeufige Implementierung, DoR offen |
 | PF-SP-005 | Verschachtelte Rastergruppen und Deep-COW | SP | P1 | refining | PF-TN-006 / PR #4; haengt von PF-SP-004 ab |
 | PF-SP-006 | Gray8-LayerMask-Sparse-COW | SP | P1 | refining | PF-TN-007 / PR #5; haengt von PF-SP-005 ab |
 | PF-SP-007 | CPU-Compositor-Paritaetsspike | SP | P1 | draft | Nach Gruppen-/Masken-Basis, keine Implementation |
 | PF-SP-008 | Command-/Undo-Redo-Prototyp | SP | P2 | draft | Eigenstaendiges Modell-/History-Gate |
 | PF-SP-009 | Serialisierungs-Roundtrip-Spike | SP | P2 | draft | Format- und IP-Vertrag offen |
-| PF-TD-001 | Tile-Lookup, RAM/OOM-Rollback | TD | P1 | draft | 32MiB-/Allocator-Fault-/Performance-Gate |
+| PF-TD-001 | Tile-Lookup, RAM/OOM-Rollback | TD | P1 | draft | 32MiB-/Allocator-Fault-/Performance-Gate; OOM-Region-Transaktionen und Tile-Index bereits hier erfasst |
+| PF-SP-010 | Optionaler RTG-Software-Viewport | SP | P1 | draft | PF-TN-013 geplant; CPU-/Presenter-Seam, unabhängig von MiniGL; nach PF-SP-007 |
+| PF-SP-011 | Minimale ReAction-Fenster- und Event-Shell | SP | P2 | draft | PF-TN-014 geplant; nach PF-SP-010, kein voller Editor |
+| PF-TD-002 | README-/Story-Status abgleichen | TD | P2 | draft | PF-TN-015 geplant; main/Branch/Lifecycle-Dokumentation korrigieren |
 
 ## Blockiert
 
