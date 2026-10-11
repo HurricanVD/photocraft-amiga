@@ -3,7 +3,7 @@
 - Story-ID: `PF-TD-002`
 - Story-Art: `TD`
 - Typ: `tech_debt`
-- Status: `in_progress` (Implementation-Gate dokumentiert; finaler Dokumentationstest und Review offen)
+- Status: `review` (README-Änderungen und Dokumentations-/PF-Preflight erfolgreich; finaler PR-Review und Merge offen)
 - Prioritaet: `P2`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -86,3 +86,9 @@ Als Projektbeteiligter moechte ich aus README und kanonischem Backlog den gleich
 - Umsetzung auf `docs/pf-td-002-readme-status`: Root-README benennt den realen `main`-Port, Port-README markiert historische 2026-10-09-Aussagen und verlinkt die kanonische PF-SP-002-`blocked`-Akte.
 - Der ursprüngliche Rust-Upstream, alle binären APIs, Buildpfade und AmigaOS-Komponenten bleiben unverändert.
 - Regression: [PF-TN-015](../tests/PF-TN-015.md), Docs-/Backlog-Checks und finaler PR-Review sind noch auszuführen.
+
+## 12. Review-Handoff (2026-10-11)
+
+- [PF-TN-015](../tests/PF-TN-015.md): acht kanonische Status-/Link-Checks und Docs-/PF-Preflight erfolgreich.
+- [Change Summary](../reviews/PF-TD-002-change-summary-2026-10-11.md), [PR #10](https://github.com/HurricanVD/photocraft-amiga/pull/10).
+- Allgemeiner final-head CI-/unabhaengiger Delta-Review noch offen; **kein** `review_report: approve`, `done` oder Release-Claim.
