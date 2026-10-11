@@ -1,7 +1,7 @@
 # PF-TN-015 — Kanonischer README-/Story-Status-Abgleich (verifiziert)
 
-- Story: [PF-TD-002](../stories/PF-TD-002.md)
-- Status: `verified_on_recorded_sha`; dokumentierte Status-/Link-/Docs-/PF-Checks PASS; allgemeiner CI-Lauf #38127048797 auf Ausgangs-PR-Head PASS, finaler neuer Doc-Head erfordert erneuten Check.
+- Story: [PF-TD-002](../../stories/done/PF-TD-002.md)
+- Status: `pass` (2026-10-11; kanonischer Status-/Link-/Backlog-Audit, PF-/Docs-Checks und General CI auf finalem PR-Head success, archiviert)
 - Gate: reine Dokumentationsregression, nicht ein Runtime-Test.
 
 ## Testfaelle
@@ -19,9 +19,9 @@
 - Link-/Status-Check: Urspruengliche acht Assertions PASS (auf `in_progress`-Stand); finale `review`-Backlog-Pruefung gesondert unten.
 - CI-Run/Exitcode: [#38127048797](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38127048797) `success` auf altem PR-Head; spaeterer neuer Review-Korrektur-Head separat nachzuweisen.
 - Dokumentationsevidenz: PF Preflight #38127048802 und Documentation #38127048787 `success`.
-- Review: `pending`
+- Review: `approve` (siehe finalen Story-Review PF-TD-002)
 
-Die Story wurde ueber ein explizites Implementation-Gate umgesetzt und ist nun in `review`; Dokumentations- und PF-Pruefungen wurden erfolgreich ausgefuehrt. `done`/Release bleiben unfreigegeben.
+Die Story wurde ueber das dokumentierte Implementation-Gate umgesetzt und nach erfolgreichen PF-/Docs-/CI-Pruefungen sowie Finalreview als `done` archiviert; Release bleibt unfreigegeben.
 
 ## Ausgefuehrte Pruefung 2026-10-11
 
@@ -33,4 +33,14 @@ Die Story wurde ueber ein explizites Implementation-Gate umgesetzt und ist nun i
 - [Documentation #38126908029](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38126908029) — `success`, mdBook build.
 - Vollstaendiger CI-Lauf [#38127048797](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38127048797) auf dem frueheren Head `179dbda` erfolgreich abgeschlossen. Kein vorweggenommener Erfolg auf dem durch diese Korrektur entstehenden SHA.
 - Keine AmigaOS-GUI-/MiniGL-Laufzeittests erforderlich, weil keine Ausfuehrungslogik geaendert wurde.
-- Unabhaengiger finaler Review und Merge: `pending`.
+- Finaler getrennter fachlicher Review und Merge von PR #10 dokumentiert. Keine selbst erteilte GitHub-APPROVE-Submission und keine Release-Freigabe.
+
+## Finaler Testabschluss — 2026-10-11
+
+- Finaler PR-Head `4af4441828f431c163a4d27013b378fb57e14f5f`, [Merge #10](https://github.com/HurricanVD/photocraft-amiga/pull/10) unter `7621c7fe814d73aec58ec7561e7ef612e23e185e`.
+- [GitHub CI #38141046023](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38141046023): `completed/success`.
+- [Documentation #38141046048](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38141046048): `completed/success`.
+- [PF Bootstrap Docs Preflight #38141046033](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38141046033): `completed/success`.
+- [AmigaOS 3.2 Host Core #38141046042](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38141046042): `completed/success` auf dem integrierten PR-Head.
+- Nach dem Konfliktmerge wurde dokumentiert verifiziert: `PF-BG-001` und `PF-TD-002` standen jeweils genau einmal in der Sektion `Aktive PF-Stories` als `review`; Root-/Port-README verweisen korrekt auf `main`, der historische Parent PF-SP-002 ist weiterhin `blocked`. Mit der Archivierung stehen beide ausschließlich in `backlog-done.md`.
+- Manueller Anwendungstest: `n/a` (reine Dokumentation), automatisierte Checks als Regression. Source-/Produktcode, NDK, MiniGL und Release waren nicht Teil dieser Story.
