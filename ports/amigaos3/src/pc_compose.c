@@ -71,7 +71,8 @@ int pc_compose_rgba8_region(const PcDocument *doc,PcRect r,
             const uint64_t id=pc_document_layer_id(doc,li);
             PcRaster *surface=pc_document_layer_raster((PcDocument *)doc,li);
             int enabled=pc_document_layer_visible(doc,li);
-            int has_mask=pc_document_layer_mask((PcDocument *)doc,id)!=NULL;
+            PcRaster *mask=pc_document_layer_mask((PcDocument *)doc,id);
+            int mask_enabled=mask && pc_document_mask_enabled(doc,id)>0;
             if (enabled<=0) continue;
             opacity=pc_scale(pc_fraction_255(pc_document_layer_opacity(doc,li)),
                              pc_fraction_255(pc_document_layer_fill_opacity(doc,li)));
@@ -81,9 +82,9 @@ int pc_compose_rgba8_region(const PcDocument *doc,PcRect r,
                 unsigned coverage=255,alpha;
                 int32_t xx=r.x0+(int32_t)x,yy=r.y0+(int32_t)y;
                 if (!pc_raster_read_pixel(surface,xx,yy,pixel,4)) return 0;
-                if (has_mask && pc_document_mask_enabled(doc,id)>0) {
+                if (mask_enabled) {
                     uint8_t mask_value;
-                    if (!pc_document_mask_value_u8(doc,id,xx,yy,&mask_value)) return 0;
+                    if (!pc_raster_read_pixel(mask,xx,yy,&mask_value,1)) return 0;
                     coverage=(unsigned)mask_value;
                 }
                 alpha=pc_scale(pc_scale((unsigned)pixel[3],opacity),coverage);
