@@ -5,6 +5,8 @@ fuer dieses App-Repository werden hier gepflegt.
 
 ## [Unreleased]
 
+- PF-SP-005 abgeschlossen: Verschachtelte Rastergruppen bis Tiefe 100, rekursive Counts, Rust-kompatibles Shift und Deep-COW mit exklusivem Raster-Ownership verifiziert.
+
 - PF-SP-004 abgeschlossen: Flat-Layer-Reihenfolge/Opacity mit COW-Ownership/Original-Rust- und GCC13/vamos-Paritaet auf aktuellem Code-Head integriert.
 
 - PF-TD-002 abgeschlossen: README-/Port-Branch- und kanonische Story-Statusdarstellung korrigiert, Dokumentations- und CI-Nachweise archiviert.

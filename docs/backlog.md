@@ -46,7 +46,6 @@ Die Nummer `NNN` ist pro Prefix und Story-Art fortlaufend dreistellig.
 | ID | Titel | Art | Priorität | Status |
 |---|---|---|---|---|
 | PF-SP-006 | Gray8-LayerMask-Sparse-COW | SP | P1 | in_progress |
-| PF-SP-005 | Verschachtelte Rastergruppen und Deep-COW | SP | P1 | in_progress |
 
 Statusquelle: [PF-SP-002-Atomisierung](reviews/PF-SP-002-atomization-report-2026-10-11.md) und [Prioritaets-/Ready-Audit 2026-10-11](reviews/PF-backlog-priority-ready-audit-2026-10-11.md). `PF-BG-001` und `PF-TD-002` haben dokumentierte DoR/Pre-ready-Nachweise. PF-SP-004 steht im `review`; PF-SP-005 und PF-SP-006 sind nach eigenstaendigen Child-DoR-/Implementation-Gates `in_progress` fuer ihren begrenzten aktuellen Stack-Scope. Die alten Parent-Commits bleiben historische WIP. `ready` ist **keine** Freigabe fuer `in_progress`, Merge oder Release. PF-SP-002 bleibt blocked/frozen; WIP-Limit VD v0.2.1 beachten.
 
