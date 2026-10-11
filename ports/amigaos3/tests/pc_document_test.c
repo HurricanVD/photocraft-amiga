@@ -198,6 +198,83 @@ static void test_group_tree(void)
     pc_document_destroy(copy);
 }
 
+/* Rust LayerMask subset: sparse Gray8 byte coverage, default 255/0,
+ * enabled/linked flags and independent cloned mask surface ownership.
+ * Density=1 and feather=0; no compositor is asserted by these tests. */
+static void test_mask_contract(void)
+{
+    PcPixelFormat f={PC_COLOR_RGB,PC_SAMPLE_U8,1};
+    PcPixelFormat gray={PC_COLOR_GRAY,PC_SAMPLE_U8,0};
+    const uint8_t painted=0,mid=128;
+    PcDocument *d=pc_document_new("Mask document",20,30),*snapshot;
+    PcRaster *pixels=pc_raster_new(f,NULL);
+    PcRaster *invalid=pc_raster_new(f,NULL);
+    PcRaster *mask=pc_document_mask_reveal_all();
+    PcRaster *other=pc_document_mask_hide_all();
+    PcRaster *group_mask=pc_raster_new(gray,&mid);
+    PcRaster *taken;
+    uint8_t coverage=77;
+    assert(d&&pixels&&invalid&&mask&&other&&group_mask);
+    assert(pc_document_append_group(d,101,"Parent"));
+    assert(pc_document_group_append_raster(d,101,102,"Nested",pixels));
+    assert(pc_document_mask_enabled(d,102)==-1);
+    assert(!pc_document_mask_value_u8(d,102,-1,256,&coverage));
+    assert(coverage==77);
+    assert(!pc_document_attach_mask(d,0,mask,1,1));
+    assert(!pc_document_attach_mask(d,999,mask,1,1));
+    assert(!pc_document_attach_mask(d,102,invalid,1,1));
+    assert(!pc_document_attach_mask(d,102,pixels,1,1));
+    assert(pc_document_attach_mask(d,102,mask,1,1));
+    assert(!pc_document_attach_mask(d,102,other,1,1));
+    assert(!pc_document_attach_mask(d,101,mask,1,1));
+    assert(pc_document_layer_mask(d,102)==mask);
+    assert(pc_document_mask_enabled(d,102)==1);
+    assert(pc_document_mask_linked(d,102)==1);
+    assert(pc_document_mask_value_u8(d,102,300,-300,&coverage) && coverage==255);
+    assert(pc_raster_write_pixel(mask,-1,256,&painted,1));
+    assert(pc_document_mask_value_u8(d,102,-1,256,&coverage) && coverage==0);
+    assert(pc_document_set_mask_enabled(d,102,0));
+    assert(pc_document_mask_value_u8(d,102,-1,256,&coverage) && coverage==255);
+    assert(pc_document_set_mask_enabled(d,102,1));
+    assert(pc_document_set_mask_linked(d,102,0));
+    assert(pc_document_mask_linked(d,102)==0);
+    assert(pc_document_mask_value_u8(d,102,-1,256,&coverage) && coverage==0);
+
+    /* The Rust mask field also exists on Group layers. */
+    assert(pc_document_attach_mask(d,101,group_mask,1,1));
+    assert(pc_document_mask_value_u8(d,101,-400,400,&coverage) && coverage==128);
+    assert(pc_document_attach_mask(d,101,other,1,1)==0);
+    snapshot=pc_document_clone(d);
+    assert(snapshot);
+    assert(pc_document_layer_mask(snapshot,102)!=mask);
+    assert(pc_document_mask_linked(snapshot,102)==0);
+    assert(pc_document_mask_enabled(snapshot,102)==1);
+    assert(pc_document_mask_value_u8(snapshot,102,-1,256,&coverage) && coverage==0);
+    assert(pc_raster_write_pixel(pc_document_layer_mask(snapshot,102),-1,256,&mid,1));
+    assert(pc_document_mask_value_u8(snapshot,102,-1,256,&coverage) && coverage==128);
+    assert(pc_document_mask_value_u8(d,102,-1,256,&coverage) && coverage==0);
+    assert(pc_document_set_mask_linked(snapshot,102,1));
+    assert(pc_document_mask_linked(d,102)==0);
+    assert(pc_document_mask_value_u8(snapshot,101,0,0,&coverage) && coverage==128);
+
+    /* Detach transfers ownership back to the caller without touching
+     * the clone, and the original can then accept another mask. */
+    taken=pc_document_detach_mask(d,102);
+    assert(taken==mask);
+    assert(pc_document_layer_mask(d,102)==NULL);
+    assert(pc_document_mask_enabled(d,102)==-1);
+    assert(!pc_document_set_mask_enabled(d,102,1));
+    assert(!pc_document_mask_value_u8(d,102,-1,256,&coverage));
+    pc_raster_destroy(taken);
+    assert(pc_document_attach_mask(d,102,other,1,1));
+    assert(pc_document_mask_value_u8(d,102,-1,256,&coverage) && coverage==0);
+    pc_document_destroy(d);
+    assert(pc_document_mask_value_u8(snapshot,102,-1,256,&coverage) && coverage==128);
+    pc_document_destroy(snapshot);
+    pc_raster_destroy(invalid);
+    puts("PASS: PhotoCraft Gray8 LayerMask ownership/defaults/flags/deep COW");
+}
+
 /* PF-BG-001: lifetime ownership belongs to one document, not one layer ID.
  * Regression covers same-document and cross-document double-free vectors.
  */
@@ -286,6 +363,37 @@ static void test_nested_raster_claims(void)
     pc_document_destroy(clone);
 }
 
+
+/* PF-SP-006 cross-document mask claims, deep clone claims, detach/reattach. */
+static void test_mask_claim_transfer(void)
+{
+    PcDocument *a=pc_document_new("Mask A",16,16);
+    PcDocument *b=pc_document_new("Mask B",16,16),*clone;
+    PcRaster *mask=pc_document_mask_reveal_all(),*taken;
+    assert(a&&b&&mask);
+    assert(pc_document_append_group(a,11,"A group"));
+    assert(pc_document_append_group(b,22,"B group"));
+    assert(pc_document_attach_mask(a,11,mask,1,1));
+    assert(!pc_document_attach_mask(b,22,mask,1,1));
+    assert(pc_document_layer_mask(b,22)==NULL);
+    clone=pc_document_clone(a);assert(clone);
+    assert(pc_document_layer_mask(clone,11)!=mask);
+    assert(!pc_document_attach_mask(b,22,
+           pc_document_layer_mask(clone,11),1,1));
+    taken=pc_document_detach_mask(a,11);
+    assert(taken==mask);
+    assert(pc_document_attach_mask(b,22,taken,1,0));
+    assert(!pc_document_attach_mask(a,11,taken,1,1));
+    taken=pc_document_detach_mask(b,22);
+    assert(taken==mask);
+    assert(pc_document_attach_mask(a,11,taken,0,1));
+    assert(pc_document_detach_mask(a,11)==taken);
+    pc_raster_destroy(taken);
+    pc_document_destroy(b);
+    pc_document_destroy(a);
+    pc_document_destroy(clone);
+}
+
 int main(void)
 {
     PcPixelFormat f={PC_COLOR_RGB,PC_SAMPLE_U8,1};
@@ -316,8 +424,10 @@ int main(void)
     pc_document_destroy(snapshot);
     test_layer_contract();
     test_group_tree();
+    test_mask_contract();
     check_exclusive_raster_owner();
     test_nested_raster_claims();
+    test_mask_claim_transfer();
     puts("PASS: PhotoCraft flat raster-layer document ownership/order/COW/opacity/shift");
     puts("PASS: PhotoCraft bounded group hierarchy/deep COW/ID semantics");
     return 0;

@@ -20,6 +20,8 @@ PcRaster *pc_raster_clone(const PcRaster *raster);
 void pc_raster_destroy(PcRaster *raster);
 size_t pc_raster_tile_count(const PcRaster *raster);
 size_t pc_raster_bytes_per_pixel(const PcRaster *raster);
+/* Read the exact encoded format; never infer Gray8 from stride alone. */
+int pc_raster_get_format(const PcRaster *raster,PcPixelFormat *out);
 int pc_raster_read_pixel(const PcRaster *raster, int32_t x, int32_t y,
                          uint8_t *out, size_t out_len);
 int pc_raster_write_pixel(PcRaster *raster, int32_t x, int32_t y,
