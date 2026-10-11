@@ -45,7 +45,7 @@ Die erfolgreichen Runs sind **echte historische Nachweise auf den obigen Heads**
 
 ## Freigabeplan (keine Freigabe vorgezogen)
 
-1. PR #7 (neue Story-/Prioritaets-/Ready-Basis) separat reviewen und integrieren; sonst koennen diese neuen kanonischen Referenzen auf `main` fehlen.
+1. **Erledigt 2026-10-11:** [PR #7](https://github.com/HurricanVD/photocraft-amiga/pull/7) ist auf `main` gemergt (Merge-SHA `2723b00664ca2ef53d2ab5dc34431e3f097ddd4e`). Kanonische Story-/Prioritaetsakten sind jetzt auf `main` vorhanden.
 2. PR #8 (PF-BG-001) nach vollstaendigen Host-/m68k-/Review-Gates eigenstaendig integrieren und auf `main` erneut pruefen.
 3. #3 auf aktualisiertem `main` mit P0-Fix und ohne veraltete Governance-Rueckschreibungen ausrichten. Child-`refinement_triage`, `arch_review.pre_ready_final`, `dor_check` unabhaengig bestaetigen; dann erst `ready` und anschliessend per Implementation-Gate `in_progress` bzw. `review` dokumentieren.
 4. #4 auf der akzeptierten #3-Basis aktualisieren, Owner-Claim und Clone-Gates implementieren, Child-DoR und erneute komplette CI.
@@ -58,3 +58,10 @@ Die erfolgreichen Runs sind **echte historische Nachweise auf den obigen Heads**
 - `merge_approved: no`; `release_approved: no`.
 - Bestehende CI-Ergebnisse: `success` auf den aufgefuehrten Heads; neuer integrierter Stand: `not_run`.
 - Keine Aenderung an Produktcompiler, Rust-Upstream, Amiga-GUI oder privatem Dunkelkammer-Code.
+
+## Follow-up 2026-10-11 — Sicherheitsfix und aktuelle Abhaengigkeiten
+
+- [PF-BG-001 / PR #8](https://github.com/HurricanVD/photocraft-amiga/pull/8) wurde gegen `main` retargetet, befindet sich in `review` und hat [gruenen AmigaOS-C99-/ASan-/Rust-/GCC13-vamos-Nachweis](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38126076875). Es ist **noch nicht gemergt**, waehrend allgemeiner CI und Review kontrolliert ausstehen.
+- Die konkrete Integrationsarbeit von #3/#4/#5 ist unveraendert blockiert, solange der neue Ownership-Claim nicht auf deren finalen Head portiert und neu getestet wurde.
+- Die frueheren Whole-PR-Runs #38094893931, #38095522427, #38095619323 bleiben nachweislich gruen fuer die alten Heads; keine Behauptung ueber den nach P0-Integration neu entstehenden Head.
+- Kein neues `ready`-Gate fuer die drei Child-Stories durch diesen Dokumentations-Nachtrag.
