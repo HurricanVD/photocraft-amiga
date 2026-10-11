@@ -1,7 +1,7 @@
 # PF-BG-001 — Refinement, initiales und finales Pre-ready-Architekturreview
 
 - Datum: 2026-10-11
-- Story: [PF-BG-001](../stories/PF-BG-001.md)
+- Story: [PF-BG-001](../stories/done/PF-BG-001.md)
 - Review-Typ: dokumentierter sequenzieller Eigenreview der vorhandenen Quellen; **kein unabhaengiger Subagent-/Maintainer-Review**
 - Basis: `main` 4f2b0cc9, `ports/amigaos3/src/pc_document.c`, `src/pc_raster.c`, `include/pc_document.h`, `tests/pc_document_test.c`, `docs/adr/ADR-0001..0003`, `ports/amigaos3/docs/ip-provenance-register.md`
 - Pruefumfang: **Readiness/Design**, keine Codeumsetzung, kein CI-/Target-PASS

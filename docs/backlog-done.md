@@ -10,3 +10,4 @@ Die Nummer `NNN` bleibt beim Archivieren unveraendert.
 
 
 | PF-SP-003 | GCC13/vamos HUNK und Rust-Parität | SP | P1 | 2026-10-09 | PF-TN-003, CI #37915607402 |
+| PF-BG-001 | Raster-Ownership beim Append absichern | BG | P0 | 2026-10-11 | PF-TN-012, CI #38140374511, AmigaOS #38140374487, PR #8 |

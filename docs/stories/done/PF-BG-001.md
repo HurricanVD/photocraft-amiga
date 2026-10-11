@@ -3,7 +3,7 @@
 - Story-ID: `PF-BG-001`
 - Story-Art: `BG`
 - Typ: `bug`
-- Status: `review` (Implementierung plus Host/ASan/UBSan/GCC13-vamos nachweislich abgeschlossen; unabhängiger Review/Merge noch offen)
+- Status: `done` (2026-10-11; begrenzter Ownership-Fix implementiert, getestet, reviewt und gemergt)
 - Prioritaet: `P0`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -47,7 +47,7 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 - Bestehende Referenz: `pc_document_append_raster`, `pc_document_destroy`, `pc_document_clone`.
 - Rust-Original dient als Semantikreferenz; C-spezifisches Pointer-Aliasing hat keine zwingend identische Rust-Testsequenz.
 - Kein AmigaOS-SDK oder MiniGL fuer den Host-Regressionstest notwendig.
-- Evidenz: Host-/ASan-Run #38125707879 (scope-limitiert PASS); [Implementierungs-PR #8](https://github.com/HurricanVD/photocraft-amiga/pull/8) Draft; kein finaler Merge-/Review-Abschluss.
+- Evidenz: Host/ASan/GCC13-vamos und Rust-Oracle PASS, [PR #8](https://github.com/HurricanVD/photocraft-amiga/pull/8) gemergt; Final-PR-Head CI #38140374511 und Host #38140374487 erfolgreich.
 
 ## 7. refinement_note / refinement_triage
 
@@ -65,12 +65,12 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pass` (2026-10-11; [Pre-ready-Review](../reviews/PF-BG-001-pre-ready-review-2026-10-11.md))
+- `arch_review.initial`: `pass` (2026-10-11; [Pre-ready-Review](../../reviews/PF-BG-001-pre-ready-review-2026-10-11.md))
 - `arch_review.pre_ready_final`: `pass` (2026-10-11; Review umfasst ADR/IP/Scope und geplante Tests)
 - `dor_check`: `pass` (2026-10-11; siehe Pre-ready-Review)
-- `implementation_gate_report`: `pass` ([Scope- und WIP-Gate](../reviews/PF-BG-001-implementation-gate-2026-10-11.md))
-- `review_report`: `pending`
-- `done`: `not_authorized`
+- `implementation_gate_report`: `pass` ([Scope- und WIP-Gate](../../reviews/PF-BG-001-implementation-gate-2026-10-11.md))
+- `review_report`: `approve`
+- `done`: `completed` (2026-10-11, Scope PF-BG-001; kein Produktrelease)
 
 ## 10. Verbindlicher Implementierungs-Kontrakt nach Pre-ready-Review
 
@@ -84,7 +84,7 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 ## Priorisierung 2026-10-11
 
 - Prioritaet: `P0` — Speicherkorruptionsrisiko; vor Integration weiterer Layer-Implementierungen.
-- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Quelle: [Prioritaets-/Ready-Audit](../../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
 
 ## 11. Implementierungsstand 2026-10-11
@@ -92,10 +92,19 @@ Als PhotoCraft-Portentwickler moechte ich Raster-Eigentum genau einmal uebertrag
 - Separater Branch: `fix/pf-bg-001-raster-ownership` (Stack-Basis `docs/pf-open-findings-2026-10-11`).
 - C99-Änderung: internes Object-Ownership-Claim in `pc_raster.c`, expliziter `pc_document_append_raster`-Transfer, Regression fuer gleichen und fremden Document-Owner, COW-Clone.
 - `PF-TN-012`: Host-C99/ASan+UBSan und GCC13/vamos O0/O2 am 2026-10-11 in [CI #38125707879](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38125707879) PASS auf Code-SHA `ae3102f`. Finaler PR-/Main-Integrations-Review ausstehend.
-- Der 68k/vamos-Regressionsnachweis liegt fuer Code-SHA `ae3102f` vor; unabhaengige abschliessende Review- und Merge-Freigabe bleiben gesondert.
+- 68k/vamos auf `ae3102f` sowie letztem PR-Head #38140374487 PASS; Reviewbefund vom externen Codex-Check behoben, eigenständiger Abschlussbericht abgelegt.
 
 ## 12. Review-Handoff (2026-10-11)
 
-- [Change Summary](../reviews/PF-BG-001-change-summary-2026-10-11.md) und [PF-TN-012](../tests/PF-TN-012.md) mit Host-, Sanitizer- und m68k/vamos-Ergebnissen.
-- Stand: `review` nach abgeschlossenem begrenztem Code-Scope; **kein** `review_report: approve`, kein `done`, kein Merge.
-- Vor Integration muessen PR #7, der neu integrierte Main-Head, die aktuelle CI-/Doku-Lage und die Cross-Document-Gruppen-/Masken-Gates #3/#4/#5 getrennt bewertet werden.
+- [Change Summary](../../reviews/PF-BG-001-change-summary-2026-10-11.md) und [PF-TN-012](../../tests/done/PF-TN-012.md) mit Host-, Sanitizer- und m68k/vamos-Ergebnissen.
+- Historischer Review-Handoff; nun abgeschlossen durch [finalen Reviewbericht](../../../reviews/PF-BG-001-final-review-2026-10-11.md) und Merge #8 (`4fa6ca6`).
+- PR #7 und #8 sind integriert; PF-SP-004/005/006 bleiben separat `refining` und nicht freigegeben.
+
+## 13. Finaler Story-Abschluss — 2026-10-11
+
+- `review_report: approve` — [finaler Review](../../reviews/PF-BG-001-final-review-2026-10-11.md) auf Basis des eingefrorenen Changesets und ausgefuehrter Checks; Reviewempfehlung dokumentiert, **keine selbst erteilte GitHub-APPROVE-Submission**.
+- `test_evidence: pass` — [PF-TN-012](../../tests/done/PF-TN-012.md); [PR #8](https://github.com/HurricanVD/photocraft-amiga/pull/8), Commit `4fa6ca6a5b5a5b1c48257835fabacb7922c3b03e`.
+- Final-PR-Head `5c862a3ca149b26af0eb9fd20b762f671f7b9217`: [CI #38140374511](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374511), [AmigaOS Host/GCC13/vamos #38140374487](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374487), [Docs #38140374504](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374504), [PF Preflight #38140374455](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374455), [Packaging #38140374462](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374462) — jeweils success.
+- Manueller WinUAE-Test: `n/a` fuer plattformfreien C99-Ownership-Bugfix, ersetzt durch Host/Sanitizer und echten m68k-HUNK/vamos-Regressionstest; keine MiniGL-/UI-Abnahme.
+- Der Integrierte Port und die bestehende API-/IP-/Architekturbeschreibung wurden fuer diesen Scope abgeglichen. Produktions-ABI, PSD, Masken/Groups, OOM-Fault-Injection und Release bleiben ausserhalb dieser Story.
+- Archivpfad: `docs/stories/done/PF-BG-001.md`, Test: `docs/tests/done/PF-TN-012.md`. Die alleinigen kanonischen Statuszeilen liegen im `docs/backlog-done.md`.

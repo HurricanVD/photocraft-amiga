@@ -1,7 +1,7 @@
 # PF-BG-001 — change_summary und technischer Teststand
 
 - Datum: 2026-10-11
-- Story: [PF-BG-001](../stories/PF-BG-001.md), P0
+- Story: [PF-BG-001](../stories/done/PF-BG-001.md), P0
 - Implementierungs-PR: [#8](https://github.com/HurricanVD/photocraft-amiga/pull/8), Stackbasis [#7](https://github.com/HurricanVD/photocraft-amiga/pull/7)
 - Freigabe: [Implementation-Gate](PF-BG-001-implementation-gate-2026-10-11.md) vor eigentlichen Codeaenderungen
 - Scope: `ports/amigaos3/` C99-Document-Ownership und Port-CI-Ausloesung, keine Rust-/GUI-/PSD-/ABI-Versprechen

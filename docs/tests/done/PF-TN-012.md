@@ -1,7 +1,7 @@
 # PF-TN-012 — Raster-Ownership-Regression (Host verifiziert)
 
-- Story: [PF-BG-001](../stories/PF-BG-001.md)
-- Status: `technical_pass_on_code_sha` (Host/ASan/UBSan, bestehende Rust-Oracles sowie GCC13/vamos O0/O2 PASS am 2026-10-11; finaler PR-Review/Head-Integration offen)
+- Story: [PF-BG-001](../../stories/done/PF-BG-001.md)
+- Status: `pass` (2026-10-11; Host/ASan/UBSan, Rust-Original-Oracles und GCC13/vamos O0/O2 auf finalem PR-Head bestanden; archiviert)
 - Gate: Regression nach Implementierung, **kein PASS-Nachweis durch die DoR-Freigabe**.
 
 ## Testfaelle
@@ -19,7 +19,7 @@
 - Ausführung/Exitcode: `PASS` (AmigaOS-Host-Run #38125707879, Job 114429524447)
 - Assertion-/Sanitizer-Ergebnis: `PASS` (Host/ASan/UBSan laut ausgefuehrtem Joblog)
 - m68k/vamos: `PASS` (GCC13.3 HUNK/vamos O0 und O2, Job 114429621096, CI #38125707879)
-- Regression-Test-Review: `pending`
+- Regression-Test-Review: `approve` ([finaler Review](../../reviews/PF-BG-001-final-review-2026-10-11.md))
 
 Es ist **keine** produktive AmigaOS-GUI, MiniGL- oder PSD-Testabdeckung behauptet.
 
@@ -32,9 +32,18 @@ Es ist **keine** produktive AmigaOS-GUI, MiniGL- oder PSD-Testabdeckung behaupte
 - Job `Rust originals vs C99 port` ID `114429524610`: **success**, `PASS: original PhotoCraft Rust crates match C99 port and typed oracle`. Die Rust/C99-Oracles decken weiterhin ihren bestehenden Scope ab; der C-exklusive Ownership-Test besitzt keinen neuen Rust-originaeren Ownership-Oracle.
 - m68k GCC13/vamos: **success**, Job ID `114429621096` in CI #38125707879. GCC/Bebbo 13.3, 12 echte HUNK-Binaries, O0/O2 über `vamos` ausgefuehrt. Überpruefte Doc-Regression meldete jeweils `PASS: PhotoCraft flat raster-layer document ownership/order/COW`; Rust/Core/Typed-Oracles bei O0/O2 stimmten byteidentisch ueberein.
 - OOM-Allocator-Fault-Injection: **not_run / ausserhalb dieses Bugfix-Regressionsjobs**; bleibt in `PF-TD-001` fuer spaetere deterministische Allokationsfehler offen.
-- Ein finaler unabhängiger Review, vollstaendiges CI und PR-/Merge-Freigabe fehlen weiterhin.
+- Final-PR-Head: alle einschlaegigen CI-Lanes green, Codex-P2-Finding geloest, PR #8 gemergt; keine Produktfreigabe.
 
 ## Abschlussgrenze
 
-- Technischer Code-Commit ist mit portabler und emulierter CPU-Regression geprueft; der finale PR bleibt Draft bis zum unabhaengigen Review und kontrollierten Stack-Merge.
+- Der final gepruefte Code ist nach `main` gemergt. Die GitHub-Eigenfreigabe per APPROVE ist nicht moeglich; separater Reviewbericht dokumentiert die fachliche Empfehlung.
 - Native GUI-/Minigl-/WinUAE-/PiStorm-Runtime bleibt ohne Testnachweis (nicht Teil dieses Bugfixes).
+
+## Finaler Testabschluss — 2026-10-11
+
+- PR-Head: `5c862a3ca149b26af0eb9fd20b762f671f7b9217`.
+- [CI #38140374511](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374511): completed/success.
+- [AmigaOS 3.2 Host #38140374487](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374487): completed/success, C99 + ASan/UBSan, Rust-Original-Oracle, GCC13.3 HUNK + `vamos` O0/O2.
+- [Documentation #38140374504](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374504), [PF Preflight #38140374455](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374455), [Packaging #38140374462](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374462): completed/success.
+- PR-Merge-Commit: `4fa6ca6a5b5a5b1c48257835fabacb7922c3b03e`.
+- Bewusst nicht als bestanden verbucht: deterministische OOM-Fault-Injection, WinUAE/GUI/MiniGL, Gruppen-/Maskenintegration; eigene Stories/Gates.
