@@ -190,3 +190,23 @@ gcc13-vamos-compose:
 	  grep -q '^PASS: PhotoCraft scoped flat RGBA8 normal compositor/opacity/mask$$' "$(GCC13_BUILD)/$$opt/compose.log"; \
 	  cat "$(GCC13_BUILD)/$$opt/compose.log"; \
 	done
+
+# Differential against original Rust normal-blend arithmetic (tolerance 1 U8).
+COMPOSE_ORACLE := $(BUILD)/compose_oracle
+$(COMPOSE_ORACLE): tests/compose_oracle.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $@ tests/compose_oracle.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c
+host-compose-test: $(COMPOSE_ORACLE)
+	./$(COMPOSE_ORACLE) > $(BUILD)/oracle-c-compose.txt
+
+gcc13-build-compose: gcc13-preflight
+	@set -eu; for opt in O0 O2; do \
+	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -Iinclude $(GCC13_LDFLAGS) \
+	    tests/compose_oracle.c src/pc_compose.c src/pc_document.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/compose_oracle"; \
+	done
+gcc13-check-compose-hunks:
+	@python3 scripts/check-hunk.py $(GCC13_BUILD)/O0/compose_oracle $(GCC13_BUILD)/O2/compose_oracle
+gcc13-vamos-compose:
+	@set -eu; for opt in O0 O2; do \
+	  "$(VAMOS)" -S -C 20 -m 8192 -s 128 "$(GCC13_BUILD)/$$opt/compose_oracle" > "$(GCC13_BUILD)/$$opt/oracle-c-compose.txt" 2>&1; \
+	  python3 scripts/compare-compose.py "$(RUST_COMPOSE_ORACLE)" "$(GCC13_BUILD)/$$opt/oracle-c-compose.txt"; \
+	done
