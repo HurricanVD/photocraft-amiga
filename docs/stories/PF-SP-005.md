@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-005`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `refining` (PF-SP-002 split_required; nicht `ready`)
+- Status: `in_progress` (2026-10-11; separat gegatete post-P0-Gruppenintegration)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -54,7 +54,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 ## 7. refinement_note / refinement_triage
 
 - Trennung: genau eine fachliche Aenderungsachse und eigene Testnachweise.
-- `refinement_triage`: `needs_architecture`.
+- `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
 - Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
@@ -70,21 +70,21 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pending`
-- `arch_review.pre_ready_final`: `pending`
-- `implementation_gate_report`: `missing/pending` (kein nachtraeglich erfundenes PASS)
+- `arch_review.initial`: `pass`
+- `arch_review.pre_ready_final`: `pass`
+- `dor_check`: `pass`
+- `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
 
-## Technischer Implementierungsstand aus PR #4 (retrospektiv)
+## Priorisierung 2026-10-11
 
-- Bereits unter dem alten Sammelspike implementiert; nach formaler Atomisierung ausschließlich PF-SP-005 zugeordnet.
-- Experimentelle Gruppen-Raster-Baumstruktur, globale eindeutige Layer-IDs, bottom-first Child-Order, Gruppentiefe maximal 100, sibling-only Shift, Owned-Group-Arrays und COW-Raster-Clones.
-- Fehlender oder falscher Parent sowie doppelte ID werden ohne Ownership-Uebergang zurückgewiesen. Kein gruppenweises Rendering, Cross-Parent-Move, Masken-/PSD-/History-Verhalten freigegeben.
-- Echte Host C99/ASan+UBSan/51 Original-Rust-Tests, Rust-vs-C Group-Differential und GCC13 13.3 HUNK/vamos O0/O2 im [CI #38042621636](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38042621636) erfolgreich auf früherem Implementierungssnapshot; PF-TN-006 konserviert das.
-- `pre_ready_final` und Implementation-Gate für diesen Child-Scope bleiben nachzuholen. Keine Rückdatierung der Freigabe, keine Änderung am administrativ gesperrten Parent PF-SP-002.
+- Prioritaet: `P1` — PR #4 baut auf PF-SP-004 auf und wird fuer Masken/Gruppen-Rendering benoetigt.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
 
-## Technischer Delta-Review-Befund, 2026-10-11
+## Child-Gates 2026-10-11
 
-Ein Codex-Review des Implementierungs-PRs erkannte zwei semantische Abweichungen: ein Root-only `pc_document_layer_count` und eine Root-only `pc_document_shift_layer`-Operation. Die Korrektur richtet `layer_count` rekursiv am echten Rust-`Document::layer_count` aus, erhaelt den root-only API-Vertrag unter dem neuen, eindeutigen Namen `pc_document_root_layer_count`, und verschiebt Knoten ueber deren echte Sibling-Liste. Rust/C-Gruppenoracles enthalten nun Gesamt- und Root-Zahl; die Testmatrix testet Verschiebungen innerhalb verschachtelter Gruppen. Dies ist ein Review-Fix fuer den bestehenden PF-SP-005-Spike, kein neuer Produkt-ABI-Vertrag; exakt-head CI ist erneut erforderlich.
+- [Refinement-, Architektur- und DoR-Audit](../reviews/PF-SP-005-ready-gates-2026-10-11.md) gilt ausschliesslich fuer die neue Integration mit PF-BG-001-Claim und PF-SP-004.
+- Alte PR4-Commits waren unter PF-SP-002 ohne separate Child-Freigabe entstanden; diese Historie wird nicht rueckdatiert.

@@ -1,0 +1,22 @@
+# review_report — PF-BG-001 (story_review_final, 2026-10-11)
+
+- Artifact: `review_report`
+- Story: PF-BG-001; `from_status: review`; `to_status: done`; `recommendation: approve`.
+- Basis: `main` 7621c7f nach Merge von PR #8; finaler Code-PR-Head `5c862a3` und Merge `4fa6ca6`.
+- Reviewform: getrennte sachliche Finalpruefung nach Codeintegration; GitHub-PR wurde bereits durch Codex kommentiert (P2-Evidenzkonflikt behoben, Thread resolved). **Keine behauptete unabhaengige menschliche GitHub-APPROVE**, die Eigentuemerkonfiguration gestattet keine Self-APPROVE-Submission.
+- Gepruefte Quellen: `ports/amigaos3/src/pc_document.c`, `pc_raster.c`, interner Claim-Header, `include/pc_document.h`, `tests/pc_document_test.c`, Makefile, AmigaOS-CI-Workflow, akzeptierte ADR-0001..0003, Port-Provenienzregister, `PF-TN-012` und Change Summary.
+- `artifact_status: complete`; `review_report: approve` (fachliche Empfehlung fuer den **begrenzt implementierten** Bugfix).
+- Findings: `High: none`, `Medium: none`, `Low: none in changed scope`. Die urspruengliche Codex-P2-Dokumentationsbeanstandung zur 68k-Evidenz ist erledigt und der Thread auf PR #8 geschlossen.
+- Ursachen- und Ownership-Check: pass — der Claim wird einmalig pro Rasterobjekt nach fehlbaren Append-Allokationen gesetzt; erfolgreiche Dokumentuebernahme ist exklusiv; abgewiesenes Zweitclaim ist frei von doppelter Dokumentuebernahme. `pc_raster_clone` erzeugt eigenen Owner mit geteilten COW-Tile-Daten.
+- Architekturbeschreibung/README/ADRs: `verified_current` fuer C99-Teilumfang; keine Produkt-ABI oder Aenderung am Rust-Original. `architecture_baseline: pass`, `NDK/ReAction/Capability/vxlibs: n/a` (kein OS-Aufruf).
+- `ip_provenance_impact: reference_only` (Original-Rust als Verhaltenstest), unveraendertes `ports/amigaos3/docs/ip-provenance-register.md`, `rights_status: not_required`, keine importierten Fremdassets, `NOTICE: not_required`.
+- `test_evidence: pass`: [CI #38140374511](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374511), [AmigaOS C99/Sanitizer/Rust/GCC13-vamos #38140374487](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374487), [Docs #38140374504](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374504), [PF Preflight #38140374455](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374455), [Packaging #38140374462](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38140374462): alle `completed/success` auf finalem PR-Head.
+- `manual_application_test: n/a` — keine GUI-/Workbench-Aenderung; automatisierte Host-/Sanitizer- und echte m68k-HUNK/vamos-Regression decken diesen C99-Ownership-Scope ab.
+- `regression_test: pass` — gleiche Rasteradresse im selben und in anderem Dokument, falsche IDs, Clones/COW, Destroy; keine UAF-/Double-Free-Findings aus den ausgefuehrten Sanitizer-Jobs.
+- Ausgenommen/Follow-up: PF-TD-001 OOM/Fault-Injection sowie PF-SP-004..006 Group-/Mask-Attach-/Detach-/Clone-Integration. Diese `refining/draft`-Stories bleiben unveraendert und sind **kein** versteckter Teil der Freigabe.
+- Dokumentation/Changelog: Archiv `docs/stories/done/PF-BG-001.md`, Test `docs/tests/done/PF-TN-012.md`, `backlog-done.md` und `CHANGELOG.md` aktualisiert; `OS deviation: n/a`.
+- `agent_model_plan:` Sequential consultant review using connected GitHub records; external reviewer delegation not available; Codex advisory review evidence retained; no fictitious delegated reviewer or independent APPROVE.
+- `skill_usage_evidence:` baseline VD v0.2.1 story-lifecycle and review-report template read from central process repo; no installed port-specific reviewer skill used (`n/a`).
+- `full_check:` final PR-head CI green; Archiv-/Statusdokumentationscheck auf Closure-PR separat. `check_path_parity:` static PF docs check in CI; privater PowerShell-Full-Check nur bei vorhandener Runtime, kein faelschliches lokales PASS.
+- `commit_closure:` BG-spezifischer Archiv-/Backlog-/Review-Commit auf `docs/pf-bg-001-td-002-close-2026-10-11`; endgueltige Commit-SHA in der Git-History/PR, kein erdachter lokaler Worktree-Commit.
+- `push/tag/release:` no release/tag authorized. Abschlussstatus ist **nicht** Editor-/Minigl-/Produktfreigabe.

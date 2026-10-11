@@ -1,4 +1,5 @@
 #include "pc_raster.h"
+#include "pc_raster_owner_internal.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -19,6 +20,7 @@ struct PcRaster {
     size_t bpp;
     size_t tile_bytes;
     uint8_t default_bytes[PC_PIXEL_MAX];
+    int document_owned; /* one document owns this PcRaster; COW tiles separate */
     PcRasterEntry *entries;
     size_t count, capacity;
 };
@@ -101,6 +103,17 @@ PcRaster *pc_raster_clone(const PcRaster *r)
     }
     return copy;
 }
+/* Object ownership is different from tile COW sharing.
+ * Keep the claim internal so ordinary raster callers can still own their
+ * freshly created or cloned raster until a successful document append.
+ * Document mutations in this experimental port are single-threaded.
+ */
+int pc_raster_claim_document_ownership(PcRaster *r)
+{
+    if (!r || r->document_owned) return 0;
+    r->document_owned = 1;
+    return 1;
+}
 void pc_raster_destroy(PcRaster *r)
 {
     size_t i;
@@ -110,12 +123,6 @@ void pc_raster_destroy(PcRaster *r)
 }
 size_t pc_raster_tile_count(const PcRaster *r){return r?r->count:0;}
 size_t pc_raster_bytes_per_pixel(const PcRaster *r){return r?r->bpp:0;}
-int pc_raster_get_format(const PcRaster *r,PcPixelFormat *out)
-{
-    if(!r||!out)return 0;
-    *out=r->format;
-    return 1;
-}
 int pc_raster_read_pixel(const PcRaster *r,int32_t x,int32_t y,
                          uint8_t *out,size_t len)
 {

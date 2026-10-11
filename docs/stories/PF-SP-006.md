@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-006`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `refining` (PF-SP-002 split_required; nicht `ready`)
+- Status: `ready` (2026-10-11; neuer Child-Pre-ready-Audit fuer Masken-Safety-Integration)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -55,7 +55,7 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 ## 7. refinement_note / refinement_triage
 
 - Trennung: genau eine fachliche Aenderungsachse und eigene Testnachweise.
-- `refinement_triage`: `needs_architecture`.
+- `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
 - Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
@@ -71,16 +71,21 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pending`
-- `arch_review.pre_ready_final`: `pending`
-- `implementation_gate_report`: `missing/pending` (kein nachtraeglich erfundenes PASS)
+- `arch_review.initial`: `pass`
+- `arch_review.pre_ready_final`: `pass`
+- `dor_check`: `pass`
+- `implementation_gate_report`: `pending`
 - `review_report`: `pending`
 - `done`: `not_authorized`
 - Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
 
-## Technischer Implementierungsstand aus PR #5 (retrospektiv)
+## Priorisierung 2026-10-11
 
-- Experimentelle Gray8/U8 LayerMask für Raster-/Gruppen-Knoten mit 255/0 Sparse-Default, enabled/linked, Format-/Aliasing-Guards, Attach/Detach und COW-Masken-Snapshot. Fixed density=1 und feather=0.
-- Das ist ausschließlich ein unveröffentlichter Host-/m68k-Spike. Keine echte Compositing-/Feather-/16-Bit-/PSD-Unterstützung oder stabile C-ABI.
-- Bereits vorhandene Tests aus [CI #38061426376](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061426376) PASS: C99/ASan+UBSan, Original-Rust-LayerMask-vs-C99-Differential, GCC13 HUNK/vamos O0/O2, PF-TN-007.
-- Child PF-SP-006 bleibt `refining` bis zum getrennten aktuellen Architektur-/DoR- und Implementation-Gate; dies dokumentiert vergangene Implementierung ohne erfundene vorzeitige Freigabe.
+- Prioritaet: `P1` — PR #5 Maskenbasis, Voraussetzung fuer anschliessende CPU-Compositor-Maskenparitaet.
+- Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
+- Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
+
+## Child-Gates 2026-10-11
+
+- [Initial-/Pre-ready-/DoR-Audit](../reviews/PF-SP-006-ready-gates-2026-10-11.md) fuer den neuen Masken-Integrationsschritt nach P0/Layer/Group.
+- Alter PR5-Code vor der Atomisierung ist historische Evidenz, kein rueckdatiertes Child-Implementation-Gate.

@@ -23,7 +23,7 @@ Host-side tests: **pass**.
 Rust executable-to-C differential tests: **pass**, performed on GitHub Actions Ubuntu runner with real Rust toolchain.
 AmigaOS cross-compile/vamos: **not_run**.
 WinUAE and PiStorm3D: **not_run**.
-Overall PF-SP-002 remains `in_progress`.
+Historischer Testzeitpunkt: PF-SP-002 stand am 2026-10-09 auf `in_progress`. **Aktueller kanonischer Status seit 2026-10-11: `blocked`** (`split_required`); PF-TN-002 belegt ausschließlich die erste Raster-/Core-Teilimplementierung.
 
 Reference Rust sources were read via the connected GitHub repository in
 `HurricanVD/photocraft-amiga` on the same `amigaos32` branch.
@@ -64,7 +64,7 @@ This was the initial workflow setup note. Its runtime result was subsequently co
 
 ## 2026-10-09 evidence reconciliation
 
-The initially missing m68k smoke **now passes for the RGBA8/geometry subset only**, via archived [PF-TN-003](done/PF-TN-003.md) (GCC13.3 and vamos, -O0/-O2, Rust oracle differential). The full format-generic raster, layer/document, editing/compose and MiniGL/GUI tests are not implemented or not yet target-verified. PF-SP-002 remains `in_progress`.
+The initially missing m68k smoke **now passes for the RGBA8/geometry subset only**, via archived [PF-TN-003](done/PF-TN-003.md) (GCC13.3 and vamos, -O0/-O2, Rust oracle differential). The full format-generic raster, layer/document, editing/compose and MiniGL/GUI tests are not implemented or not yet target-verified. PF-SP-002 war bei dieser Testausfuehrung `in_progress`, ist nach retrospektiver Atomisierung seit 2026-10-11 `blocked`; die breiteren Ziele sind getrennte Child-Stories.
 
 ## 2026-10-09 extension
 

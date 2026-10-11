@@ -2,7 +2,7 @@
 # PF-TN-004 — Typed raster and flat-layer host / m68k parity
 
 - Date: 2026-10-09
-- Story: [PF-SP-002](../stories/PF-SP-002.md) (`in_progress`)
+- Story: [PF-SP-002](../stories/PF-SP-002.md) (`blocked` seit 2026-10-11; `in_progress` nur zum historischen Testzeitpunkt 2026-10-09)
 - Evidence: [GitHub Actions #37919197110](https://github.com/HurricanVD/photocraft-amiga/actions/runs/37919197110)
 - Code SHA: `7860de9972e6d2951a99b5c0b4dd2043331bf3b9`
 - Overall scoped test result: **pass** (not a full port acceptance)
@@ -45,4 +45,4 @@ PASS: GCC13 O2 typed U8/U16/F32 raster vs PhotoCraft Rust
 - ADR-0002 and ADR-0003 remain `proposed`. They do not constitute authorization of a shipping ABI, compiler version, or port completion.
 - No MiniGL/QuarkTex or AmigaOS interactive testing was conducted in this run.
 
-This technical milestone advances PF-SP-002 but does not close the Story.
+Dieses Ergebnis belegt nur den damaligen typisierten Raster-/Flat-Layer-Scope von PF-SP-002. Aktuell ist der historische Parent `blocked` (`split_required`); PF-SP-004/005/006 und weitere Teilstories tragen die neuen Aufgaben. Kein stiller Storyabschluss.
