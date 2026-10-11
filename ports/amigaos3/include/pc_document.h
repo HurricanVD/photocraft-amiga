@@ -24,6 +24,11 @@ void pc_document_destroy(PcDocument *document);
 size_t pc_document_layer_count(const PcDocument *document);
 /* Explicit root-only count, for root-indexed layer_id/name/raster getters. */
 size_t pc_document_root_layer_count(const PcDocument *document);
+/* On success a document claims a raster object's exclusive lifetime;
+ * caller must not re-append or destroy it. On failed append the object is
+ * never consumed. Already-claimed objects stay owned by their original doc.
+ * pc_raster_clone() creates a new unclaimed object sharing only COW tiles.
+ */
 int pc_document_append_raster(PcDocument *document,uint64_t id,
                               const char *name,PcRaster *owned_surface);
 /* Append group at the document root; id must be unique across the tree. */
@@ -81,6 +86,9 @@ int pc_document_set_layer_fill_opacity(PcDocument *document,size_t index,float o
  * not be owned elsewhere in this document. An existing mask is rejected. */
 PcRaster *pc_document_mask_reveal_all(void);
 PcRaster *pc_document_mask_hide_all(void);
+/* Attach takes exclusive ownership on success and leaves it with the
+ * caller on failure. Detach relinquishes the document's claim and returns
+ * caller-owned mask; the caller must destroy or transfer it again. */
 int pc_document_attach_mask(PcDocument *document,uint64_t layer_id,
                             PcRaster *owned_gray8,int enabled,int linked);
 /* Borrowed reference, invalid after detach/destroy; mutating it triggers

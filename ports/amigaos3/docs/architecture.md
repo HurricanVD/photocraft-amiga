@@ -67,3 +67,45 @@ The **isolated C99 subset** (`pc_core` geometry, RGBA8 sparse COW surface, colou
 `pc_raster.h/.c` is a **separate experimental C99 encoded raster API** supporting U8/U16/F32 and PhotoCraft mode/channel metadata, 256×256 sparse COW tiles, default pixels and rectangular IO. It is not a colour-management or compositing conversion layer; U16/F32 bytes are native-endian as in Rust `to_ne_bytes`. Multi-tile write failure is not yet atomic. `pc_document.h/.c` is a *flat raster-only ownership scaffold* and does not replace PhotoCraft's grouped document model.
 
 [PF-TN-004](tests/PF-TN-004.md) shows host, original Rust differential and GCC13/vamos O0/O2 passing on CI #37919197110. ADR-0002 and ADR-0003 were **accepted by the project owner on 2026-10-09** for their stated architectural direction and separated test profiles. Further specific core/memory/ABI, graphics and release decisions need implementation-level review before a stable public interface.
+
+## Aktueller begrenzter Gruppen-Prototyp (PF-SP-005, 2026-10-11)
+
+Die obigen Aussagen `flat raster-only` gelten fuer den **historischen
+2026-10-09-Baseline-Stand**. Auf dem PF-SP-005-Integrationsbranch wird der
+Port um eine **experimentelle** Gruppe/Raster-Baumstruktur erweitert:
+Root-/Child-Vektoren in Bottom-first-Reihenfolge, globale Layer-IDs,
+maximal 100 Gruppenebenen, sibling-only Shift und tiefe Clone-Kopien
+der Metadaten mit unabhaengigen PcRaster-Wrappern. Pixel-Tiles bleiben
+256x256 sparse COW gemaess ADR-0002. Ein globaler (auch zwischen
+Dokumenten wirksamer) PF-BG-001-Objekt-Claim schuetzt Raster-Appends
+und rekursiv geklonte Rasterobjekte vor Doppelbesitz.
+
+Ein Wert von `pc_document_layer_count` zaehlt jetzt Root- und alle
+Kind-Layer, waehrend `pc_document_root_layer_count` die Root-Siblings
+bezeichnet. `pc_document_shift_layer` findet verschachtelte Siblings;
+`pc_document_group_shift_child` ist ein zusaetzlicher gezielter Helfer.
+Die neue Semantik wird per original Rust Group-/Document-Oracle, Host
+ASan/UBSan und GCC13-HUNK/vamos O0/O2 geprueft.
+
+Dies **ersetzt keinen vollstaendigen PhotoCraft-Document-Kern** und
+bestaetigt weder Masken, Compositor, Persistenz, ReAction/MiniGL,
+Produktcompiler noch stabile ABI. Historische Tests bleiben auf ihren
+alten Commit beschraenkt; neues CI/Review auf PR4 erforderlich.
+
+## Erweiterung Gray8 LayerMask (PF-SP-006, 2026-10-11)
+
+Die experimentellen Layer-/Gruppen-Knoten besitzen jetzt optional eine
+**separate Gray/U8 NoAlpha-Maske** mit sparse default 255 (reveal) bzw.
+0 (hide), enabled/linked Flags und vordefiniertem density=1/feather=0.
+Der gesamte CPU-Compositor und Photoshop PSD-Roundtrip sind davon
+ausdruecklich **nicht** abgedeckt.
+
+Mask-**Attach** beansprucht nach erfolgreicher Format-, ID- und
+Aliasing-Pruefung den dokumentuebergreifenden PcRaster-Objekt-Owner.
+Das Detach gibt vor Rueckgabe des Masken-Pointers die Owner-Claim
+kontrolliert frei. Deep-Clones besitzen eigene Raster- und Masken-
+Objektansprueche; nur die Tile-Bytes teilen sich ueber COW.
+
+Original-Rust LayerMask-Oracle, Host ASan/UBSan und GCC13-HUNK/vamos
+O0/O2 sind eigenstaendige PF-SP-006-Gates. Kein Produkt-ABI,
+MiniGL/WinUAE-/PiStorm3D-Erfolg oder Release aus diesen Tests ableiten.

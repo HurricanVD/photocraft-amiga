@@ -45,7 +45,7 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 ## 6. Architektur / Tests / Grenzen
 
 - Betroffene Module: `ports/amigaos3/` und Original-Rust-Oracles (read-only); auf den PR-Scope begrenzt.
-- Architekturquelle: akzeptierte ADR-0001/0002/0003; gesonderter Child-`pre_ready_final`-Review `pending`.
+- Architekturquelle: akzeptierte ADR-0001/0002/0003 und [aktueller Child-Pre-ready-Review](../reviews/PF-SP-006-ready-gates-2026-10-11.md) `pass`.
 - Test-Traceability: `PF-TN-007`.
 - Implementierungszuordnung: [PR #5](https://github.com/HurricanVD/photocraft-amiga/pull/5) (bereits vor Atomisierung umgesetzt, noch nicht gemergt).
 - Test-Evidenz: ausgeführt auf PR-Head 0af265e; formaler Story-/Review-Abschluss fehlt.
@@ -58,8 +58,8 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 - `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
-- Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
-- Refinement-Ergebnis: `ready_for_architecture`, **nicht** `ready`.
+- Spike-/Design-Bedarf: urspruengliche Maskenimplemen­tierung historisch; aktueller Stack vor neuer Integration mit Pre-ready-/Implementation-Gates behandelt.
+- Refinement-Ergebnis 2026-10-11: Child-DoR `pass`, begrenzte Masken-Nachintegration `in_progress`.
 
 ## 8. atomization_report
 
@@ -67,7 +67,7 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 - parent_decision: `PF-SP-002: split_required`.
 - Aenderungsachse: Gray8-LayerMask-Sparse-COW.
 - Dependencies: PF-SP-005 und PF-SP-004; ADR-0002.
-- Lifecycle-Blocker: initiales/finales Architekturreview, DoR/IP-Triage, Implementation-Gate und finales Reviewer-Gate offen.
+- Lifecycle: initialer/finaler Architekturreview, DoR und Implementation-Gate nun `pass`; neue komplette CI und finaler Review offen.
 
 ## 9. Review und Gate-Status
 
@@ -77,7 +77,7 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 - `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
-- Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
+- Naechster Schritt: auf neuem finalen PR5-Head Mask-Ownership, Detach/Clone, Rust LayerMask-Oracle, ASan und GCC13/vamos verifizieren.
 
 ## Priorisierung 2026-10-11
 
