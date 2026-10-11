@@ -43,7 +43,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 ## 6. Architektur / Tests / Grenzen
 
 - Betroffene Module: `ports/amigaos3/` und Original-Rust-Oracles (read-only); auf den PR-Scope begrenzt.
-- Architekturquelle: akzeptierte ADR-0001/0002/0003; gesonderter Child-`pre_ready_final`-Review `pending`.
+- Architekturquelle: akzeptierte ADR-0001/0002/0003; eigener [Child-Pre-ready-Review](../../reviews/PF-SP-004-ready-gates-2026-10-11.md) am 2026-10-11 mit `pass` vor der erneuten Integration dokumentiert.
 - Test-Traceability: `PF-TN-005`.
 - Implementierungszuordnung: [PR #3](https://github.com/HurricanVD/photocraft-amiga/pull/3) (historischer Implementierungsbeginn vor Atomisierung; neu gegatete Integration am 2026-10-11 erfolgreich gemergt).
 - Test-Evidenz: ausgeführt auf PR-Head f998b9d; formaler Story-/Review-Abschluss fehlt.
@@ -57,7 +57,7 @@ Als PhotoCraft-Portentwickler moechte ich flat-layer-reihenfolge und deckkraft a
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
 - Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
-- Refinement-Ergebnis: `ready_for_architecture`, **nicht** `ready`.
+- Refinement-Ergebnis: historischer Zustand war `ready_for_architecture`; der eigene Child-DoR/Implementation-Gate wurde vor der neuen Integration dokumentiert und die Story nach Review abgeschlossen.
 
 ## 8. atomization_report
 

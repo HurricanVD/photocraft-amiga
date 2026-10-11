@@ -1,7 +1,7 @@
 # PF-TN-007 — Gray8 LayerMask ownership and COW differential
 
 - Date: 2026-10-10
-- Story: `PF-SP-006` (retrospektiv zugeordnet; damals `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
+- Story: `PF-SP-006` (2026-10-10 historisch noch `refining` laut [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); aktuelle Child-Story am 2026-10-11 nach neuer Gate-/CI-/Review-Evidenz `done`)
 - Stacked branch: `feature/pf-sp-002-layer-masks`, based on [group PR #4](https://github.com/HurricanVD/photocraft-amiga/pull/4).
 - Scoped result: **PASS**, verified on source commit `8389d3a56a8c458595c03b6e264710de1f0f61b4` in [CI #38061132027](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061132027). Whole multi-platform CI conclusion must be checked independently.
 - Scope: original Rust LayerMask with **fixed density=1, feather=0** and

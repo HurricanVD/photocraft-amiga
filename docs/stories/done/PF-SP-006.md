@@ -59,7 +59,7 @@ Als PhotoCraft-Portentwickler moechte ich gray8-layermask-sparse-cow als eigenen
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
 - Spike-/Design-Bedarf: urspruengliche Maskenimplemen­tierung historisch; aktueller Stack vor neuer Integration mit Pre-ready-/Implementation-Gates behandelt.
-- Refinement-Ergebnis 2026-10-11: Child-DoR `pass`, begrenzte Masken-Nachintegration `in_progress`.
+- Refinement-Ergebnis 2026-10-11: Child-DoR und neues Implementation-Gate bestanden; Masken-Integration nach finaler CI und Review jetzt `done`.
 
 ## 8. atomization_report
 

@@ -65,3 +65,7 @@ Die erfolgreichen Runs sind **echte historische Nachweise auf den obigen Heads**
 - Die konkrete Integrationsarbeit von #3/#4/#5 ist unveraendert blockiert, solange der neue Ownership-Claim nicht auf deren finalen Head portiert und neu getestet wurde.
 - Die frueheren Whole-PR-Runs #38094893931, #38095522427, #38095619323 bleiben nachweislich gruen fuer die alten Heads; keine Behauptung ueber den nach P0-Integration neu entstehenden Head.
 - Kein neues `ready`-Gate fuer die drei Child-Stories durch diesen Dokumentations-Nachtrag.
+
+## Abschliessender Ereignisnachtrag (2026-10-11)
+
+Dieser dokumentierte Pre-ready-Audit ist ein **historischer Review-Zeitpunkt**, kein aktueller Blocker: Die vorstehenden `refining`-/`pending`-Entscheidungen bezogen sich auf die damals noch nicht reparierten PR-Heads. PF-SP-004/005/006 sind nach getrennten aktuellen Ready-/Implementation-Gates, korrigierten Ownership-/Clone-/Detach-Pfaden, finaler gruen­er PR-Head-CI und Merges #3/#4/#5 unter `docs/stories/done/` archiviert. Testberichte [PF-TN-005](../tests/done/PF-TN-005.md), [PF-TN-006](../tests/done/PF-TN-006.md) und [PF-TN-007](../tests/done/PF-TN-007.md); aktuelle Statusquelle [backlog-done](../backlog-done.md). Die historische Beanstandung wird nicht als rueckdatierte Genehmigung verwendet.

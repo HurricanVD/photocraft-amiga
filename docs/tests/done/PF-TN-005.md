@@ -1,6 +1,6 @@
 # PF-TN-005 — Flat Document shift and layer opacity parity
 
-- Story: `PF-SP-004` (retrospektiv zugeordnet; damals `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
+- Story: `PF-SP-004` (2026-10-10 historisch noch `refining` laut [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6); aktuelle Child-Story am 2026-10-11 nach neuer Gate-/CI-/Review-Evidenz `done`)
 - Started: 2026-10-10.
 - Decision basis: [accepted ADR-0002](../../adr/ADR-0002-photocraft-core-and-memory-contract.md) and [ADR-0003](../../adr/ADR-0003-amigaos-toolchain-and-verification.md).
 - Scope: experimental flat-raster `PcDocument` metadata. This is **not** the product `doc::Document`, an approved C ABI or a native GUI.

@@ -58,7 +58,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
 - Spike-/Design-Bedarf: historisch vorgezogene Gruppen-Codebasis; aktuelle Nachintegration mit Pre-ready- und Implementation-Gates separat dokumentiert.
-- Refinement-Ergebnis 2026-10-11: DoR ist bestanden, Gruppen-Nachintegration `in_progress`.
+- Refinement-Ergebnis 2026-10-11: DoR und Implementation-Gate wurden vor der neuen Integration dokumentiert; nach positiver CI und Review jetzt `done`.
 
 ## 8. atomization_report
 
@@ -66,7 +66,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - parent_decision: `PF-SP-002: split_required`.
 - Aenderungsachse: Verschachtelte Rastergruppen und Deep-COW.
 - Dependencies: PF-SP-004 als Basis; ADR-0002.
-- Lifecycle: initiales/finales Architekturreview, DoR und Implementation-Gate jetzt `pass`; CI auf neuem Head und finaler Review noch nicht abgeschlossen.
+- Lifecycle: initiales/finales Architekturreview, DoR und Implementation-Gate `pass`; finale PR-Head-CI und Abschlussreview sind seit dem 2026-10-11 ebenfalls abgeschlossen.
 
 ## 9. Review und Gate-Status
 
