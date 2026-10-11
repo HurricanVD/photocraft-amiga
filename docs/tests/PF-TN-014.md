@@ -16,3 +16,10 @@
 - `test_evidence: not_run`
 - `runtime_evidence: none`
 - `release_authorization: no`
+
+## Implementierungs-Nachweis 2026-10-12 (PR #15; eingeschraenkt)
+
+- GCC/Bebbo 13.3 HUNK-Link fuer `pc_amiga_shell.c` + M2 Presenter auf Revision `9b6f4c79c62ae28c8de07a0675f63cc236cdf777`: CI [GCC13.3 m68k HUNK + vamos vs Rust #38182781986](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38182781986) PASS; der Workflow prueft das erzeugte HUNK-Format.
+- Bestehende Headless-C99, GCC/vamos und Rust-Differentialtests PASS; sie starten **nicht** die ReAction-Oberflaeche. Die GUI hat im Shell-MVP nur synthetische PhotoCraft-RGBA8-Pixel.
+- Der erste GCC13-Compilefehler (fehlende `RA_OpenWindow`/`RA_CloseWindow`/`RA_HandleInput` Makrodeklarationen) wurde mit `reaction/reaction_macros.h` korrigiert.
+- Offen: visueller manueller WinUAE-GUI-Lauf mit Workbench/Shell, Resize, Close/Repeated Open, RTG-Staging und Speicher-Fallback. `manual_target: not_run`; keine fertige Editor-App oder PF-SP-011-Done-Freigabe.
