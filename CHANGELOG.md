@@ -5,6 +5,8 @@ fuer dieses App-Repository werden hier gepflegt.
 
 ## [Unreleased]
 
+- PF-SP-006 abgeschlossen: Sparse Gray8-U8-Masken mit dokumentuebergreifendem Owner-Claim, sicherem Detach/Reattach, Deep-COW sowie Rust-Oracle- und GCC13/vamos-Regressions nachgewiesen.
+
 - PF-SP-005 abgeschlossen: Verschachtelte Rastergruppen bis Tiefe 100, rekursive Counts, Rust-kompatibles Shift und Deep-COW mit exklusivem Raster-Ownership verifiziert.
 
 - PF-SP-004 abgeschlossen: Flat-Layer-Reihenfolge/Opacity mit COW-Ownership/Original-Rust- und GCC13/vamos-Paritaet auf aktuellem Code-Head integriert.

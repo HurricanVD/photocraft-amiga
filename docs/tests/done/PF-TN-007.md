@@ -1,7 +1,7 @@
 # PF-TN-007 — Gray8 LayerMask ownership and COW differential
 
 - Date: 2026-10-10
-- Story: `PF-SP-006` (retrospektiv zugeordnet; `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
+- Story: `PF-SP-006` (retrospektiv zugeordnet; damals `refining` im [Atomisierungs-PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6), noch nicht `ready`/`done`)
 - Stacked branch: `feature/pf-sp-002-layer-masks`, based on [group PR #4](https://github.com/HurricanVD/photocraft-amiga/pull/4).
 - Scoped result: **PASS**, verified on source commit `8389d3a56a8c458595c03b6e264710de1f0f61b4` in [CI #38061132027](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38061132027). Whole multi-platform CI conclusion must be checked independently.
 - Scope: original Rust LayerMask with **fixed density=1, feather=0** and
@@ -71,3 +71,13 @@ are **not implemented**. These require their own story/review/test evidence.
 ## Retrospektive Story-Traceability (2026-10-11)
 
 Dieser Scoped-Test `PF-TN-007` ist der Child-Story `PF-SP-006` zugeordnet. Das zuvor unter PF-SP-002 erstellte und ausgefuehrte Testartefakt ist nur technische historische Evidenz; es autorisiert **kein** nachtraegliches DoR-/Implementation-/Reviewer-Gate. Die formale Aufteilung steht in [PR #6](https://github.com/HurricanVD/photocraft-amiga/pull/6). Der kanonische Parent wird dort `blocked` und die PRs #3→#4→#5 bleiben gestapelt.
+
+## Finale Child-Regression / Archiv — 2026-10-11
+
+- Story: [PF-SP-006](../../stories/done/PF-SP-006.md); `status: pass` auf finalem PR-Head `93a542257f0475633d07cd599171147c69d0d95d` mit exklusiven Claims fuer Layer-/Mask-Raster und kontrolliertem Mask-Detach/Release.
+- [CI #38159442928](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159442928) `completed/success`, inklusive C99/Original-Rust-LayerMask-/Group-/Document-Oracles und GCC13/vamos O0/O2.
+- [AmigaOS Host #38159443000](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159443000) `completed/success`: portable C99, ASan/UBSan, echte GCC13-HUNK/vamos-O0/O2, originale Rust-Semantik.
+- [Documentation #38159442905](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159442905), [PF Preflight #38159442955](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159442955), [Packaging #38159442973](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38159442973): `success`.
+- Testschwerpunkte: Gray8/U8-NoAlpha-Guard, sparse Defaults 0/255, disabled reveal, Group-Mask-Clone, dokumentuebergreifender Mask-Alias, Detach→Reattach, Clone-Owner, COW/Destroy.
+- Kein WinUAE-/MiniGL-/Hardwaretest oder PSD-/Compositor-Abschluss in dieser Story.
+- [Finalreview](../../reviews/PF-SP-006-final-review-2026-10-11.md) empfiehlt `approve` im begrenzten Mask-Scope.
