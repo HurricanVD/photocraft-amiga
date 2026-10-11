@@ -1,0 +1,11 @@
+# PF-SP-005 — Implementation-Gate 2026-10-11
+- story_id: PF-SP-005; from_status: ready; to_status: in_progress.
+- story_status_check: pass; backlog_status_check: pass; wip_limit_check: pass (PF-SP-004 und PF-SP-005, max 2).
+- dor_check: pass; arch_review.initial and arch_review.pre_ready_final pass in current PF-SP-005-ready-gates report.
+- ip_provenance_gate: pass, read-only original Rust oracle, no external source or assets.
+- implementation_allowed: yes for new Group-Tree/Deep-COW integration after this report; historical commits not retrospectively approved.
+- write_scope: group-tree document API, tests/oracles, host/GCC13 CI, story-specific test and review records.
+- dependency: PF-SP-004 current head as merge parent; global PF-BG-001 owned raster claims mandatory in append and recursive clones.
+- test_plan: same-/cross-document group pointer claims, clone/COW/ASan, original Rust Group parity and actual m68k HUNK/vamos O0/O2.
+- repo_root_verified: HurricanVD/photocraft-amiga; branch feature/pf-sp-002-group-tree; rollback to parent ready gate.
+- review_report: pending, merge and release: not_authorized.

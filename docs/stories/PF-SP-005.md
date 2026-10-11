@@ -3,7 +3,7 @@
 - Story-ID: `PF-SP-005`
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
-- Status: `refining` (PF-SP-002 split_required; nicht `ready`)
+- Status: `in_progress` (2026-10-11; separat gegatete post-P0-Gruppenintegration)
 - Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
@@ -44,7 +44,7 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 ## 6. Architektur / Tests / Grenzen
 
 - Betroffene Module: `ports/amigaos3/` und Original-Rust-Oracles (read-only); auf den PR-Scope begrenzt.
-- Architekturquelle: akzeptierte ADR-0001/0002/0003; gesonderter Child-`pre_ready_final`-Review `pending`.
+- Architekturquelle: akzeptierte ADR-0001/0002/0003; gesonderter aktueller [Child-Pre-ready-Review](../reviews/PF-SP-005-ready-gates-2026-10-11.md) `pass`.
 - Test-Traceability: `PF-TN-006`.
 - Implementierungszuordnung: [PR #4](https://github.com/HurricanVD/photocraft-amiga/pull/4) (bereits vor Atomisierung umgesetzt, noch nicht gemergt).
 - Test-Evidenz: ausgeführt auf PR-Head f7ff7802; formaler Story-/Review-Abschluss fehlt.
@@ -54,11 +54,11 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 ## 7. refinement_note / refinement_triage
 
 - Trennung: genau eine fachliche Aenderungsachse und eigene Testnachweise.
-- `refinement_triage`: `needs_architecture`.
+- `refinement_triage`: `pass`
 - IP-/Third-Party-Klassifikation: `reference_only` (oeffentliche PhotoCraft-Rust-Originalsemantik; Code nur als Referenz, keine Uebernahme fremder geschuetzter Quellen).
 - Shipping-Material aus Drittrepos: `no`; rights_status fuer proprietaere Dunkelkammer: `not_required` in diesem Scope.
-- Spike-/Design-Bedarf: `retrospective accepted ADR audit; missing gate documentation`.
-- Refinement-Ergebnis: `ready_for_architecture`, **nicht** `ready`.
+- Spike-/Design-Bedarf: historisch vorgezogene Gruppen-Codebasis; aktuelle Nachintegration mit Pre-ready- und Implementation-Gates separat dokumentiert.
+- Refinement-Ergebnis 2026-10-11: DoR ist bestanden, Gruppen-Nachintegration `in_progress`.
 
 ## 8. atomization_report
 
@@ -66,19 +66,25 @@ Als PhotoCraft-Portentwickler moechte ich verschachtelte rastergruppen und deep-
 - parent_decision: `PF-SP-002: split_required`.
 - Aenderungsachse: Verschachtelte Rastergruppen und Deep-COW.
 - Dependencies: PF-SP-004 als Basis; ADR-0002.
-- Lifecycle-Blocker: initiales/finales Architekturreview, DoR/IP-Triage, Implementation-Gate und finales Reviewer-Gate offen.
+- Lifecycle: initiales/finales Architekturreview, DoR und Implementation-Gate jetzt `pass`; CI auf neuem Head und finaler Review noch nicht abgeschlossen.
 
 ## 9. Review und Gate-Status
 
-- `arch_review.initial`: `pending`
-- `arch_review.pre_ready_final`: `pending`
-- `implementation_gate_report`: `missing/pending` (kein nachtraeglich erfundenes PASS)
+- `arch_review.initial`: `pass`
+- `arch_review.pre_ready_final`: `pass`
+- `dor_check`: `pass`
+- `implementation_gate_report`: `pass`
 - `review_report`: `pending`
 - `done`: `not_authorized`
-- Naechster Schritt: Child-Refinement und formale Lifecycle-Abnahme; bei PR #3–5 bereits erfolgte Aenderungen retrospektiv sauber auditieren.
+- Naechster Schritt: Gruppen-Diff auf neuem P0/Layer-Head mit ASan, original Rust Group-Oracle und GCC13/vamos bestaetigen und final reviewen.
 
 ## Priorisierung 2026-10-11
 
 - Prioritaet: `P1` — PR #4 baut auf PF-SP-004 auf und wird fuer Masken/Gruppen-Rendering benoetigt.
 - Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
+
+## Child-Gates 2026-10-11
+
+- [Refinement-, Architektur- und DoR-Audit](../reviews/PF-SP-005-ready-gates-2026-10-11.md) gilt ausschliesslich fuer die neue Integration mit PF-BG-001-Claim und PF-SP-004.
+- Alte PR4-Commits waren unter PF-SP-002 ohne separate Child-Freigabe entstanden; diese Historie wird nicht rueckdatiert.

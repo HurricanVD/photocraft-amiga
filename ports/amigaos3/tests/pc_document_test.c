@@ -98,6 +98,106 @@ static void test_layer_contract(void)
     pc_document_destroy(snap);
 }
 
+/* Nested Rust-compatible group subset: bottom-first child order,
+ * globally unique IDs, controlled depth, deep cloning and tile COW. */
+static void test_group_tree(void)
+{
+    PcPixelFormat fmt={PC_COLOR_RGB,PC_SAMPLE_U8,1};
+    const uint8_t red[4]={237,39,67,255},blue[4]={22,71,223,255};
+    PcDocument *d=pc_document_new("Nested",32,64),*copy;
+    PcRaster *owned=pc_raster_new(fmt,NULL);
+    PcRaster *nested=pc_raster_new(fmt,NULL);
+    PcRaster *rejected=pc_raster_new(fmt,NULL);
+    uint64_t parent;
+    size_t i;
+    assert(d&&owned&&nested&&rejected);
+    assert(pc_document_append_group(d,101,"Root group"));
+    assert(pc_document_layer_count(d)==1);
+    assert(pc_document_layer_id(d,0)==101);
+    assert(pc_document_layer_raster(d,0)==NULL);
+    assert(pc_document_group_child_count(d,101)==0);
+    assert(pc_document_group_append_raster(d,101,102,"Bottom",owned));
+    assert(pc_document_group_append_group(d,101,103,"Child group"));
+    assert(pc_document_group_append_raster(d,103,104,"Nested pix",nested));
+    assert(pc_document_group_child_count(d,101)==2);
+    assert(pc_document_root_layer_count(d)==1);
+    assert(pc_document_layer_count(d)==4); /* root + raster + group + raster */
+    assert(pc_document_group_child_id(d,101,0)==102);
+    assert(pc_document_group_child_id(d,101,1)==103);
+    assert(pc_document_group_child_is_group(d,101,0)==0);
+    assert(pc_document_group_child_is_group(d,101,1)==1);
+    assert(strcmp(pc_document_group_child_name(d,101,1),"Child group")==0);
+    assert(pc_document_group_child_is_group(d,101,2)==-1);
+    assert(pc_document_group_child_id(d,101,99)==0);
+    assert(pc_document_group_child_count(d,999)==0);
+    assert(pc_document_group_child_raster(d,101,1)==NULL);
+    assert(pc_document_group_child_raster(d,103,0)==nested);
+    assert(!pc_document_append_raster(d,104,"ID collision",rejected));
+    assert(!pc_document_group_append_raster(d,999,105,"No parent",rejected));
+    assert(!pc_document_group_append_raster(d,102,105,"Raster is not group",rejected));
+    assert(!pc_document_group_append_group(d,101,103,"Duplicate ID"));
+    assert(!pc_document_group_append_group(d,101,101,"Ancestor ID"));
+    assert(!pc_document_group_append_group(d,0,106,"Root via group-only API"));
+    assert(pc_document_group_child_count(d,101)==2);
+    assert(pc_raster_write_pixel(nested,-1,256,red,4));
+
+    /* The public document-level shift must find the nested sibling list. */
+    assert(pc_document_shift_layer(d,103,-1));
+    assert(pc_document_group_child_id(d,101,0)==103);
+    assert(pc_document_group_child_id(d,101,1)==102);
+    assert(pc_document_shift_layer(d,103,1));
+    assert(pc_document_group_shift_child(d,101,103,-1));
+    assert(pc_document_group_child_id(d,101,0)==103);
+    assert(pc_document_group_child_id(d,101,1)==102);
+    assert(!pc_document_group_shift_child(d,101,103,-1));
+    assert(!pc_document_group_shift_child(d,101,999,0));
+    assert(!pc_document_group_shift_child(d,103,102,0));
+
+    copy=pc_document_clone(d);
+    assert(copy);
+    assert(pc_document_group_child_id(copy,101,0)==103);
+    assert(pc_document_group_child_id(copy,103,0)==104);
+    assert(pc_document_group_child_raster(copy,103,0)!=nested);
+    assert(pc_raster_write_pixel(pc_document_group_child_raster(copy,103,0),
+                                 -1,256,blue,4));
+    {
+        uint8_t out[4];
+        assert(pc_raster_read_pixel(nested,-1,256,out,4));
+        assert(memcmp(out,red,4)==0);
+        assert(pc_raster_read_pixel(pc_document_group_child_raster(copy,103,0),
+                                    -1,256,out,4));
+        assert(memcmp(out,blue,4)==0);
+    }
+    assert(pc_document_group_append_group(copy,101,105,"New"));
+    assert(pc_document_group_child_count(copy,101)==3);
+    assert(pc_document_group_child_count(d,101)==2);
+    pc_document_destroy(d);
+    assert(pc_document_group_child_id(copy,103,0)==104);
+    pc_document_destroy(copy);
+    pc_raster_destroy(rejected);
+
+    /* Rust MAX_GROUP_DEPTH=100; a raster inside the deepest legal group
+     * stays findable for the global ID uniqueness check. */
+    d=pc_document_new("Depth",1,1);
+    assert(d && pc_document_append_group(d,1,"level-1"));
+    parent=1;
+    for(i=2;i<=PC_DOCUMENT_MAX_GROUP_DEPTH;++i){
+        assert(pc_document_group_append_group(d,parent,(uint64_t)i,"nest"));
+        parent=(uint64_t)i;
+    }
+    assert(!pc_document_group_append_group(d,parent,200,"too deep"));
+    owned=pc_raster_new(fmt,NULL);
+    assert(owned && pc_document_group_append_raster(d,parent,201,"deep raster",owned));
+    assert(pc_document_group_child_id(d,parent,0)==201);
+    assert(pc_document_root_layer_count(d)==1);
+    assert(pc_document_layer_count(d)==PC_DOCUMENT_MAX_GROUP_DEPTH+1);
+    assert(!pc_document_append_group(d,201,"duplicate deep ID"));
+    copy=pc_document_clone(d);
+    assert(copy && pc_document_group_child_id(copy,parent,0)==201);
+    pc_document_destroy(d);
+    pc_document_destroy(copy);
+}
+
 /* PF-BG-001: lifetime ownership belongs to one document, not one layer ID.
  * Regression covers same-document and cross-document double-free vectors.
  */
@@ -151,6 +251,41 @@ static void check_exclusive_raster_owner(void)
     pc_document_destroy(snapshot);
 }
 
+
+/* PF-SP-005: a nested raster is not free for another document and
+ * cloned document's raster wrappers are already owned by the clone. */
+static void test_nested_raster_claims(void)
+{
+    PcPixelFormat f={PC_COLOR_RGB,PC_SAMPLE_U8,1};
+    const uint8_t green[4]={0,255,0,255};
+    PcDocument *a=pc_document_new("A",32,32);
+    PcDocument *b=pc_document_new("B",32,32);
+    PcDocument *clone;
+    PcRaster *r=pc_raster_new(f,NULL),*fresh;
+    assert(a&&b&&r);
+    assert(pc_document_append_group(a,11,"A group"));
+    assert(pc_document_append_group(b,22,"B group"));
+    assert(pc_document_group_append_raster(a,11,33,"Child",r));
+    assert(!pc_document_group_append_raster(a,11,44,"aliased",r));
+    assert(!pc_document_group_append_raster(b,22,55,"cross doc",r));
+    assert(pc_document_layer_count(a)==2);
+    assert(pc_document_layer_count(b)==1);
+    assert(pc_raster_write_pixel(r,2,3,green,4));
+    clone=pc_document_clone(a);
+    assert(clone);
+    assert(pc_document_group_child_count(clone,11)==1);
+    assert(!pc_document_group_append_raster(b,22,66,"clone alias",
+                 pc_document_group_child_raster(clone,11,0)));
+    fresh=pc_raster_clone(pc_document_group_child_raster(clone,11,0));
+    assert(fresh);
+    assert(pc_document_group_append_raster(b,22,77,"fresh COW clone",fresh));
+    pc_document_destroy(a);
+    pix(pc_document_group_child_raster(clone,11,0),green);
+    pix(pc_document_group_child_raster(b,22,0),green);
+    pc_document_destroy(b);
+    pc_document_destroy(clone);
+}
+
 int main(void)
 {
     PcPixelFormat f={PC_COLOR_RGB,PC_SAMPLE_U8,1};
@@ -180,7 +315,10 @@ int main(void)
     pix(pc_document_layer_raster(snapshot,1),green);
     pc_document_destroy(snapshot);
     test_layer_contract();
+    test_group_tree();
     check_exclusive_raster_owner();
+    test_nested_raster_claims();
     puts("PASS: PhotoCraft flat raster-layer document ownership/order/COW/opacity/shift");
+    puts("PASS: PhotoCraft bounded group hierarchy/deep COW/ID semantics");
     return 0;
 }
