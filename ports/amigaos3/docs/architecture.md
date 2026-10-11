@@ -109,3 +109,88 @@ Objektansprueche; nur die Tile-Bytes teilen sich ueber COW.
 Original-Rust LayerMask-Oracle, Host ASan/UBSan und GCC13-HUNK/vamos
 O0/O2 sind eigenstaendige PF-SP-006-Gates. Kein Produkt-ABI,
 MiniGL/WinUAE-/PiStorm3D-Erfolg oder Release aus diesen Tests ableiten.
+
+## Native offline delivery architecture (2026-10-12, scoped addendum)
+
+The user explicitly requires PhotoCraft to run **entirely self-contained
+on AmigaOS 3.2/m68k**. The C99 port remains the immediate executable
+path, with no host, remote Rust command server, network or cloud at runtime.
+PhotoCraft Rust is the **build-time semantic oracle** and unchanged
+upstream merge source; an optional future Rust/m68k module is allowed only
+after verified local m68k compiler, allocator, ABI and conformance gates.
+
+```text
+Original Rust PhotoCraft (unchanged; test-time semantic oracle)
+          | host/Rust-vs-C99 differential fixtures
+          v
+Native PhotoCraft C99 core, 256x256 tiles, groups/masks
+  +-- CPU compositor (PF-SP-007) -> RGBA8 visible bands
+  +-- command/history (PF-SP-008) -> one edit transaction
+  +-- local PNG/IFF import / PNG export (PF-SP-017/018)
+          | bounded C facade, no AmigaOS symbols in portable core
+          v
+ReAction/window.class single display owner (PF-SP-011)
+  +-- BOOPSI Layer/Group tree (PF-SP-013)
+  +-- canvas navigation & pointer queue (PF-SP-014)
+  +-- PhotoCraft command toolbar/menus (PF-SP-015)
+  +-- native popup/requester widgets (PF-SP-016)
+          | bounded RGBA8 -> ARGB32 staging (explicit, never cast)
+          v
+M2 software-RTG presenter (PF-SP-010)
+  WritePixelArray -> offscreen Friend BitMap -> BltBitMapRastPort
+          |
+          +-- MiniGL/QuarkTex/PiStorm3D later optional, PF-SP-001 blocked
+```
+
+### Reuse and ownership
+
+- Dunkelkammer UI source snapshot `26295506` and MIT licensing merge
+  `70897e91` ([PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9)).
+  Import only self-authored/authorized UI/RTG components with original
+  MIT copyright/permission notices and separate upstream third-party
+  notices. Review `src/ui/dk_ui_layer_list.*`, `dk_ui_draw.*`,
+  `dk_ctx_menu.*`, `dk_ui_event.c`, targeted ReAction lifecycle
+  parts, `src/platform/dk_present.*`. No whole `dk_ui.c` monolith,
+  `DkDocument`, 128x128 Dunkelkammer tiles or product artwork.
+- ReAction owns the window, gadgets, Main Task and event loop. Do **not**
+  use `vxplatform` process-global `vxp_display_open()` at the same
+  time. If consuming vxplatform, use only demonstrated neutral
+  geometry/helpers or isolate its M2-equivalent code.
+- Raster/pixel model remains PhotoCraft 256x256 sparse COW, typed data
+  and bounded groups/masks; RGBA8 presentation is a *conversion
+  edge*, not a replacement of U8/U16/F32 storage or ICC promises.
+- Dirty bands/tile row streams are preferred to mandatory FullFrame
+  buffers, including on an approximately 32 MiB Fast RAM test target.
+  Atomic OOM handling, lookup indexing and peak accounting are
+  separate PF-TD-001 scope. All target limits must be measured.
+
+### Offline file flow and acceptance
+
+- PF-SP-017: small PNG/IFF import via C99 decoder + optional installed
+  datatypes.library read fallback. File selection uses ASL requester.
+- PF-SP-018: flat composited RGBA8 PNG export; never claim
+  layered-project write semantics for a flattened file.
+- PF-SP-019: one native brush with a single undoable command.
+- PF-SP-020: Shell/Workbench native HUNK launch, local image open,
+  layer view, brush edit, undo/redo, local PNG export. No host/network/
+  cloud, and no required MiniGL.
+- PF-SP-009/021: *experimental* layered format evaluations only.
+  A future stable product file-format/compatibility decision needs
+  separate owner-accepted ADR.
+
+### Build, CI and status
+
+- PF-PR-001 tracks upstream source/API and Rust semantic-oracle deltas.
+  Upstream refresh may generate a reviewable PR; never auto-merge C
+  reimplementations or silently patch Rust workspace code.
+- Test ladder is host C99/ASan+UBSan and actual Rust references ->
+  GCC/Bebbo 13.3 compatibility HUNK/vamos O0/O2 -> manual native
+  WinUAE ReAction/RTG target evidence -> later supported hardware.
+  The production/compiler ABI decision remains deferred by ADR-0003.
+- The accepted ADR-0001/0002/0003 are consistent with CPU-first
+  RTG-fallback and optional MiniGL; this is a delivery refinement,
+  **not** an unrecorded superseding of an accepted target or API.
+- [Ready gate review](../../../docs/reviews/PF-all-open-ready-review-2026-10-12.md)
+  concerns scope, not implementation. `ready` stories' GUI,
+  file I/O, compositor and brush tests remain `not_run`.
+  Previously dated flat-only 2026-10-09 passages above are historical.

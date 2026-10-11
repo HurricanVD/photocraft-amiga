@@ -1,5 +1,17 @@
 # PhotoCraft for AmigaOS 3.2 (experimental)
 
+> **Delivery strategy as of 2026-10-12:** Fully **offline,
+> self-contained** AmigaOS 3.2/m68k; a host computer/network/cloud is not
+> required to render, edit, undo or export files. RTG/P96 via native
+> ReAction and a CPU compositor is the baseline; QuarkTex/MiniGL remains
+> optional. The existing C99 raster/group/mask subset is tested headlessly,
+> but this is **not yet an editor**. Dunkelkammer own-source is MIT since
+> [PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9);
+> only UI/RTG and file-format adapters are planned for reuse, with MIT
+> notices and separate checks for third-party material. The
+> [canonical Ready backlog](../../docs/backlog.md) and
+> [port architecture](docs/architecture.md) define the scoped plan.
+>
 This directory is the experimental native AmigaOS 3.2 port workspace for upstream **PhotoCraft**, present on this fork's `main` branch (the separate `amigaos32` branch also exists). **This is not yet a working editor.** The workspace contains portable C99 geometry, encoded sparse-raster/COW and flat-layer prototypes, ARGB-to-RGBA staging tests, and a standalone optional MiniGL graphics smoke program. Host and m68k/`vamos` tests do **not** establish a ReAction application, a verified WinUAE graphics runtime, or a selected shipping toolchain.
 
 > **Current canonical status (2026-10-11):** [PF-SP-002](../../docs/stories/PF-SP-002.md) is `blocked` after `split_required` atomization. Its original raster baseline and historical test reports remain valid only for their stated scope. The active planning source is the [fork backlog](../../docs/backlog.md), including the separate child stories PF-SP-004..009 and PF-TD-001. Dated `in_progress` claims below describe the **2026-10-09 historical snapshot**, not current authorization to implement, merge or release. [PF-SP-001](../../docs/stories/PF-SP-001.md) remains blocked awaiting real MiniGL/QuarkTex NG/WinUAE target evidence.
@@ -173,3 +185,22 @@ and **accepted** [ADR-0003](../../docs/adr/ADR-0003-amigaos-toolchain-and-verifi
 See [PF-TN-004](docs/tests/PF-TN-004.md) for scope, evidence, and exclusions. The flat raster-layer prototype has **no** group, blend, masks, PSD round-trip, history, render engine or native GUI.
 
 **2026-10-09 owner approval:** ADR-0002 and ADR-0003 are `accepted`; no full editor, stable binary API, compiler promotion or distribution rights are implied. The GCC13/vamos test lane continues, and the fork `main` may now receive the explicitly requested merge of `amigaos32` without upstream contribution.
+
+## Native first-usable-editor milestone (planning, 2026-10-12)
+
+- `PF-TD-001`: guard RAM/OOM and COW transactions; C99 core stays independent of ReAction.
+- `PF-SP-007`: CPU RGBA8 compositor backed by PhotoCraft Rust oracles.
+- `PF-SP-010/011`: software-RTG M2 presenter and a native single-window ReAction/Workbench shell.
+- `PF-SP-012..016`: licensed Dunkelkammer UI reuse, Layer/Group panel, navigation, commands and dialogs.
+- `PF-SP-017/018/019`: local PNG/IFF import, local flattened PNG export and a reversible brush stroke.
+- `PF-SP-020`: manually verify Shell+Workbench -> Open local PNG -> layer -> Brush -> Undo/Redo -> PNG Export on AmigaOS 3.2, **without** network, PC or mandatory MiniGL.
+- `PF-PR-001`: detect/summarize upstream Rust semantic deltas and run bounded Rust/C99/m68k differential tests, not blind code merges.
+- `PF-SP-009/021`: versioned *experimental* layered-file contract, not a promised `.pcraft` or PSD serializer.
+
+Only the enumerated existing headless tests have PASS evidence.
+All newly scoped Ready stories are **not implemented** and their new
+tests are `not_run`. Production compiler choice and final GUI runtime
+are separate gates; the Port target is nominally 68040+ and 32 MiB
+Fast RAM, not a proven shipping minimum. See the
+[DoR review](../../docs/reviews/PF-all-open-ready-review-2026-10-12.md)
+and [MIT reuse inventory](docs/dunkelkammer-ui-source-inventory.md).
