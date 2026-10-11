@@ -25,7 +25,7 @@ Der experimentelle Port besitzt einen MiniGL-Smoke, aber noch keine nutzbare nat
 
 - Fertige ReAction-Editor-UI, Menues, PSD-Import, Effekte oder GPU-Filter.
 - Ersatz von PhotoCraft-256x256-Tiles durch ein anderes Dokumentmodell.
-- Behauptete WinUAE-Laufzeitergebnisse ohne manuellen Test; keine proprietaeren Dunkelkammer-Quellen/Assets uebernehmen.
+- Behauptete WinUAE-Laufzeitergebnisse ohne manuellen Test; keine Dunkelkammer-Quellen/Assets ohne dokumentierte oeffentliche Lizenz-/Provenienzfreigabe uebernehmen.
 
 ## 4. User Story
 
@@ -74,3 +74,11 @@ Als AmigaOS-3.2-Nutzer moechte ich gerenderte PhotoCraft-Pixel auch ohne MiniGL 
 - Prioritaet: `P1` — Native RTG-Softwareausgabe ist die MiniGL-unabhaengige Voraussetzung fuer AmigaOS-Viewport.
 - Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine bestehenden Implementation-/CI-/Reviewer-Gates; dokumentierte Story-Statuswerte bleiben massgeblich.
+
+## Dunkelkammer-M2-Wiederverwendung (Planung 2026-10-12)
+
+- Ausgangsquelle: privates `HurricanVD/dunkelkammer` @ `26295506ba363b1bd52bfca1852b0230ffb2bad9`, `src/platform/dk_present.c/.h` und `docs/adr/ADR-0007-rtg-present-model.md`; die unter MIT freigegebene, historische `libamiga2d`-/`vxplatform`-Present-Variante ist vor einer weiteren Kopie zu bevorzugen, sofern sie dieselben erforderlichen Operationen abdeckt.
+- Wiederverwendung ist vom Eigentuemer fuer Entwicklung erlaubt; direkt uebernommener Code benoetigt vor oeffentlicher Publikation den dateibezogenen Lizenz- und Provenienznachweis aus [PF-SP-012](PF-SP-012.md). Kein Source-Import in dieser Story-Aktualisierung.
+- Der PhotoCraft-RGBA8-CPU-/256x256-Tile-Kern bleibt Eigentuemer der Pixel; RTG/M2 ist nur Presenter. Der Adapter stellt explizit RGBA8 -> ARGB32, Stride, Buffer-Ownership, Clip/Overflow, OOM/Fallback und Cache-Invalidierung sicher.
+- Das Dunkelkammer-Benchmark unter WinUAE ist eine historische Fremdprojekt-Messung, **kein** PhotoCraft-Laufzeitnachweis. Ein synthetisches Canvas-Muster darf den Presenter vor [PF-SP-007](PF-SP-007.md) testen, echte Composite-Pixel erst nach dessen abgeschlossenem Gate.
+- Keine zusaetzliche RTG-Implementierungsstory neben PF-SP-010; PF-TN-013 bleibt unveraendert `not_run`. 

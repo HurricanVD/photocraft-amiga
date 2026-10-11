@@ -4,7 +4,7 @@
 - Story-Art: `SP`
 - Typ: `enhancement/spike`
 - Status: `draft` (keine Implementierungsfreigabe)
-- Prioritaet: `P2`
+- Prioritaet: `P1`
 - Entry-Profil: `standard`
 - Datum: 2026-10-11
 - Backlog: `docs/backlog.md`
@@ -25,7 +25,7 @@ Fuer AmigaOS 3.2 fehlt eine native Window-/Event-Shell. Sie soll mit einem austa
 
 - Bildbearbeitungs-Menues, Werkzeuge, Dokumentdialoge, Engine-Command-Bridge oder PSD-Funktionalitaet.
 - GPU-Auswahl-/MiniGL-Integration; das ist eine getrennte Folgearbeit.
-- Proprietären Dunkelkammer-ReAction-Code ohne Rechtefreigabe kopieren.
+- Dunkelkammer-ReAction-Code ohne dokumentierte oeffentliche Weitergabe-/Provenienzfreigabe uebernehmen.
 - Fertiger AmigaOS-Editor, Produktcompiler- oder Releasefreigabe.
 
 ## 4. User Story
@@ -71,6 +71,14 @@ Als PhotoCraft-Portentwickler moechte ich eine kleine AmigaOS-Fenster- und Event
 
 ## Priorisierung 2026-10-11
 
-- Prioritaet: `P2` — ReAction-Shell baut auf RTG-Presenter auf; OS-Capability/IP-/Target-Gates offen.
+- Prioritaet: `P1` (Planungsanpassung 2026-10-12) — Native Shell ist auf dem kritischen Pfad zum ersten sichtbaren autarken Amiga-Editor; OS-Capability/IP-/Target-Gates bleiben offen.
 - Quelle: [Prioritaets-/Ready-Audit](../reviews/PF-backlog-priority-ready-audit-2026-10-11.md).
 - Prioritaetsentscheidung aendert keine Implementation-/CI-/Reviewer-Gates.
+
+## Dunkelkammer-ReAction-Wiederverwendung (Planung 2026-10-12)
+
+- Quellkandidaten: `HurricanVD/dunkelkammer` @ `26295506ba363b1bd52bfca1852b0230ffb2bad9`, `src/ui/dk_ui.c` (nur Fenster-/Gadget-Lifecycle-Ausschnitte), `src/app/main.c` (Workbench/StackSwap) und bei Bedarf `src/ui/dk_ui_splash.c/.h` (Splash ist optional, nicht MVP-Blocker).
+- **Keine Monolith-Uebernahme** von `dk_ui.c`: Dunkelkammer-`DkDocument`, `DkSession`, `DkHistory`, Werkzeug- und Datenmodell bleiben draussen. Eigenes kleines `pc_ui_shell`/Adaptermodul; ein Fenster-Owner, klare Disposition von BOOPSI-Klassen und Screen/RTG-Ressourcen.
+- Entwicklungserlaubnis zur Wiederverwendung vom Eigentuemer ist gegeben; oeffentliche Lizenz-/Provenienzpruefung vor direkter Codekopie als [PF-SP-012](PF-SP-012.md). Keine vererbten Logos/Icons/Fonts/SDKs.
+- Der Shell-Test darf einen synthetischen Presenter-Frame anzeigen, unabhaengig vom noch offenen CPU-Compositor [PF-SP-007](PF-SP-007.md). Der native Layer-/Pointer-/Command-Ausbau erfolgt in [PF-SP-013](PF-SP-013.md), [PF-SP-014](PF-SP-014.md) und [PF-SP-015](PF-SP-015.md), Kontextmenues/Dialoge in [PF-SP-016](PF-SP-016.md).
+- ReAction/Intuition-Open/Close, Resize, Refresh, Workbench-Start sowie kontrollierter Stack-/OOM-Fallback muessen auf echter AmigaOS-3.2-Zielumgebung nachgewiesen werden. PF-TN-014 bleibt bis dahin `not_run`.
