@@ -16,7 +16,7 @@
 2. Download the CI artifact `photocraft-amiga-document-preview-hunk`
    and transfer the executable to a writable AmigaDOS volume.
 3. Boot **AmigaOS 3.2**, with suitable ReAction
-   `window.class`, `layout.gadget` and `space.gadget` installed.
+   `window.class`, `gadgets/layout.gadget` and `gadgets/space.gadget` installed.
    Select a truecolour Picasso96/CyberGraphX RTG screen with
    `cybergraphics.library`. Note exact WinUAE version, CPU mode,
    installed libraries, screenmode, RAM and configuration.
@@ -27,7 +27,7 @@
 
 | ID | Action | Expected observation | Result |
 |---|---|---|---|
-| GUI-01 | Shell: increase stack as needed, launch `photocraft-amiga-document-preview` | A ReAction window titled `PhotoCraft AmigaOS (native layers)`, no crash or missing-library alert | `not_run` |
+| GUI-01 | Shell: launch directly with the normal inherited stack, without a `Stack` command: `photocraft-amiga-document-preview` | A ReAction window titled `PhotoCraft AmigaOS (native layers)`, no crash or missing-library alert | `not_run` |
 | GUI-02 | Examine initial canvas | An approximately 192x144 centered multi-colour gradient image, orange translucent/masked rectangle and neutral checkerboard outside document; **not** the prior full-canvas synthetic test tile | `not_run` |
 | GUI-03 | Expose/refresh repeatedly | Canvas restored from offscreen bitmap, controls/gadgets unaffected | `not_run` |
 | GUI-04 | Resize down then up | Image recenters and redraws correctly, no stale out-of-bounds pixels, no corrupted gadgets | `not_run` |
@@ -61,7 +61,7 @@
 - `manual_target_result: not_run`; `image_screenshots: none`;
   `story_done: not_authorized`.
 
-## Startup failure regression / diagnostic build v0.0.3 (2026-10-12)
+## Startup failure regression / diagnostic builds v0.0.3–0.0.4 (2026-10-12)
 
 A manual report showed that the first HUNK returned immediately to
 `AmigaShell` without opening a window. The code review identified two
@@ -72,9 +72,9 @@ library locations (also used by MIT Dunkelkammer) are
 The old shell also lacked explicit Intuition/Graphics library opening and
 gave no error diagnostics when a prerequisite failed.
 
-For the next build, the corrected start path writes its stage errors to
+For v0.0.3 and later, the corrected start path writes its stage errors to
 the Shell (starting with `PhotoCraft AmigaOS Document Preview - startup
-diagnostic v0.0.3`). It now prints the failed component, required version,
+diagnostic v0.0.4 (StackSwap 200 KiB)`). It now prints the failed component, required version,
 and a final exit code 20 on failure; a user-triggered close prints exit 0.
 Missing `cybergraphics.library` is a **warning**, not a reason to suppress
 the ReAction window: the window may show only a neutral canvas fallback
@@ -86,7 +86,6 @@ Use the *new* build, **not** the previous
 compilation. In AmigaShell:
 
 ```text
-Stack 50000
 photocraft-amiga-document-preview
 Echo $RC
 ```
@@ -102,3 +101,36 @@ If the new build still returns without a window, the log should identify
 - `visual_result: not_run` for the corrected build; report needed.
 - This log-only fix does NOT establish graphics parity nor GUI lifecycle
   pass; manual WinUAE/AmigaOS 3.2 target evidence required.
+
+## Automatic Exec StackSwap (native v0.0.4, 2026-10-12)
+
+The Shell/Workbench inherited stack no longer needs to be increased by
+`Stack 50000`: the program itself reserves **200 KiB** through
+`AllocMem(MEMF_ANY)` and uses Exec `StackSwap()` before starting
+`pc_main_body()`. `pc_main_body` is marked `noinline` to prevent the
+compiler from folding the native GUI call back into the entry stack.
+
+The StackSwap record, new-stack pointer and return result are **static**
+because the call frame changes stacks. The second `StackSwap` restores
+the exact inherited task stack before the 200 KiB allocation is freed.
+All of the window, library, document and RTG cleanup still occurs on
+the private stack *before* swapping back. A failed 200 KiB allocation
+prints a startup error and returns RC 20; it does **not** fall back to
+the potentially undersized original stack.
+
+The 200 KiB extra allocation is an implementation budget, not a
+measurement of minimum RAM for the complete editor.
+
+### Native regression checks (manual target)
+
+- Launch without `Stack` shell modification. Confirm the startup
+  diagnostic includes `StackSwap 200 KiB` and the window opens.
+- Close normally; confirm Shell RC 0. Repeat at least three times.
+- Launch through Workbench (if valid icon is available), confirm the
+  same behavior despite a small inherited stack.
+- Under low Fast RAM, confirm an out-of-memory message with RC 20
+  instead of GUI startup on an undersized fallback stack.
+- Log any Guru, address-error or library-close failure and the exact
+  HUNK SHA. **No manual target PASS is asserted** by this document.
+
+`native_gui_validation: not_run`; `stack_swap_cross_build: pending_ci`.
