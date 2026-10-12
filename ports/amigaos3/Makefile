@@ -284,3 +284,73 @@ gcc13-vamos-canvas-document:
 	  grep -q '^PASS: PhotoCraft PcDocument native canvas bands, mask, visibility and bounds$$' "$(GCC13_BUILD)/$$opt/canvas-document.log"; \
 	  cat "$(GCC13_BUILD)/$$opt/canvas-document.log"; \
 	done
+
+# PF-TD-001: ordered tile index and allocation-fault-atomic region writes.
+ATOMIC_TEST := $(BUILD)/pc_raster_atomic_test
+$(ATOMIC_TEST): tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c include/pc_raster.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -DPC_RASTER_TEST_ALLOC -Iinclude -o $@ tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c
+
+.PHONY: host-raster-atomic-test host-raster-atomic-sanitize gcc13-build-raster-atomic gcc13-vamos-raster-atomic
+host-raster-atomic-test: $(ATOMIC_TEST)
+	./$(ATOMIC_TEST)
+host-test: host-raster-atomic-test
+
+host-raster-atomic-sanitize: | $(BUILD)
+	$(HOST_CC) -std=c99 -g -O1 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -DPC_RASTER_TEST_ALLOC -Iinclude -o $(BUILD)/pc_raster_atomic_test_san tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c
+	./$(BUILD)/pc_raster_atomic_test_san
+host-core-sanitize: host-raster-atomic-sanitize
+
+gcc13-build-raster-atomic: gcc13-preflight
+	@set -eu; for opt in O0 O2; do \
+	  mkdir -p "$(GCC13_BUILD)/$$opt"; \
+	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -DPC_RASTER_TEST_ALLOC -Iinclude $(GCC13_LDFLAGS) \
+	    tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/pc_raster_atomic_test"; \
+	done
+
+# The RAM fixture retains both source and COW tiles; use an explicit
+# 32-MiB emulated memory profile, separate from true WinUAE target acceptance.
+# At this size memory crosses the CIA address range: vamos requires -H disable
+# (no hardware access detection) for a contiguous memory map above that range.
+RASTER_VAMOS_KIB ?= 32768
+gcc13-vamos-raster-atomic:
+	@set -eu; for opt in O0 O2; do \
+	  log="$(GCC13_BUILD)/$$opt/raster-atomic.log"; \
+	  if "$(VAMOS)" -S -C 20 -m $(RASTER_VAMOS_KIB) -H disable -s 128 "$(GCC13_BUILD)/$$opt/pc_raster_atomic_test" > "$$log" 2>&1; then \
+	    cat "$$log"; \
+	  else \
+	    rc=$$?; cat "$$log"; echo "FAIL: vamos $$opt exit $$rc"; exit "$$rc"; \
+	  fi; \
+	  grep -q '^PASS: PF-TD-001 sorted lookup and fault-atomic COW region$$' "$$log"; \
+	done
+
+# Explicit host benchmark; timings depend on runner and are not pass thresholds.
+.PHONY: host-raster-benchmark
+host-raster-benchmark: | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $(BUILD)/pc_raster_bench tests/pc_raster_bench.c src/pc_raster.c src/pc_core.c
+	./$(BUILD)/pc_raster_bench
+
+# PF-TD-001: exactly pinned historical linear source, provided by CI through
+# git show. No baseline source copy is committed into this fork.
+BASELINE_RASTER ?= $(BUILD)/pc_raster_linear_baseline.c
+RASTER_COMPARE_LINEAR := $(BUILD)/pc_raster_compare_linear
+RASTER_COMPARE_INDEXED := $(BUILD)/pc_raster_compare_indexed
+RASTER_BASE_SHA := 132bc32338ba5e35379f083674857a382cd888c0
+
+.PHONY: host-raster-compare
+host-raster-compare: | $(BUILD)
+	@test -f "$(BASELINE_RASTER)" || { echo "BLOCKED: fetch pinned original into $(BASELINE_RASTER)"; exit 2; }
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -Isrc -o $(RASTER_COMPARE_LINEAR) tests/pc_raster_compare_bench.c "$(BASELINE_RASTER)" src/pc_core.c
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -Isrc -o $(RASTER_COMPARE_INDEXED) tests/pc_raster_compare_bench.c src/pc_raster.c src/pc_core.c
+	python3 scripts/compare-raster-benchmark.py ./$(RASTER_COMPARE_LINEAR) ./$(RASTER_COMPARE_INDEXED) $(BUILD)/pf-td-001-compare.csv $(BUILD)/pf-td-001-compare.md $(RASTER_BASE_SHA)
+
+# RAM-06 preparatory native Amiga HUNK: measures Fast/free-largest at every
+# tracked raster allocation. No GUI and no automated WinUAE execution.
+.PHONY: gcc13-build-winuae-ram-probe gcc13-check-winuae-ram-probe
+gcc13-build-winuae-ram-probe: gcc13-preflight
+	@set -eu; for opt in O0 O2; do \
+	  mkdir -p "$(GCC13_BUILD)/$$opt"; \
+	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -DPC_RASTER_TEST_ALLOC -Iinclude $(GCC13_LDFLAGS) \
+	    src/pc_ram_winuae_probe.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/pc_ram_winuae_probe"; \
+	done
+gcc13-check-winuae-ram-probe:
+	@python3 scripts/check-hunk.py $(GCC13_BUILD)/O0/pc_ram_winuae_probe $(GCC13_BUILD)/O2/pc_ram_winuae_probe

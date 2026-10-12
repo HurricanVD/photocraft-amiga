@@ -16,3 +16,78 @@
 - `test_evidence: not_run`
 - `runtime_evidence: none`
 - `release_authorization: no`
+
+## PF-TD-001 implementation evidence checkpoint (2026-10-12)
+
+- Implementation branch: `implementation/pf-td-001-raster-atomic-index`.
+- Code: sorted entries / binary-search tile lookup; COW clone-and-swap region write; compile-time-only deterministic allocator fault injection `PC_RASTER_TEST_ALLOC`.
+- Test added: `ports/amigaos3/tests/pc_raster_atomic_test.c` (unordered tile coordinates, readback, COW isolation, allocation failure positions, all-or-nothing pixel content and tile count).
+- Build targets added: `host-raster-atomic-test`, `host-raster-atomic-sanitize`, `gcc13-build-raster-atomic`, `gcc13-vamos-raster-atomic`.
+- Test status: `not_run` in this review session. Source has been submitted, but CI, host compiler, sanitizers and m68k/vamos have not been executed or attested here.
+- Performance: indexed lookup is O(log N), insertion remains O(N) from ordered vector shifts. No wall-clock benchmark yet; cannot assert throughput improvement for write-heavy workloads.
+- Peak memory: clone-and-swap retains old COW tiles and a second entry vector; copying changed tiles raises transient peak. No verified <=32 MiB RAM budget / low-memory target pass.
+- Scope status: `partial_implementation`, not `done`; pending independent implementation/review gates and measured PF-TN-011 acceptance.
+
+## Verifizierte CI-Evidenz nach Compile-Fix (2026-10-12)
+
+- Commit `6b5583192e64a790a52eaace9fe4cc444022fbf3`.
+- [AmigaOS 3.2 Host Core run #38255580495](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38255580495): `success` fuer Portable C99 + ASan/UBSan, Rust originals vs C99 port und GCC13.3 HUNK/vamos.
+- Im Host-Joblog explizit nachgewiesen: `PASS: PF-TD-001 sorted lookup and fault-atomic COW region` fuer `host-test` und `host-core-sanitize` (neuer Regressionstest mit Fault-Injection).
+- Die **neuen** dedizierten `gcc13-build-raster-atomic` / `gcc13-vamos-raster-atomic` Targets sind nicht in den CI-Standardjob eingebunden: deren Ausfuehrung bleibt `not_run`. Die bestehenden GCC13/vamos-Jobs sind `success`, aber kein Ersatz fuer das dedizierte Target.
+- Ein Index-/Write-Benchmark und ein gemessener <=32 MiB Fast-RAM-Peak liegen noch nicht vor; Gesamtstory bleibt offen. Diese Evidenz ersetzt keine Implementation-/Final-Review-Gates.
+
+## Zusatz-Gates im PR #20 (2026-10-12)
+
+- Die bestehende Workflow-Datei `.github/workflows/amigaos3-host.yml` baut jetzt `gcc13-build-raster-atomic`, prueft beide HUNK-Dateien und fuehrt `gcc13-vamos-raster-atomic` unter O0/O2 aus. PASS gilt erst nach neuer CI-Evidenz, nicht aufgrund der Konfigurationsaenderung.
+- `make -C ports/amigaos3 host-raster-benchmark` fuehrt 256 Reverse-Order-Tile-Inserts und 120000 deterministische Pixel-Lookups aus. Ausgabe sind CPU-Zeiten ohne voreiliges Performanz-Gate; noch kein Vergleich mit einem identischen Baseline-Binary.
+- Hinweis fuer die RAM-Analyse: bei 256x256 U8-RGBA benoetigt ein vollstaendig allokiertes Tile 262144 Byte Pixel-Bytes, plus Referenzzaehler/Allocator-Overhead. Der clone-and-swap-Rollback kann betroffene Tiles duplizieren; ein 32-MiB-Peak muss mit Workload und Target-Allocator separat nachgewiesen werden.
+- `RAM_budget_32MiB: not_measured`; `dedicated_m68k_fault_test: pending_CI`; `benchmark: added_not_run`.
+
+## CI-Nachweis PF-TD-001 (Nachtrag 2026-10-12)
+
+- [Run #38257133288](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38257133288): **PASS** fuer Host C99+ASan/UBSan, Rust/C99 und GCC13.3 m68k/vamos. Das Joblog bestaetigt ausdruecklich `PASS: PF-TD-001 sorted lookup and fault-atomic COW region` bei **O0 und O2** und validiert beide nativen HUNK-Executables. Die frueheren `pending_CI`-Stellen oben sind historische Stichtage.
+- Host-Mess-Workflow unter PR #20 erweitert: 256 Gray8-Tiles (16 MiB Pixeldaten), 120000 Lookups, getrennte `/usr/bin/time -v`-Peak-RSS-Messung des Benchmark-Prozesses, reproduzierbares Artefakt `pf-td-001-host-benchmark-and-rss`. Werte sind erst nach erfolgreichem neuen Workflow und heruntergeladenem Artefakt bestaetigt.
+- Selbst ein gemessener Host-RSS-Wert unter 32 MiB kann **keine** AmigaOS-3.2-32-MiB-Fast-RAM-Freigabe ersetzen: anderer Allocator, OS-Overhead und die Peak-Belastung durch grosse multi-Tile COW-Schreibtransaktionen bleiben separat offen.
+- `dedicated_m68k_fault_test: PASS_2026-10-12`; `host_benchmark_measurement: pending`; `target_32MiB_budget: not_proven`; `story_done: no`.
+
+## Host-Messung aus CI (2026-10-12)
+
+- GitHub Actions [AmigaOS Host Core #38262358382](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38262358382), Job `Portable C99 + ASan/UBSan`: PASS.
+- Host-Benchmark `pc_raster_bench` (256 Gray8-Tiles / 16 MiB Pixelbytes, 120000 Lookups): Inserttime `0.032013` CPU-s, Lookuptime `0.001426` CPU-s, Checksum `840000`.
+- `/usr/bin/time -v` fuer den **Benchmark-Prozess**: maximaler residenter Host-Speicher `18156 KiB` (Linux, nicht AmigaOS Fast RAM). Die Compiler-RSS ist nicht Teil dieser Messung.
+- Keine Vergleichsmessung mit gleicher Fixture auf linearem Vorgaenger-Index; kein belastbarer relativer Speedup.
+- 32-MiB-Fast-RAM-Target incl. transaktionaler grosser Region-Writes bleibt **nicht nachgewiesen** und ist kein PASS.
+
+## RAM-01 bis RAM-06: Instrumentierung und Teststand (2026-10-12)
+
+- `PC_RASTER_TEST_ALLOC` aktiviert einen C99-Testallocator mit pro Allokation gespeichertem Payload-Umfang und bilanzierter Header-Groesse: `current_bytes`, `peak_bytes`, `allocation_count`, `failed_allocations`. Geltungsbereich **nur** Allokationen aus `pc_raster.c`, nicht Betriebssystem, Document, ReAction, Presenter oder andere Komponenten.
+- RAM-01: deterministischer Sparse-Tile-Lookup-Benchmark (256 Gray8-Tiles) mit Linux-RSS-Evidenz aus frueherem CI.
+- RAM-02/RAM-03/RAM-05: neuer Test `check_ram_cycles` mit 16 RGBA8-Tiles, separatem COW-Snapshot, drei Schreibzyklen, Pixelvergleich, bounded live raster-heap und `current_bytes==0` nach Freigabe. Test-PASS nur nach CI.
+- RAM-04: vorhandene deterministische Fault-Matrix, unveraenderter Originalinhalt und jetzt Tracker-Pruefung auf `current_bytes==0` nach allen Faellen sowie nachgewiesene Allocation-Failures.
+- RAM-06: separater manueller Testplan [WinUAE 32 MiB](../../ports/amigaos3/docs/manual-winuae-pf-td-001-ram.md). **Nicht ausgefuehrt**; kein Zielsystem-Peak, kein 32-MiB-PASS.
+- CI-Gates pruefen Host/ASan+UBSan, Rust-Originaldifferenz und GCC13/vamos O0/O2. Die hier neu genannten Instrumentierungs-/RAM-Test-PASSe sind bis zum Abschluss der zugehoerigen CI-Runs `pending`.
+- Offen bleiben ein fairer Zeitvergleich zur linearen Vorgängerversion sowie eine instrumentierte vollstaendige Amiga-Process-/Fast-RAM-Peak-Messung. Keine automatische WinUAE-UI-Steuerung.
+
+## Historischer Benchmark und vorbereitete Native-Abnahme (2026-10-12)
+
+### Messaufbau und erste Ergebnisse
+
+- Baseline: **originaler linearer Tile-Lookup** aus `132bc32338ba5e35379f083674857a382cd888c0`, per `git show` in CI geholt (kein eingechecktes Duplikat).
+- Kandidat: `pc_raster.c` auf PF-TD-001-Branch; identisches Testprogramm `tests/pc_raster_compare_bench.c`, `-std=c99 -O2 -Wall -Wextra -Werror -pedantic`.
+- Fixture: Gray/U8, 256x256-Tiles, 64/256/1024 Tile-Anzahlen, reverse-order insert, 150000 deterministische Lesezugriffe und 30000 Overwrites bestehender Tiles. Drei Wiederholungen, mediane CPU-Zeit je Variante. Gleicher Checksummenwert `1050000` oder Testabbruch.
+- [GitHub Actions Host-Lauf #38311324711](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38311324711), `Portable C99 + ASan/UBSan`, erster Benchmark-PASS. Bericht `pf-td-001-linear-indexed-benchmark` als Markdown+CSV-Artefakt.
+
+| Tiles | Lookup-Zeit linear -> indexed (CPU s) | Read-Speedup | Overwrite-Speedup | Insert-Verhaeltnis (linear/indexed) |
+|---:|---:|---:|---:|---:|
+| 64 | 0.009083 -> 0.008197 | 1.11x | 1.02x | 0.98x |
+| 256 | 0.025260 -> 0.010380 | 2.43x | 2.63x | 1.01x |
+| 1024 | 0.092709 -> 0.012496 | 7.42x | 8.92x | 1.02x |
+
+- Dies ist **keine** 32-MiB-Target-Messung oder allgemeine Performance-Garantie; das Testprofil belohnt Tile-Lookup und stresst Reverse-Order-Inserts. Unterschiede unterhalb weniger Prozent sind nicht belastbar ohne groessere Stichprobe.
+
+### Schritt RAM-06 vorbereitet – keine WinUAE-Ausfuehrung
+
+- Neuer nativer Shell-Test `src/pc_ram_winuae_probe.c` ruft dieselbe RAM-/COW-/Fault-Suite auf, misst bei **jeder getrackten Raster-Allokation und Freigabe** per Exec `AvailMem(MEMF_FAST)` und `AvailMem(MEMF_FAST|MEMF_LARGEST)` und zeichnet minimale/free und groesste zusammenhaengende Bloecke sowie den Raster-Heap-Peak auf.
+- Portable C99 bleibt von OS-Headern unabhaengig: Observer nur unter `PC_RASTER_TEST_ALLOC`, keine Produktion-ABI-Aenderung. Observer ist nicht reentrant und deckt **nicht** allokationsfreie GUI-/RTG-/OS-Ereignisse ab.
+- GCC13-Build bei O0/O2 und HUNK-Validierung in `.github/workflows/amigaos3-host.yml`; die CI soll das Artefakt `pf-td-001-winuae-ram06-hunk` mit beiden Executables, SHA256 und [manuellem Testplan](../../ports/amigaos3/docs/manual-winuae-pf-td-001-ram.md) bereitstellen. Bis CI-Ende: `target_probe_compile: pending`.
+- Die echte 32-MiB-WinUAE-Zieltest-Ausfuehrung inkl. Anwendungsspeicher-Peak ist **`not_run`** und bleibt abnahmeblockierend. Automatisierte WinUAE-UI/Broker-Flows bleiben `disabled_by_process`.

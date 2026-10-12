@@ -96,3 +96,11 @@ Als PhotoCraft-Portentwickler moechte ich tile-lookup, speicherbudget und oom-ro
 - **Prioritaet bleibt P1 (Reihenfolge A, zuerst).** Es gibt keinen bestaetigten P0-Defekt aus der Review-Beobachtung allein.
 - Die konkreten Befunde zu nicht-atomarem \`pc_raster_write_region\` und linearem \`pc_find\` sind bereits im Story-Scope. Keine weiteren Raster-Bug-Dubletten anlegen; Implementierung/Fault-Injection/Benchmark ausstehend.
 - Review 2026-10-12 ist Planungs-/Evidence-Abgleich, kein neuer Implementierungs-, DoR-, Runtime-PASS- oder Release-Beschluss.
+
+## Implementation checkpoint 2026-10-12 (nicht done)
+
+- Arbeitsbranch: `implementation/pf-td-001-raster-atomic-index`.
+- Vorhanden: geordnete Tile-Vektoren mit binaerer Suche und rollback-sichere Region-Writes durch COW-Staging mit abschliessendem Commit; Allokations-Fault-Injection-Test und neue Build-Testziele.
+- Verbleibend: objektive Tile-Index-Benchmarks, 32-MiB-Peak-Budget am Target, Ausfuehrung aller Host/ASan/UBSan/Rust-C99/GCC13-vamos-Tests und formale Review-Gates.
+- Die neue Implementierung vergroessert je nach betroffenem Tile-Set den transienten Speicherbedarf; keine Behauptung, das 32-MiB-Akzeptanzkriterium sei bereits erreicht.
+- `implementation_gate_report: pending`; `test_evidence: not_run`; `review_report: pending`; `done: not_authorized`. Der kanonische Status `ready` wird nicht eigenmaechtig auf `done` gesetzt.

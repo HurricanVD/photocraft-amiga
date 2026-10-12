@@ -10,11 +10,25 @@
  * U16 and F32 encoded samples are native-endian like Rust's to_ne_bytes.
  * Pixel conversion, CMS, blending, and layer semantics are NOT done here.
  *
- * Bulk writes are not transactional on OOM: already written earlier pixels
- * remain applied. Single-pixel write is allocation-safe on error.
+ * Bulk region writes are transactional on allocation failure: a COW
+ * staging snapshot is committed only after every pixel has been prepared.
+ * Ordered tile entries provide O(log N) lookup; insertion is O(N).
+ * Staging peak RAM can grow with the modified tile count and entry vector:
+ * the 32 MiB target profile is NOT yet demonstrated.
  * No function returns an internal tile pointer; caller owns every buffer.
  */
 typedef struct PcRaster PcRaster;
+#ifdef PC_RASTER_TEST_ALLOC
+typedef struct PcMemoryStats {
+    size_t current_bytes, peak_bytes, allocation_count, failed_allocations;
+} PcMemoryStats;
+void pc_raster_test_fail_after(long successful_allocations);
+void pc_raster_test_stats(PcMemoryStats *out);
+/* Called synchronously after tracked allocation/free. Test-only; MUST NOT
+ * allocate using PcRaster, mutate the raster or reenter the allocator. */
+typedef void (*PcRasterMemoryObserver)(void *context);
+void pc_raster_test_set_observer(PcRasterMemoryObserver callback,void *context);
+#endif
 PcRaster *pc_raster_new(PcPixelFormat format, const uint8_t *default_bytes);
 PcRaster *pc_raster_clone(const PcRaster *raster);
 void pc_raster_destroy(PcRaster *raster);
