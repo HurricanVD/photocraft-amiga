@@ -313,3 +313,9 @@ gcc13-vamos-raster-atomic:
 	  grep -q '^PASS: PF-TD-001 sorted lookup and fault-atomic COW region$$' "$(GCC13_BUILD)/$$opt/raster-atomic.log"; \
 	  cat "$(GCC13_BUILD)/$$opt/raster-atomic.log"; \
 	done
+
+# Explicit host benchmark; timings depend on runner and are not pass thresholds.
+.PHONY: host-raster-benchmark
+host-raster-benchmark: | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $(BUILD)/pc_raster_bench tests/pc_raster_bench.c src/pc_raster.c src/pc_core.c
+	./$(BUILD)/pc_raster_bench
