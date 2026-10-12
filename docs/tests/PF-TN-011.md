@@ -27,3 +27,11 @@
 - Performance: indexed lookup is O(log N), insertion remains O(N) from ordered vector shifts. No wall-clock benchmark yet; cannot assert throughput improvement for write-heavy workloads.
 - Peak memory: clone-and-swap retains old COW tiles and a second entry vector; copying changed tiles raises transient peak. No verified <=32 MiB RAM budget / low-memory target pass.
 - Scope status: `partial_implementation`, not `done`; pending independent implementation/review gates and measured PF-TN-011 acceptance.
+
+## Verifizierte CI-Evidenz nach Compile-Fix (2026-10-12)
+
+- Commit `6b5583192e64a790a52eaace9fe4cc444022fbf3`.
+- [AmigaOS 3.2 Host Core run #38255580495](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38255580495): `success` fuer Portable C99 + ASan/UBSan, Rust originals vs C99 port und GCC13.3 HUNK/vamos.
+- Im Host-Joblog explizit nachgewiesen: `PASS: PF-TD-001 sorted lookup and fault-atomic COW region` fuer `host-test` und `host-core-sanitize` (neuer Regressionstest mit Fault-Injection).
+- Die **neuen** dedizierten `gcc13-build-raster-atomic` / `gcc13-vamos-raster-atomic` Targets sind nicht in den CI-Standardjob eingebunden: deren Ausfuehrung bleibt `not_run`. Die bestehenden GCC13/vamos-Jobs sind `success`, aber kein Ersatz fuer das dedizierte Target.
+- Ein Index-/Write-Benchmark und ein gemessener <=32 MiB Fast-RAM-Peak liegen noch nicht vor; Gesamtstory bleibt offen. Diese Evidenz ersetzt keine Implementation-/Final-Review-Gates.
