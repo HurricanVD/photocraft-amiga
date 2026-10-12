@@ -67,3 +67,27 @@
 - RAM-06: separater manueller Testplan [WinUAE 32 MiB](../../ports/amigaos3/docs/manual-winuae-pf-td-001-ram.md). **Nicht ausgefuehrt**; kein Zielsystem-Peak, kein 32-MiB-PASS.
 - CI-Gates pruefen Host/ASan+UBSan, Rust-Originaldifferenz und GCC13/vamos O0/O2. Die hier neu genannten Instrumentierungs-/RAM-Test-PASSe sind bis zum Abschluss der zugehoerigen CI-Runs `pending`.
 - Offen bleiben ein fairer Zeitvergleich zur linearen Vorgängerversion sowie eine instrumentierte vollstaendige Amiga-Process-/Fast-RAM-Peak-Messung. Keine automatische WinUAE-UI-Steuerung.
+
+## Historischer Benchmark und vorbereitete Native-Abnahme (2026-10-12)
+
+### Messaufbau und erste Ergebnisse
+
+- Baseline: **originaler linearer Tile-Lookup** aus `132bc32338ba5e35379f083674857a382cd888c0`, per `git show` in CI geholt (kein eingechecktes Duplikat).
+- Kandidat: `pc_raster.c` auf PF-TD-001-Branch; identisches Testprogramm `tests/pc_raster_compare_bench.c`, `-std=c99 -O2 -Wall -Wextra -Werror -pedantic`.
+- Fixture: Gray/U8, 256x256-Tiles, 64/256/1024 Tile-Anzahlen, reverse-order insert, 150000 deterministische Lesezugriffe und 30000 Overwrites bestehender Tiles. Drei Wiederholungen, mediane CPU-Zeit je Variante. Gleicher Checksummenwert `1050000` oder Testabbruch.
+- [GitHub Actions Host-Lauf #38311324711](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38311324711), `Portable C99 + ASan/UBSan`, erster Benchmark-PASS. Bericht `pf-td-001-linear-indexed-benchmark` als Markdown+CSV-Artefakt.
+
+| Tiles | Lookup-Zeit linear -> indexed (CPU s) | Read-Speedup | Overwrite-Speedup | Insert-Verhaeltnis (linear/indexed) |
+|---:|---:|---:|---:|---:|
+| 64 | 0.009083 -> 0.008197 | 1.11x | 1.02x | 0.98x |
+| 256 | 0.025260 -> 0.010380 | 2.43x | 2.63x | 1.01x |
+| 1024 | 0.092709 -> 0.012496 | 7.42x | 8.92x | 1.02x |
+
+- Dies ist **keine** 32-MiB-Target-Messung oder allgemeine Performance-Garantie; das Testprofil belohnt Tile-Lookup und stresst Reverse-Order-Inserts. Unterschiede unterhalb weniger Prozent sind nicht belastbar ohne groessere Stichprobe.
+
+### Schritt RAM-06 vorbereitet – keine WinUAE-Ausfuehrung
+
+- Neuer nativer Shell-Test `src/pc_ram_winuae_probe.c` ruft dieselbe RAM-/COW-/Fault-Suite auf, misst bei **jeder getrackten Raster-Allokation und Freigabe** per Exec `AvailMem(MEMF_FAST)` und `AvailMem(MEMF_FAST|MEMF_LARGEST)` und zeichnet minimale/free und groesste zusammenhaengende Bloecke sowie den Raster-Heap-Peak auf.
+- Portable C99 bleibt von OS-Headern unabhaengig: Observer nur unter `PC_RASTER_TEST_ALLOC`, keine Produktion-ABI-Aenderung. Observer ist nicht reentrant und deckt **nicht** allokationsfreie GUI-/RTG-/OS-Ereignisse ab.
+- GCC13-Build bei O0/O2 und HUNK-Validierung in `.github/workflows/amigaos3-host.yml`; die CI soll das Artefakt `pf-td-001-winuae-ram06-hunk` mit beiden Executables, SHA256 und [manuellem Testplan](../../ports/amigaos3/docs/manual-winuae-pf-td-001-ram.md) bereitstellen. Bis CI-Ende: `target_probe_compile: pending`.
+- Die echte 32-MiB-WinUAE-Zieltest-Ausfuehrung inkl. Anwendungsspeicher-Peak ist **`not_run`** und bleibt abnahmeblockierend. Automatisierte WinUAE-UI/Broker-Flows bleiben `disabled_by_process`.
