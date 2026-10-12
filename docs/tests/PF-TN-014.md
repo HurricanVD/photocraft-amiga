@@ -127,3 +127,27 @@ for the tested window size. Direct owner confirmation:
 - `true_memory_leak: unproven`, `new_probe: pending_manual_retest`.
 - Owner's low-Fast-RAM stress waiver remains `skipped_by_owner_preview_only`.
 - See [manual test](../../ports/amigaos3/docs/manual-winuae-document-preview.md).
+
+## v0.0.6 native code verification (2026-10-12)
+
+- Native code commit `ceccaca6da8cc75f138c7bf14292e178adf32feb`
+  cross-compiled/linked successfully to m68k HUNK using pinned
+  GCC/Bebbo 13.3 in [CI run 38224694703](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38224694703).
+- `GCC13.3 m68k HUNK + vamos vs Rust: success`.
+  Existing native raster/document/compositor HUNK+vamos regression
+  continues to pass at this code revision.
+- `Portable C99 + ASan/UBSan: success`, `Rust originals vs C99
+  port: success`, `Public PF documentation gate: success`.
+- CI uploaded artifact `photocraft-amiga-document-preview-hunk`
+  ID `11735955526`; the executable is 36,040 bytes,
+  SHA-256 `d096d4c91faa7cd694cbe9d40a57bb094b68fbeeff039736d5c2f600d74f6b26`.
+- Runtime changes: native Workbench `argc == 0` suppresses stdio,
+  startup error uses Intuition `EasyRequestArgs` where available;
+  Shell startup retains output and adds Fast/Chip `AvailMem`
+  before/after the private StackSwap lifetime.
+- **Important boundary:** CI can compile the native requester but cannot
+  establish that Workbench v0.0.6 no longer opens a CON: output
+  window. `Workbench_console_fix_manual: not_run`.
+  `Measured_memory_trend_v0.0.6: not_run`;
+  `underlying_memory_leak_proven: no`.
+  Low-Fast-RAM manual stress remains `skipped_by_owner_preview_only`.
