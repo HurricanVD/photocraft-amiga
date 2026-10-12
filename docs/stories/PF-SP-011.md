@@ -96,3 +96,9 @@ Als PhotoCraft-Portentwickler moechte ich eine kleine AmigaOS-Fenster- und Event
 - Evidence: [PF-all-open-ready-review](../reviews/PF-all-open-ready-review-2026-10-12.md). Initial architecture / scope refinement / separate final pre-ready review and DoR pass are **planning checks**, not product runtime results.
 - IP: original PhotoCraft semantics are reference-only; any reused Dunkelkammer source is MIT for owner material (merge PR #9), retain each copyright and third-party notice.
 - Next stage: individual `implementation_gate_report` before work, unmet dependency verification as applicable. All actual native tests and target GUI checks still `not_run`.
+
+## Review-Priorisierung / Bestandsabgleich 2026-10-12
+
+- **Prioritaet bleibt P1 (Reihenfolge B, native Integration).** Es gibt keinen bestaetigten P0-Defekt aus der Review-Beobachtung allein.
+- PR #18 und manuelle v0.0.6-Beobachtungen belegen einen begrenzten ReAction-/Workbench-Preview und erfolgreiche normale Starts. Nicht alle Target-/Lifecycle-/Ressourcengates sind abgenommen. PF-TD-003 untersucht nur die bislang unbewiesene Leak-Ursache; keine doppelte GUI-Implementierung.
+- Review 2026-10-12 ist Planungs-/Evidence-Abgleich, kein neuer Implementierungs-, DoR-, Runtime-PASS- oder Release-Beschluss.
