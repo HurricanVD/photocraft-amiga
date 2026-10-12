@@ -49,3 +49,11 @@
 - Host-Mess-Workflow unter PR #20 erweitert: 256 Gray8-Tiles (16 MiB Pixeldaten), 120000 Lookups, getrennte `/usr/bin/time -v`-Peak-RSS-Messung des Benchmark-Prozesses, reproduzierbares Artefakt `pf-td-001-host-benchmark-and-rss`. Werte sind erst nach erfolgreichem neuen Workflow und heruntergeladenem Artefakt bestaetigt.
 - Selbst ein gemessener Host-RSS-Wert unter 32 MiB kann **keine** AmigaOS-3.2-32-MiB-Fast-RAM-Freigabe ersetzen: anderer Allocator, OS-Overhead und die Peak-Belastung durch grosse multi-Tile COW-Schreibtransaktionen bleiben separat offen.
 - `dedicated_m68k_fault_test: PASS_2026-10-12`; `host_benchmark_measurement: pending`; `target_32MiB_budget: not_proven`; `story_done: no`.
+
+## Host-Messung aus CI (2026-10-12)
+
+- GitHub Actions [AmigaOS Host Core #38262358382](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38262358382), Job `Portable C99 + ASan/UBSan`: PASS.
+- Host-Benchmark `pc_raster_bench` (256 Gray8-Tiles / 16 MiB Pixelbytes, 120000 Lookups): Inserttime `0.032013` CPU-s, Lookuptime `0.001426` CPU-s, Checksum `840000`.
+- `/usr/bin/time -v` fuer den **Benchmark-Prozess**: maximaler residenter Host-Speicher `18156 KiB` (Linux, nicht AmigaOS Fast RAM). Die Compiler-RSS ist nicht Teil dieser Messung.
+- Keine Vergleichsmessung mit gleicher Fixture auf linearem Vorgaenger-Index; kein belastbarer relativer Speedup.
+- 32-MiB-Fast-RAM-Target incl. transaktionaler grosser Region-Writes bleibt **nicht nachgewiesen** und ist kein PASS.
