@@ -216,7 +216,26 @@ fn mask_main() {
     println!("snapshot-after-detach {}",sample_mask_u8(&snapshot,-1,256));
 }
 
+fn compose_oracle_main() {
+    use photocraft_color::blend::{composite, BlendMode};
+    let b = [1.0_f32, 0.0, 0.0, 1.0];
+    let s = [0.0_f32, 0.0, 1.0, 1.0];
+    for (tag, opacity) in [
+        ("half", 0.5_f32),
+        ("mask128", 0.5_f32 * (128.0_f32 / 255.0_f32)),
+        ("hidden", 0.0_f32),
+    ] {
+        let p = composite(BlendMode::Normal, b, s, opacity);
+        let q = |v: f32| (v.clamp(0.0, 1.0) * 255.0 + 0.5) as u8;
+        println!("{tag} {} {} {} {}", q(p[0]),q(p[1]),q(p[2]),q(p[3]));
+    }
+}
+
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("compose") {
+        compose_oracle_main();
+        return;
+    }
     if std::env::args().nth(1).as_deref() == Some("mask") {
         mask_main();
         return;
