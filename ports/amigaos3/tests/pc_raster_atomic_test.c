@@ -65,10 +65,45 @@ static void check_fault_rollback(void)
     }
     assert(failed>=5&&passed>0);
 }
+static void check_ram_cycles(void)
+{
+    PcPixelFormat fmt={PC_COLOR_RGB,PC_SAMPLE_U8,1};
+    PcRaster *r=pc_raster_new(fmt,NULL),*snapshot;
+    PcMemoryStats before,after;
+    uint8_t pixel[4]={10,20,30,255},replacement[4]={40,50,60,255},got[4];
+    unsigned i,cycle;
+    assert(r);
+    /* RAM-02: 16 RGBA8 tiles, each 256 KiB, sparse baseline. */
+    for(i=0;i<16;++i)
+        assert(pc_raster_write_pixel(r,(int32_t)(i*256u),0,pixel,4));
+    snapshot=pc_raster_clone(r);assert(snapshot);
+    pc_raster_test_stats(&before);
+    /* RAM-03/RAM-05: repeat successful transactional COW updates. */
+    for(cycle=0;cycle<3;++cycle){
+        for(i=0;i<16;++i){
+            PcRect rect=pc_rect_new((int32_t)(i*256u),0,
+                                    (int32_t)(i*256u+1u),1);
+            assert(pc_raster_write_region(r,rect,replacement,4));
+        }
+        pc_raster_test_stats(&after);
+        assert(after.current_bytes <= before.current_bytes+16u*262144u+65536u);
+    }
+    for(i=0;i<16;++i){
+        assert(pc_raster_read_pixel(snapshot,(int32_t)(i*256u),0,got,4));
+        assert(memcmp(got,pixel,4)==0);
+        assert(pc_raster_read_pixel(r,(int32_t)(i*256u),0,got,4));
+        assert(memcmp(got,replacement,4)==0);
+    }
+    pc_raster_destroy(snapshot);
+    pc_raster_destroy(r);
+    pc_raster_test_stats(&after);
+    assert(after.current_bytes==0);
+}
 int main(void)
 {
     check_order_and_clone();
     check_fault_rollback();
+    check_ram_cycles();
     {
         PcMemoryStats stats;
         pc_raster_test_stats(&stats);
