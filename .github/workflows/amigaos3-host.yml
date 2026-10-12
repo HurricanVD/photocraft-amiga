@@ -39,8 +39,9 @@ jobs:
       - name: Measure sparse tile benchmark and peak host RSS
         run: |
           mkdir -p ports/amigaos3/build
+          make -C ports/amigaos3 host-raster-benchmark
           /usr/bin/time -v -o ports/amigaos3/build/pf-td-001-host-memory.txt \
-            make -C ports/amigaos3 host-raster-benchmark \
+            ports/amigaos3/build/pc_raster_bench \
             | tee ports/amigaos3/build/pf-td-001-host-benchmark.txt
           cat ports/amigaos3/build/pf-td-001-host-memory.txt
       - name: Upload PF-TD-001 host measurement
