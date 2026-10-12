@@ -17,3 +17,11 @@ Before public code copy from private repositories: record exact source commit/fi
 
 - Lizenzwechsel auf eigenem Quellcode: [Dunkelkammer PR #9](https://github.com/HurricanVD/dunkelkammer/pull/9), Commit `70897e91c94214421b0595b3e858446d6b3586ea`. Vollstaendige Standard-MIT-Lizenz in `LICENSE`, Scope `LICENSE.md`.
 - Konkrete Quell-Dateien bleiben `not_imported`; Copyright, Notices und Drittcode werden vor erstem Import ueber [Quellmatrix](dunkelkammer-ui-source-inventory.md) validiert. Keine MIT-Umlizenzierung von TTEngine, FreeType, Vera, ROMs/NDK/Third-Party-Assets.
+
+## Actual code-PR source reuse candidates (2026-10-12)
+
+- [Provenance review](reviews/PF-SP-012-mit-import-audit-2026-10-12.md):
+  native M2 presenter (PR #14) and ReAction shell (PR #15) are proposed
+  with explicit MIT source/notice references. Neither is merged into main
+  at the time this record is written; first import review and eventual
+  release manifest update remain separate gates.
