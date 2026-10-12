@@ -18,6 +18,8 @@
 #include <intuition/gadgetclass.h>
 #include <graphics/rastport.h>
 #include <graphics/gfx.h>
+#include <graphics/gfxbase.h>
+#include <intuition/intuitionbase.h>
 #include <classes/window.h>
 #include <gadgets/layout.h>
 #include <gadgets/space.h>
@@ -33,7 +35,10 @@
 #include <limits.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
+struct IntuitionBase *IntuitionBase=0;
+struct GfxBase *GfxBase=0;
 struct Library *WindowBase=0;
 struct Library *LayoutBase=0;
 struct Library *SpaceBase=0;
@@ -123,6 +128,18 @@ static ULONG pc_canvas_render(struct Hook *hook,Object *object,
     SetAPen(rp,oldpen);
     return 0;
 }
+/* Diagnostics must be available even when no ReAction window exists.
+ * Return code 20 is failure; code 0 is clean user-triggered window exit. */
+static void pc_startup_error(const char *component, unsigned version)
+{
+    if (version)
+        printf("PhotoCraft: STARTUP FAILED: cannot open %s (minimum V%u).\n",
+               component,version);
+    else
+        printf("PhotoCraft: STARTUP FAILED: %s.\n",component);
+    puts("PhotoCraft: Check required ReAction classes and available Fast RAM.");
+    fflush(stdout);
+}
 static void pc_shutdown(void)
 {
     if (pc_window && pc_winobj) { RA_CloseWindow(pc_winobj);pc_window=0; }
@@ -135,6 +152,8 @@ static void pc_shutdown(void)
     if (SpaceBase) { CloseLibrary(SpaceBase);SpaceBase=0; }
     if (LayoutBase) { CloseLibrary(LayoutBase);LayoutBase=0; }
     if (WindowBase) { CloseLibrary(WindowBase);WindowBase=0; }
+    if (GfxBase) { CloseLibrary((struct Library *)GfxBase);GfxBase=0; }
+    if (IntuitionBase) { CloseLibrary((struct Library *)IntuitionBase);IntuitionBase=0; }
 }
 int main(void)
 {
@@ -154,30 +173,43 @@ int main(void)
     int status=20,done=0;
     ULONG sigmask=0,code=0,msg;
     (void)pc_version[1];
+    puts("PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.3");
+    fflush(stdout);
+    IntuitionBase=(struct IntuitionBase *)OpenLibrary((STRPTR)"intuition.library",39);
+    if (!IntuitionBase) { pc_startup_error("intuition.library",39); goto finish; }
+    GfxBase=(struct GfxBase *)OpenLibrary((STRPTR)"graphics.library",39);
+    if (!GfxBase) { pc_startup_error("graphics.library",39); goto finish; }
     WindowBase=OpenLibrary((STRPTR)"window.class",44);
-    LayoutBase=OpenLibrary((STRPTR)"layout.gadget",44);
-    SpaceBase=OpenLibrary((STRPTR)"space.gadget",44);
-    if (!WindowBase || !LayoutBase || !SpaceBase) goto finish;
+    LayoutBase=OpenLibrary((STRPTR)"gadgets/layout.gadget",44);
+    SpaceBase=OpenLibrary((STRPTR)"gadgets/space.gadget",44);
+    if (!WindowBase) { pc_startup_error("window.class",44); goto finish; }
+    if (!LayoutBase) { pc_startup_error("gadgets/layout.gadget",44); goto finish; }
+    if (!SpaceBase) { pc_startup_error("gadgets/space.gadget",44); goto finish; }
     pc_document=pc_canvas_example_document();
-    if (!pc_document) goto finish;
-    if (!pc_m2_open()) goto finish;
+    if (!pc_document) { pc_startup_error("PcDocument (RAM/allocator)",0); goto finish; }
+    if (!pc_m2_open()) {
+        puts("PhotoCraft: cybergraphics.library V40 unavailable; starting without RTG.");
+        puts("PhotoCraft: RTG is required for colour image preview; showing canvas fallback.");
+        fflush(stdout);
+    }
     memset(&pc_render_hook,0,sizeof(pc_render_hook));
     pc_render_hook.h_Entry=(ULONG (*)())HookEntry;
     pc_render_hook.h_SubEntry=(ULONG (*)())pc_canvas_render;
     st[0].ti_Data=(ULONG)&pc_render_hook;
     pc_root=NewObjectA(LAYOUT_GetClass(),0,lt);
-    if (!pc_root) goto finish;
+    if (!pc_root) { pc_startup_error("LAYOUT_GetClass/NewObjectA",0); goto finish; }
     area=NewObjectA(SPACE_GetClass(),0,st);
-    if (!area) goto finish;
-    SetAttrs(pc_root,LAYOUT_AddChild,(ULONG)area,TAG_END);
+    if (!area) { pc_startup_error("SPACE_GetClass/NewObjectA",0); goto finish; }
+    SetAttrs(pc_root,LAYOUT_AddChild,(ULONG)area,
+             CHILD_WeightedHeight,100UL,CHILD_WeightedWidth,100UL,TAG_END);
     pc_root_owned=1; /* root is handed to window object on construction */
     wt[10].ti_Data=(ULONG)pc_root;
     pc_winobj=NewObjectA(WINDOW_GetClass(),0,wt);
-    if (!pc_winobj) { pc_root_owned=0; goto finish; }
+    if (!pc_winobj) { pc_root_owned=0; pc_startup_error("WINDOW_GetClass/NewObjectA",0); goto finish; }
     pc_window=RA_OpenWindow(pc_winobj);
-    if (!pc_window) goto finish;
+    if (!pc_window) { pc_startup_error("RA_OpenWindow",0); goto finish; }
     GetAttr(WINDOW_SigMask,pc_winobj,&sigmask);
-    if (!sigmask) goto finish;
+    if (!sigmask) { pc_startup_error("WINDOW_SigMask",0); goto finish; }
     status=0;
     while (!done) {
         ULONG signals=Wait(sigmask|SIGBREAKF_CTRL_C);
@@ -195,5 +227,8 @@ int main(void)
     }
 finish:
     pc_shutdown();
+    if (status != 0) puts("PhotoCraft: exited with failure code 20.");
+    else puts("PhotoCraft: window closed normally (RC 0).");
+    fflush(stdout);
     return status;
 }
