@@ -36,6 +36,21 @@ jobs:
         run: make -C ports/amigaos3 host-test
       - name: Address/undefined sanitizer core tests
         run: make -C ports/amigaos3 host-core-sanitize
+      - name: Measure sparse tile benchmark and peak host RSS
+        run: |
+          mkdir -p ports/amigaos3/build
+          /usr/bin/time -v -o ports/amigaos3/build/pf-td-001-host-memory.txt \
+            make -C ports/amigaos3 host-raster-benchmark \
+            | tee ports/amigaos3/build/pf-td-001-host-benchmark.txt
+          cat ports/amigaos3/build/pf-td-001-host-memory.txt
+      - name: Upload PF-TD-001 host measurement
+        uses: actions/upload-artifact@v4
+        with:
+          name: pf-td-001-host-benchmark-and-rss
+          path: |
+            ports/amigaos3/build/pf-td-001-host-memory.txt
+            ports/amigaos3/build/pf-td-001-host-benchmark.txt
+          if-no-files-found: error
 
   rust-original-parity:
     name: Rust originals vs C99 port
