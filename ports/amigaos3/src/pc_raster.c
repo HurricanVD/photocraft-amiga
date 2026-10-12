@@ -63,7 +63,7 @@ static void *pc_realloc(void *p,size_t size)
     next=pc_alloc(size);
     if(!next)return NULL;
     memcpy(next,p,h->meta.size<size?h->meta.size:size);
-    pc_PC_FREE(p);
+    pc_free(p);
     return next;
 }
 #define PC_MALLOC(n) pc_alloc(n)
