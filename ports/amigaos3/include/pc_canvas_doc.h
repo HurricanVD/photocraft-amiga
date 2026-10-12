@@ -11,6 +11,16 @@
  */
 PcDocument *pc_canvas_example_document(void);
 
+/* Bounded first-preview viewport. ReAction and the portable canvas MUST
+ * share these limits, so the UI never discards otherwise valid RTG frames.
+ * At the maximum size the M2 path currently uses two ~8.8 MiB buffers
+ * (offscreen bitmap plus ARGB staging) in addition to the 8-row RGBA scratch.
+ * Exceeding these bounds must fail safely without overflowing allocations.
+ * These are preview safety ceilings, not a product-wide image size limit.
+ */
+#define PC_CANVAS_VIEWPORT_MAX_WIDTH 1920UL
+#define PC_CANVAS_VIEWPORT_MAX_HEIGHT 1200UL
+
 /* Render a bounded vertical canvas band from a PhotoCraft Document.
  * The document is centered when smaller than the viewport. Outside-document
  * pixels are an opaque neutral backdrop. Visible document pixels are

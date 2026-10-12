@@ -9,8 +9,6 @@
  * APIs, never by reinterpreting Dunkelkammer's DkDocument tiles. */
 #define PC_EXAMPLE_WIDTH 192U
 #define PC_EXAMPLE_HEIGHT 144U
-#define PC_VIEWPORT_MAX_WIDTH 1024UL
-#define PC_VIEWPORT_MAX_HEIGHT 768UL
 
 PcDocument *pc_canvas_example_document(void)
 {
@@ -86,8 +84,8 @@ int pc_canvas_document_band(const PcDocument *doc,
     unsigned long row, x, clip_w;
     size_t row_bytes, offset;
     if (!doc || !out || !viewport_w || !viewport_h || !rows ||
-        viewport_w > PC_VIEWPORT_MAX_WIDTH ||
-        viewport_h > PC_VIEWPORT_MAX_HEIGHT ||
+        viewport_w > PC_CANVAS_VIEWPORT_MAX_WIDTH ||
+        viewport_h > PC_CANVAS_VIEWPORT_MAX_HEIGHT ||
         y >= viewport_h || rows > viewport_h - y) return 0;
     if (viewport_w > SIZE_MAX / 4U) return 0;
     row_bytes = (size_t)viewport_w * 4U;

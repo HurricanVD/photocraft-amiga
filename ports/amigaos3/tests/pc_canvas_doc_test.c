@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define VW 320UL
 #define VH 256UL
@@ -65,11 +66,43 @@ int main(void)
                                     band,VW*4UL,sizeof(band)-1U));
     assert(!pc_canvas_document_band(doc,VW,VH,VH-1UL,ROWS,
                                     band,VW*4UL,sizeof(band)));
-    assert(!pc_canvas_document_band(doc,1025UL,VH,0,ROWS,
-                                    band,VW*4UL,sizeof(band)));
+    /* Only dimensions beyond the *new shared* upper bound are rejected. */
+    assert(!pc_canvas_document_band(doc,PC_CANVAS_VIEWPORT_MAX_WIDTH+1UL,VH,
+                                    0,ROWS,band,VW*4UL,sizeof(band)));
+    assert(!pc_canvas_document_band(doc,VW,PC_CANVAS_VIEWPORT_MAX_HEIGHT+1UL,
+                                    0,ROWS,band,VW*4UL,sizeof(band)));
     assert(!pc_canvas_document_band(NULL,VW,VH,0,ROWS,
                                     band,VW*4UL,sizeof(band)));
     assert(memcmp(band,guard,sizeof(band))==0);
+    /* User WinUAE regression: at ~1450 px the former hard-coded
+     * 1024x768 guard discarded the image and showed a grey canvas.
+     * Large->small->large transitions must retain the document pixels.
+     * A single 8-row buffer keeps allocations bounded even at 1920px. */
+    {
+        const unsigned long widths[] = {1600UL, 320UL, 1920UL, 1450UL};
+        const unsigned long heights[] = {900UL, 256UL, 1200UL, 700UL};
+        const size_t cap=(size_t)PC_CANVAS_VIEWPORT_MAX_WIDTH * ROWS * 4U;
+        uint8_t *large=(uint8_t *)malloc(cap);
+        size_t i;
+        assert(large);
+        for (i=0;i<sizeof(widths)/sizeof(widths[0]);++i) {
+            unsigned long w=widths[i],h=heights[i];
+            unsigned long offx=(w-192UL)/2UL,offy=(h-144UL)/2UL;
+            unsigned long sample_y=offy+40UL;
+            const uint8_t *p;
+            size_t stride=(size_t)w*4U;
+            memset(large,0x69,cap);
+            assert(pc_canvas_document_band(doc,w,h,sample_y,ROWS,
+                                           large,stride,cap));
+            p=large+(size_t)(offx+96UL)*4U;
+            assert(memcmp(p,direct,4)==0);
+            assert(p[3]==255U);
+            /* No writes outside the used row range. */
+            if(stride*ROWS<cap)
+                assert(large[stride*ROWS]==0x69);
+        }
+        free(large);
+    }
     pc_document_destroy(doc);
     puts("PASS: PhotoCraft PcDocument native canvas bands, mask, visibility and bounds");
     return 0;

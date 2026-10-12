@@ -52,7 +52,7 @@ static unsigned long pc_band_w=0;
 static int pc_cached=0;
 static unsigned long pc_cached_w=0,pc_cached_h=0;
 static int pc_root_owned=0;
-static const char pc_version[]="\0$VER: PhotoCraft AmigaOS Document Preview 0.0.4 (12.10.2026)";
+static const char pc_version[]="\0$VER: PhotoCraft AmigaOS Document Preview 0.0.5 (12.10.2026)";
 /*
  * PF-SP-011 / Dunkelkammer MIT startup pattern.
  * ReAction and C99 raster rendering must not run on the tiny inherited
@@ -72,8 +72,6 @@ static int pc_app_result=20;
 /* Limit the viewport to a bounded preview until scrolling/large zoom
  * arrive in PF-SP-014. The frame scratch is ONLY eight RGBA8 rows.
  * The M2 present module owns the persistent offscreen bitmap/cache. */
-#define PC_UI_MAX_WIDTH 1024UL
-#define PC_UI_MAX_HEIGHT 768UL
 #define PC_UI_BAND_ROWS 8UL
 
 static void pc_release_band(void)
@@ -86,7 +84,7 @@ static int pc_ensure_band(unsigned long w)
 {
     uint8_t *p;
     size_t bytes;
-    if (!w || w>PC_UI_MAX_WIDTH) return 0;
+    if (!w || w>PC_CANVAS_VIEWPORT_MAX_WIDTH) return 0;
     if (pc_band && pc_band_w==w) return 1;
     bytes=(size_t)w*4U*PC_UI_BAND_ROWS;
     p=(uint8_t *)AllocVec((ULONG)bytes,MEMF_ANY);
@@ -131,7 +129,7 @@ static ULONG pc_canvas_render(struct Hook *hook,Object *object,
     rp=message->gpr_RPort;
     oldpen=rp->FgPen;
     w=(unsigned long)rect->Width; h=(unsigned long)rect->Height;
-    if (w<=PC_UI_MAX_WIDTH && h<=PC_UI_MAX_HEIGHT &&
+    if (w<=PC_CANVAS_VIEWPORT_MAX_WIDTH && h<=PC_CANVAS_VIEWPORT_MAX_HEIGHT &&
         pc_upload_document(rp,w,h) &&
         pc_m2_blit(rp,(long)rect->Left,(long)rect->Top,0,0,w,h))
         return 0;
@@ -189,7 +187,7 @@ static int __attribute__((noinline)) pc_main_body(void)
     int status=20,done=0;
     ULONG sigmask=0,code=0,msg;
     (void)pc_version[1];
-    puts("PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.4 (StackSwap 200 KiB)");
+    puts("PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.5 (StackSwap 200 KiB, extended viewport)");
     fflush(stdout);
     IntuitionBase=(struct IntuitionBase *)OpenLibrary((STRPTR)"intuition.library",39);
     if (!IntuitionBase) { pc_startup_error("intuition.library",39); goto finish; }
