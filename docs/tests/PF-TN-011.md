@@ -39,6 +39,13 @@
 ## Zusatz-Gates im PR #20 (2026-10-12)
 
 - Die bestehende Workflow-Datei `.github/workflows/amigaos3-host.yml` baut jetzt `gcc13-build-raster-atomic`, prueft beide HUNK-Dateien und fuehrt `gcc13-vamos-raster-atomic` unter O0/O2 aus. PASS gilt erst nach neuer CI-Evidenz, nicht aufgrund der Konfigurationsaenderung.
-- `make -C ports/amigaos3 host-raster-benchmark` fuehrt 4096 Reverse-Order-Tile-Inserts und 120000 deterministische Pixel-Lookups aus. Ausgabe sind CPU-Zeiten ohne voreiliges Performanz-Gate; noch kein Vergleich mit einem identischen Baseline-Binary.
+- `make -C ports/amigaos3 host-raster-benchmark` fuehrt 256 Reverse-Order-Tile-Inserts und 120000 deterministische Pixel-Lookups aus. Ausgabe sind CPU-Zeiten ohne voreiliges Performanz-Gate; noch kein Vergleich mit einem identischen Baseline-Binary.
 - Hinweis fuer die RAM-Analyse: bei 256x256 U8-RGBA benoetigt ein vollstaendig allokiertes Tile 262144 Byte Pixel-Bytes, plus Referenzzaehler/Allocator-Overhead. Der clone-and-swap-Rollback kann betroffene Tiles duplizieren; ein 32-MiB-Peak muss mit Workload und Target-Allocator separat nachgewiesen werden.
 - `RAM_budget_32MiB: not_measured`; `dedicated_m68k_fault_test: pending_CI`; `benchmark: added_not_run`.
+
+## CI-Nachweis PF-TD-001 (Nachtrag 2026-10-12)
+
+- [Run #38257133288](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38257133288): **PASS** fuer Host C99+ASan/UBSan, Rust/C99 und GCC13.3 m68k/vamos. Das Joblog bestaetigt ausdruecklich `PASS: PF-TD-001 sorted lookup and fault-atomic COW region` bei **O0 und O2** und validiert beide nativen HUNK-Executables. Die frueheren `pending_CI`-Stellen oben sind historische Stichtage.
+- Host-Mess-Workflow unter PR #20 erweitert: 256 Gray8-Tiles (16 MiB Pixeldaten), 120000 Lookups, getrennte `/usr/bin/time -v`-Peak-RSS-Messung des Benchmark-Prozesses, reproduzierbares Artefakt `pf-td-001-host-benchmark-and-rss`. Werte sind erst nach erfolgreichem neuen Workflow und heruntergeladenem Artefakt bestaetigt.
+- Selbst ein gemessener Host-RSS-Wert unter 32 MiB kann **keine** AmigaOS-3.2-32-MiB-Fast-RAM-Freigabe ersetzen: anderer Allocator, OS-Overhead und die Peak-Belastung durch grosse multi-Tile COW-Schreibtransaktionen bleiben separat offen.
+- `dedicated_m68k_fault_test: PASS_2026-10-12`; `host_benchmark_measurement: pending`; `target_32MiB_budget: not_proven`; `story_done: no`.
