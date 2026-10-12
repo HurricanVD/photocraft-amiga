@@ -44,6 +44,21 @@ jobs:
             ports/amigaos3/build/pc_raster_bench \
             | tee ports/amigaos3/build/pf-td-001-host-benchmark.txt
           cat ports/amigaos3/build/pf-td-001-host-memory.txt
+      - name: Compare pinned historical linear and current indexed tile lookup
+        run: |
+          set -euo pipefail
+          baseline=132bc32338ba5e35379f083674857a382cd888c0
+          git fetch --no-tags --depth=1 origin "$baseline"
+          git show "$baseline:ports/amigaos3/src/pc_raster.c" > ports/amigaos3/build/pc_raster_linear_baseline.c
+          make -C ports/amigaos3 host-raster-compare
+      - name: Upload PF-TD-001 linear vs indexed comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: pf-td-001-linear-indexed-benchmark
+          path: |
+            ports/amigaos3/build/pf-td-001-compare.csv
+            ports/amigaos3/build/pf-td-001-compare.md
+          if-no-files-found: error
       - name: Upload PF-TD-001 host measurement
         uses: actions/upload-artifact@v4
         with:
