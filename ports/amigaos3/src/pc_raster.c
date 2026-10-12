@@ -7,6 +7,29 @@
 #define PC_PIXEL_MAX 20u
 #define PC_TILE_AREA ((size_t)PC_CORE_TILE_SIZE * (size_t)PC_CORE_TILE_SIZE)
 
+/* Test-only deterministic allocation failure injection. */
+#ifdef PC_RASTER_TEST_ALLOC
+static long pc_alloc_remaining = -1;
+void pc_raster_test_fail_after(long successful_allocations)
+{
+    pc_alloc_remaining = successful_allocations;
+}
+static int pc_alloc_allowed(void)
+{
+    if (pc_alloc_remaining < 0) return 1;
+    if (pc_alloc_remaining == 0) return 0;
+    --pc_alloc_remaining;
+    return 1;
+}
+#define PC_MALLOC(n) (pc_alloc_allowed() ? malloc(n) : NULL)
+#define PC_CALLOC(n,s) (pc_alloc_allowed() ? calloc((n),(s)) : NULL)
+#define PC_REALLOC(p,n) (pc_alloc_allowed() ? realloc((p),(n)) : NULL)
+#else
+#define PC_MALLOC(n) malloc(n)
+#define PC_CALLOC(n,s) calloc((n),(s))
+#define PC_REALLOC(p,n) realloc((p),(n))
+#endif
+
 typedef struct PcRasterTile {
     size_t refs;
     uint8_t bytes[]; /* C99 flexible array: allocation follows raster bpp */
@@ -25,12 +48,26 @@ struct PcRaster {
     size_t count, capacity;
 };
 
+/* Entries stay ordered by (y,x), allowing O(log N) lookup.
+ * Return lower bound for insertion, with optional exact-match flag. */
+static size_t pc_lower_bound(const PcRaster *r, PcTileCoord c, int *found)
+{
+    size_t lo=0,hi=r->count;
+    while(lo<hi){
+        size_t mid=lo+(hi-lo)/2;
+        PcTileCoord m=r->entries[mid].coord;
+        if(m.y<c.y || (m.y==c.y && m.x<c.x))lo=mid+1;
+        else hi=mid;
+    }
+    if(found)*found=(lo<r->count &&
+        pc_tile_equal(r->entries[lo].coord,c));
+    return lo;
+}
 static size_t pc_find(const PcRaster *r, PcTileCoord c)
 {
-    size_t i;
-    for (i=0; i<r->count; ++i)
-        if (pc_tile_equal(r->entries[i].coord,c)) return i;
-    return r->count;
+    int found;
+    size_t pos=pc_lower_bound(r,c,&found);
+    return found?pos:r->count;
 }
 static void pc_tile_release(PcRasterTile *t)
 {
@@ -41,7 +78,7 @@ static PcRasterTile *pc_tile_alloc(const PcRaster *r)
     PcRasterTile *tile;
     size_t i;
     if (r->tile_bytes > SIZE_MAX - sizeof(*tile)) return NULL;
-    tile = (PcRasterTile *)malloc(sizeof(*tile)+r->tile_bytes);
+    tile = (PcRasterTile *)PC_MALLOC(sizeof(*tile)+r->tile_bytes);
     if (!tile) return NULL;
     tile->refs=1;
     for(i=0;i<r->tile_bytes;i+=r->bpp)
@@ -62,7 +99,7 @@ static int pc_grow(PcRaster *r)
     if(r->count<r->capacity)return 1;
     n=r->capacity ? r->capacity*2 : 4;
     if(n<r->capacity||n>SIZE_MAX/sizeof(*p))return 0;
-    p=(PcRasterEntry *)realloc(r->entries,n*sizeof(*p));
+    p=(PcRasterEntry *)PC_REALLOC(r->entries,n*sizeof(*p));
     if(!p)return 0;
     r->entries=p;r->capacity=n;return 1;
 }
@@ -72,7 +109,7 @@ PcRaster *pc_raster_new(PcPixelFormat fmt,const uint8_t *defaults)
     size_t bpp=pc_format_bytes_per_pixel(fmt);
     if(bpp==0 || bpp>PC_PIXEL_MAX || bpp>SIZE_MAX/PC_TILE_AREA ||
        (fmt.alpha!=0 && fmt.alpha!=1))return NULL;
-    r=(PcRaster *)calloc(1,sizeof(*r));
+    r=(PcRaster *)PC_CALLOC(1,sizeof(*r));
     if(!r)return NULL;
     r->format=fmt;
     r->bpp=bpp;
@@ -89,7 +126,7 @@ PcRaster *pc_raster_clone(const PcRaster *r)
     if(!copy)return NULL;
     if(r->count){
         if(r->count>SIZE_MAX/sizeof(*copy->entries)){free(copy);return NULL;}
-        copy->entries=(PcRasterEntry *)malloc(r->count*sizeof(*copy->entries));
+        copy->entries=(PcRasterEntry *)PC_MALLOC(r->count*sizeof(*copy->entries));
         if(!copy->entries){free(copy);return NULL;}
         memcpy(copy->entries,r->entries,r->count*sizeof(*copy->entries));
         for(i=0;i<r->count;++i){
@@ -152,15 +189,18 @@ int pc_raster_write_pixel(PcRaster *r,int32_t x,int32_t y,
 {
     PcTileCoord c;
     size_t i;
+    int found;
     PcRasterTile *tile;
     if(!r||!bytes||len!=r->bpp)return 0;
     c=pc_tile_containing(x,y);
-    i=pc_find(r,c);
-    if(i==r->count){
+    i=pc_lower_bound(r,c,&found);
+    if(!found){
         /* Allocate tile before reserving/committing an entry. */
         tile=pc_tile_alloc(r);
         if(!tile)return 0;
         if(!pc_grow(r)){pc_tile_release(tile);return 0;}
+        memmove(&r->entries[i+1],&r->entries[i],
+                (r->count-i)*sizeof(*r->entries));
         r->entries[i].coord=c;
         r->entries[i].tile=tile;
         ++r->count;
@@ -169,7 +209,7 @@ int pc_raster_write_pixel(PcRaster *r,int32_t x,int32_t y,
         if(tile->refs>1){
             PcRasterTile *new_tile;
             if(r->tile_bytes>SIZE_MAX-sizeof(*new_tile))return 0;
-            new_tile=(PcRasterTile *)malloc(sizeof(*new_tile)+r->tile_bytes);
+            new_tile=(PcRasterTile *)PC_MALLOC(sizeof(*new_tile)+r->tile_bytes);
             if(!new_tile)return 0;
             new_tile->refs=1;
             memcpy(new_tile->bytes,tile->bytes,r->tile_bytes);
@@ -215,20 +255,42 @@ int pc_raster_write_region(PcRaster *r,PcRect rect,
                            const uint8_t *bytes,size_t len)
 {
     size_t need,row_bytes,w,h,y,x;
+    PcRaster *pending;
+    PcRasterEntry *old_entries;
+    size_t old_count,old_capacity;
     if(!r||!bytes)return 0;
     need=pc_raster_region_bytes(r,rect);
     if(!need||need!=len)return 0;
     w=(size_t)pc_rect_width(rect);
     h=(size_t)pc_rect_height(rect);
     row_bytes=w*r->bpp;
+    /* Prepare all changes in a COW snapshot. Failure leaves original
+     * entries, pixels and ownership intact, including later tile OOM. */
+    pending=pc_raster_clone(r);
+    if(!pending)return 0;
     for(y=0;y<h;++y){
         int32_t gy=(int32_t)((int64_t)rect.y0+(int64_t)y);
         for(x=0;x<w;++x){
             int32_t gx=(int32_t)((int64_t)rect.x0+(int64_t)x);
-            if(!pc_raster_write_pixel(r,gx,gy,
-                 bytes+y*row_bytes+x*r->bpp,r->bpp))return 0;
+            if(!pc_raster_write_pixel(pending,gx,gy,
+                 bytes+y*row_bytes+x*r->bpp,r->bpp)){
+                pc_raster_destroy(pending);
+                return 0;
+            }
         }
     }
+    /* No allocation after this point: commit exclusively the tile vector.
+     * Keep the original object identity/document claim. */
+    old_entries=r->entries;
+    old_count=r->count;
+    old_capacity=r->capacity;
+    r->entries=pending->entries;
+    r->count=pending->count;
+    r->capacity=pending->capacity;
+    pending->entries=old_entries;
+    pending->count=old_count;
+    pending->capacity=old_capacity;
+    pc_raster_destroy(pending);
     return 1;
 }
 void pc_raster_prune(PcRaster *r)
