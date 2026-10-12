@@ -204,3 +204,46 @@ are separate gates; the Port target is nominally 68040+ and 32 MiB
 Fast RAM, not a proven shipping minimum. See the
 [DoR review](../../docs/reviews/PF-all-open-ready-review-2026-10-12.md)
 and [MIT reuse inventory](docs/dunkelkammer-ui-source-inventory.md).
+
+## Native ReAction Document Preview (integration PR #18, 2026-10-12)
+
+This development branch contains a native **in-memory PhotoCraft PcDocument**
+preview, not only synthetic texture output. The process constructs two
+PhotoCraft sparse 256x256 RGBA8 raster layers and a Gray8 LayerMask
+(`pc_canvas_example_document`), composes the visible result through
+the scoped Normal CPU compositor in **8-row streaming bands** and uploads
+RGBA8 through the M2 CyberGraphX/P96 offscreen Bitmap presenter.
+The ReAction window remains the **single window owner**; MiniGL, cloud,
+remote host, PC, and network connectivity are unnecessary.
+
+The preview's layer image is generated locally; **no PNG/PSD load/save,
+brush, undo UI, nested group composition or full Photoshop fidelity** is
+claimed. Compositor unsupported formats/groups fail closed. The editor
+has not passed interactive WinUAE acceptance.
+
+### Build and test
+
+```sh
+make -C ports/amigaos3 host-test
+make -C ports/amigaos3 host-core-sanitize
+
+# Optional *pinned* GCC/Bebbo 13.3 checkout:
+make -C ports/amigaos3 \
+  gcc13-build-tests gcc13-build-typed gcc13-build-compose \
+  gcc13-build-canvas-document gcc13-m2-compile gcc13-native-shell \
+  GCC_BEBBO_ROOT=/path/to/verified/gcc13
+```
+
+The GitHub CI build produces the genuine Amiga HUNK
+`photocraft-amiga-document-preview` and publishes it as the
+`photocraft-amiga-document-preview-hunk` artifact.
+The target executable needs AmigaOS 3.2 ReAction classes, a
+CyberGraphX/P96-compatible RTG screen and `cybergraphics.library`.
+Headless `vamos` tests verify C99 band composition and target CPU
+semantics, **not a displayed ReAction window**.
+
+For exact manual WinUAE acceptance steps, see
+[manual-winuae-document-preview.md](docs/manual-winuae-document-preview.md).
+A signed-off target result must include tested artifact SHA,
+WinUAE configuration, screenshot(s), resource/lifecycle observations,
+and a failure/rollback report. Until then the GUI status is `not_run`.
