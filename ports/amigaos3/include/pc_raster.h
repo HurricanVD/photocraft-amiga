@@ -24,6 +24,10 @@ typedef struct PcMemoryStats {
 } PcMemoryStats;
 void pc_raster_test_fail_after(long successful_allocations);
 void pc_raster_test_stats(PcMemoryStats *out);
+/* Called synchronously after tracked allocation/free. Test-only; MUST NOT
+ * allocate using PcRaster, mutate the raster or reenter the allocator. */
+typedef void (*PcRasterMemoryObserver)(void *context);
+void pc_raster_test_set_observer(PcRasterMemoryObserver callback,void *context);
 #endif
 PcRaster *pc_raster_new(PcPixelFormat format, const uint8_t *default_bytes);
 PcRaster *pc_raster_clone(const PcRaster *raster);
