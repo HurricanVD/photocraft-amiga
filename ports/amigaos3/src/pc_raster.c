@@ -7,27 +7,74 @@
 #define PC_PIXEL_MAX 20u
 #define PC_TILE_AREA ((size_t)PC_CORE_TILE_SIZE * (size_t)PC_CORE_TILE_SIZE)
 
-/* Test-only deterministic allocation failure injection. */
+/* Optional per-raster allocator accounting. C99-compatible header alignment. */
 #ifdef PC_RASTER_TEST_ALLOC
-static long pc_alloc_remaining = -1;
-void pc_raster_test_fail_after(long successful_allocations)
+typedef union PcAllocHeader {
+    struct { size_t size; } meta;
+    long double alignment;
+    void *pointer_alignment;
+} PcAllocHeader;
+static PcMemoryStats pc_mem_stats;
+static long pc_alloc_remaining=-1;
+void pc_raster_test_fail_after(long n){pc_alloc_remaining=n;}
+void pc_raster_test_stats(PcMemoryStats *out){if(out)*out=pc_mem_stats;}
+static int pc_allowed(void)
 {
-    pc_alloc_remaining = successful_allocations;
+    if(pc_alloc_remaining<0)return 1;
+    if(pc_alloc_remaining==0){++pc_mem_stats.failed_allocations;return 0;}
+    --pc_alloc_remaining;return 1;
 }
-static int pc_alloc_allowed(void)
+static void *pc_alloc(size_t size)
 {
-    if (pc_alloc_remaining < 0) return 1;
-    if (pc_alloc_remaining == 0) return 0;
-    --pc_alloc_remaining;
-    return 1;
+    PcAllocHeader *h;
+    if(!pc_allowed())return NULL;
+    if(size>SIZE_MAX-sizeof(*h)){++pc_mem_stats.failed_allocations;return NULL;}
+    h=(PcAllocHeader *)malloc(sizeof(*h)+size);
+    if(!h){++pc_mem_stats.failed_allocations;return NULL;}
+    h->meta.size=size;
+    pc_mem_stats.current_bytes+=size+sizeof(*h);
+    if(pc_mem_stats.current_bytes>pc_mem_stats.peak_bytes)
+        pc_mem_stats.peak_bytes=pc_mem_stats.current_bytes;
+    ++pc_mem_stats.allocation_count;
+    return h+1;
 }
-#define PC_MALLOC(n) (pc_alloc_allowed() ? malloc(n) : NULL)
-#define PC_CALLOC(n,s) (pc_alloc_allowed() ? calloc((n),(s)) : NULL)
-#define PC_REALLOC(p,n) (pc_alloc_allowed() ? realloc((p),(n)) : NULL)
+static void pc_free(void *p)
+{
+    PcAllocHeader *h;
+    if(!p)return;
+    h=((PcAllocHeader *)p)-1;
+    pc_mem_stats.current_bytes-=h->meta.size+sizeof(*h);
+    free(h);
+}
+static void *pc_calloc(size_t n,size_t size)
+{
+    void *p;
+    if(size && n>SIZE_MAX/size){++pc_mem_stats.failed_allocations;return NULL;}
+    p=pc_alloc(n*size);
+    if(p)memset(p,0,n*size);
+    return p;
+}
+static void *pc_realloc(void *p,size_t size)
+{
+    PcAllocHeader *h;
+    void *next;
+    if(!p)return pc_alloc(size);
+    h=((PcAllocHeader *)p)-1;
+    next=pc_alloc(size);
+    if(!next)return NULL;
+    memcpy(next,p,h->meta.size<size?h->meta.size:size);
+    pc_PC_FREE(p);
+    return next;
+}
+#define PC_MALLOC(n) pc_alloc(n)
+#define PC_CALLOC(n,s) pc_calloc((n),(s))
+#define PC_REALLOC(p,n) pc_realloc((p),(n))
+#define PC_FREE(p) pc_free(p)
 #else
 #define PC_MALLOC(n) malloc(n)
 #define PC_CALLOC(n,s) calloc((n),(s))
 #define PC_REALLOC(p,n) realloc((p),(n))
+#define PC_FREE(p) free(p)
 #endif
 
 typedef struct PcRasterTile {
@@ -71,7 +118,7 @@ static size_t pc_find(const PcRaster *r, PcTileCoord c)
 }
 static void pc_tile_release(PcRasterTile *t)
 {
-    if (t && --t->refs == 0) free(t);
+    if (t && --t->refs == 0) PC_FREE(t);
 }
 static PcRasterTile *pc_tile_alloc(const PcRaster *r)
 {
@@ -125,14 +172,14 @@ PcRaster *pc_raster_clone(const PcRaster *r)
     copy=pc_raster_new(r->format,r->default_bytes);
     if(!copy)return NULL;
     if(r->count){
-        if(r->count>SIZE_MAX/sizeof(*copy->entries)){free(copy);return NULL;}
+        if(r->count>SIZE_MAX/sizeof(*copy->entries)){PC_FREE(copy);return NULL;}
         copy->entries=(PcRasterEntry *)PC_MALLOC(r->count*sizeof(*copy->entries));
-        if(!copy->entries){free(copy);return NULL;}
+        if(!copy->entries){PC_FREE(copy);return NULL;}
         memcpy(copy->entries,r->entries,r->count*sizeof(*copy->entries));
         for(i=0;i<r->count;++i){
             if(copy->entries[i].tile->refs==SIZE_MAX){
                 while(i) --copy->entries[--i].tile->refs;
-                free(copy->entries);free(copy);return NULL;
+                PC_FREE(copy->entries);PC_FREE(copy);return NULL;
             }
             ++copy->entries[i].tile->refs;
         }
@@ -164,7 +211,7 @@ void pc_raster_destroy(PcRaster *r)
     size_t i;
     if(!r)return;
     for(i=0;i<r->count;++i)pc_tile_release(r->entries[i].tile);
-    free(r->entries);free(r);
+    PC_FREE(r->entries);PC_FREE(r);
 }
 size_t pc_raster_tile_count(const PcRaster *r){return r?r->count:0;}
 size_t pc_raster_bytes_per_pixel(const PcRaster *r){return r?r->bpp:0;}
