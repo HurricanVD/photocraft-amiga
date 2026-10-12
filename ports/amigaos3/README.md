@@ -204,3 +204,94 @@ are separate gates; the Port target is nominally 68040+ and 32 MiB
 Fast RAM, not a proven shipping minimum. See the
 [DoR review](../../docs/reviews/PF-all-open-ready-review-2026-10-12.md)
 and [MIT reuse inventory](docs/dunkelkammer-ui-source-inventory.md).
+
+## Native ReAction Document Preview (integration PR #18, 2026-10-12)
+
+This development branch contains a native **in-memory PhotoCraft PcDocument**
+preview, not only synthetic texture output. The process constructs two
+PhotoCraft sparse 256x256 RGBA8 raster layers and a Gray8 LayerMask
+(`pc_canvas_example_document`), composes the visible result through
+the scoped Normal CPU compositor in **8-row streaming bands** and uploads
+RGBA8 through the M2 CyberGraphX/P96 offscreen Bitmap presenter.
+The ReAction window remains the **single window owner**; MiniGL, cloud,
+remote host, PC, and network connectivity are unnecessary.
+
+The preview's layer image is generated locally; **no PNG/PSD load/save,
+brush, undo UI, nested group composition or full Photoshop fidelity** is
+claimed. Compositor unsupported formats/groups fail closed. The editor
+has not passed interactive WinUAE acceptance.
+
+### Build and test
+
+```sh
+make -C ports/amigaos3 host-test
+make -C ports/amigaos3 host-core-sanitize
+
+# Optional *pinned* GCC/Bebbo 13.3 checkout:
+make -C ports/amigaos3 \
+  gcc13-build-tests gcc13-build-typed gcc13-build-compose \
+  gcc13-build-canvas-document gcc13-m2-compile gcc13-native-shell \
+  GCC_BEBBO_ROOT=/path/to/verified/gcc13
+```
+
+The GitHub CI build produces the genuine Amiga HUNK
+`photocraft-amiga-document-preview` and publishes it as the
+`photocraft-amiga-document-preview-hunk` artifact.
+The target executable needs AmigaOS 3.2 ReAction classes, a
+CyberGraphX/P96-compatible RTG screen and `cybergraphics.library`.
+Headless `vamos` tests verify C99 band composition and target CPU
+semantics, **not a displayed ReAction window**.
+
+For exact manual WinUAE acceptance steps, see
+[manual-winuae-document-preview.md](docs/manual-winuae-document-preview.md).
+A signed-off target result must include tested artifact SHA,
+WinUAE configuration, screenshot(s), resource/lifecycle observations,
+and a failure/rollback report. Until then the GUI status is `not_run`.
+
+### Self-managed Amiga stack (v0.0.4)
+
+The native ReAction entry point now uses the same Exec `StackSwap()`
+technique as MIT-licensed Dunkelkammer: allocate 200 KiB with
+`AllocMem(MEMF_ANY)`, switch to that stack for the entire GUI/document
+session, restore the inherited Workbench/Shell stack on exit, then
+`FreeMem`. The GUI body is explicitly `noinline`.
+No `Stack 50000` prerequisite remains for the new binary.
+If the private stack cannot be allocated, startup fails with RC 20
+rather than risking an overflow of the inherited tiny task stack.
+Full manual AmigaOS 3.2/WinUAE startup and low-RAM lifecycle tests
+remain open; the pinned GCC13 HUNK build is the compile gate.
+
+### Workbench launch and normal-memory diagnostics (v0.0.6)
+
+AmigaOS Workbench launches a binary with `argc == 0`. The previous
+Preview printed to stdout even in Workbench mode, and the owner
+observed an unexpected persistent AmigaShell/CON: window after the
+GUI closed. The native entry point now **never writes to stdout**
+in Workbench mode. It uses Intuition's `EasyRequestArgs()` for
+component startup failures. Shell invocation retains readable
+diagnostics.
+
+An initial `Avail` snapshot fell by 126,752 B after four
+starts (125,056 B Fast, 1,696 B Chip). That is a measured available
+memory change, **not yet a proven heap leak**: first-run ReAction/CGX
+caches can affect Amiga memory. The new Shell-only
+`AvailMem(MEMF_FAST/MEMF_CHIP)` before/after private-stack lifetime
+measurements make per-run trends visible. No low-Fast-RAM stress test
+is requested. The manual [WinUAE acceptance document](docs/manual-winuae-document-preview.md)
+defines exact Workbench and warmed-up Shell checks.
+
+### v0.0.6 WinUAE user retest (2026-10-12)
+
+The owner confirms that Workbench starts PhotoCraft without creating
+or leaving any auxiliary output-console window. Three successive
+AmigaShell invocations return RC 0. The diagnostic Fast availability
+after these runs is 127,363,760 / 127,363,680 / 127,362,616 bytes:
+only 1,144 B decline between the first and last *post-exit* samples.
+This does **not** show a cumulative ~4.4KiB leak per launch, even
+though the within-process before/after figures for the later two
+sessions read -4,464 B and -4,384 B. The first-run -128,408 B
+should be treated as **unattributed** (potential OS first-use
+caches); the exact residual resource/allocator behavior has not been
+proven leak-free. No low-Fast-RAM stress test is planned per owner
+waiver for this preview. See the detailed
+[WinUAE manual test log](docs/manual-winuae-document-preview.md).

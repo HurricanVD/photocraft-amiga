@@ -81,6 +81,12 @@ jobs:
               "ports/amigaos3/tests/${oracle}_oracle.c" \
               -o "ports/amigaos3/build/${oracle}_oracle"
           done
+      - name: Compile C normal compositor oracle
+        run: |
+          cc -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Iports/amigaos3/include \
+            ports/amigaos3/tests/compose_oracle.c ports/amigaos3/src/pc_compose.c \
+            ports/amigaos3/src/pc_document.c ports/amigaos3/src/pc_raster.c \
+            ports/amigaos3/src/pc_core.c -o ports/amigaos3/build/compose_oracle
       - name: Compare original Rust outputs with C99 outputs
         run: |
           set -eu
@@ -115,6 +121,9 @@ jobs:
             echo "PASS: original PhotoCraft Rust ${kind} vs C99"
           done
           echo "PASS: original PhotoCraft Rust geom/color/raster/doc/group/mask vs C99"
+          cargo run --quiet --manifest-path ports/amigaos3/tests/rust_oracle/Cargo.toml -- compose > ports/amigaos3/build/oracle-rust-compose.txt
+          ports/amigaos3/build/compose_oracle > ports/amigaos3/build/oracle-c-compose.txt
+          python3 ports/amigaos3/scripts/compare-compose.py ports/amigaos3/build/oracle-rust-compose.txt ports/amigaos3/build/oracle-c-compose.txt
       - name: Upload differential outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -131,6 +140,8 @@ jobs:
             ports/amigaos3/build/oracle-c-group.txt
             ports/amigaos3/build/oracle-rust-mask.txt
             ports/amigaos3/build/oracle-c-mask.txt
+            ports/amigaos3/build/oracle-rust-compose.txt
+            ports/amigaos3/build/oracle-c-compose.txt
           if-no-files-found: ignore
 
   gcc13-vamos:
@@ -164,9 +175,27 @@ jobs:
             /bin/sh -ec '
               compiler="$(command -v m68k-amigaos-gcc)"
               root="$(dirname "$(dirname "$(realpath "$compiler")")")"
-              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed GCC_BEBBO_ROOT="$root"
+              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed gcc13-build-compose gcc13-build-canvas-document gcc13-m2-compile gcc13-native-shell GCC_BEBBO_ROOT="$root"
             '
           make -C ports/amigaos3 gcc13-check-hunks
+      - name: Stage native document preview with redistributable notices
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="ports/amigaos3/build/document-preview-bundle"
+          mkdir -p "$out"
+          cp ports/amigaos3/build/m68k-gcc13/shell/photocraft-amiga-document-preview "$out/"
+          cp ports/amigaos3/NOTICE-DUNKELKAMMER-MIT.txt "$out/"
+          cp LICENSE-MIT LICENSE-APACHE "$out/"
+          cp ports/amigaos3/docs/manual-winuae-document-preview.md "$out/MANUAL-WINuae.md"
+          ( cd "$out" && sha256sum photocraft-amiga-document-preview > SHA256SUMS.txt )
+          file "$out/photocraft-amiga-document-preview"
+      - name: Upload native Document preview test HUNK and MIT notices
+        uses: actions/upload-artifact@v4
+        with:
+          name: photocraft-amiga-document-preview-hunk
+          path: ports/amigaos3/build/document-preview-bundle/
+          if-no-files-found: error
       - name: Install pinned vamos and machine68k
         uses: actions/setup-python@v5
         with:
@@ -189,6 +218,8 @@ jobs:
             RUST_ORACLE=build/oracle-rust.txt
           make -C ports/amigaos3 gcc13-vamos-typed-tests \
             RUST_ORACLE_TYPED=build/oracle-rust-typed.txt
+          make -C ports/amigaos3 gcc13-vamos-compose RUST_COMPOSE_ORACLE=build/oracle-rust-compose.txt
+          make -C ports/amigaos3 gcc13-vamos-canvas-document
       - name: Upload GCC13 target evidence
         if: always()
         uses: actions/upload-artifact@v4
