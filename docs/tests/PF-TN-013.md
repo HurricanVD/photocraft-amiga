@@ -16,3 +16,21 @@
 - `test_evidence: not_run`
 - `runtime_evidence: none`
 - `release_authorization: no`
+
+## User visual evidence: ReAction + M2 document preview (2026-10-12)
+
+A project-owner-provided WinUAE screenshot
+(`grafik(20261012-073737).png`, **conversation-only, not in git**)
+shows the native ReAction window displaying a centered gradient document,
+orange translucent/masked rectangle and dark checkerboard.
+This is consistent with the actual `PcDocument` -> C99 Normal compositor
+-> RGBA8 staging -> M2/RTG presentation path.
+A second screenshot shows Shell RC 0 after closing the same window.
+
+- `RTG_initial_visible_document: observed_pass` from user manual screenshot.
+- `Presenter_dirty_region_correctness: not_run`.
+- `Refresh_and_resize: not_run`.
+- `Non_RTG_and_OOM_fallback: not_run`.
+- `Pixel_exact_screen_capture: not_run`.
+- `Actual_WinUAE_screenmode_and_P96_details: not_recorded`.
+- No blanket PF-SP-010 story `done` or full target acceptance claim.

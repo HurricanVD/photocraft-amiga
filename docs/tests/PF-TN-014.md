@@ -40,3 +40,24 @@
 - Reference: Dunkelkammer `src/app/main.c` @ `26295506`,
   MIT owner license merge `70897e91`; original copyright notice
   in `NOTICE-DUNKELKAMMER-MIT.txt`.
+
+## User WinUAE evidence after StackSwap startup fix (2026-10-12)
+
+- Two screenshots supplied by the project owner in the current chat:
+  native `PhotoCraft AmigaOS (native layers)` window is open, and
+  after closing the AmigaShell prints the `startup diagnostic v0.0.4
+  (StackSwap 200 KiB)`, `Window closed normally (RC 0)`, and
+  `Echo $RC = 0`.
+- `GUI-01/native_window_launch: observed_pass`.
+- `StackSwap_plain_Shell_launch: observed_pass` (diagnostic marker,
+  no preparatory `Stack 50000` command visible for this invocation).
+- `GUI-05/single_close: observed_pass`; repeated close and stack/RAM
+  cleanup measurements **remain not_run**.
+- `GUI-03/04_refresh_resize: not_run`;
+  `GUI-06_OOM: not_run`; `GUI-07_Workbench_launch: not_run`.
+- Screenshot files `grafik(20261012-073737).png` and
+  `grafik(20261012-073749).png` are **conversation attachments,
+  not checked into this repository**. Executable file SHA and exact
+  emulator settings have not been independently captured.
+- **Status: partial target manual PASS only**.
+  All acceptance criteria of PF-SP-011 and story `done` remain open.
