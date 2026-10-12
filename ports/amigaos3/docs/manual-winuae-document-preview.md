@@ -174,3 +174,41 @@ Acceptance disposition:
 Next tests requested: uncover/expose window, resize smaller/larger,
 close/restart **three** times, report WinUAE CPU/RAM/P96 configuration and
 any crash/alert; attach actual binary SHA-256 if possible.
+
+## Window resize regression from real WinUAE screenshots (2026-10-12)
+
+The project owner provided three screenshots in this conversation:
+`grafik(20261012-075140).png` (reduced viewport visibly correct),
+`grafik(20261012-075201).png` (enlarged ~1450-pixel-wide viewport
+rendered as a uniform grey area), and
+`grafik(20261012-075229).png` (reduced viewport again visibly correct).
+They remain **conversation attachments**, not stored as image evidence in GitHub.
+These observations change `GUI-04` from `not_run` to
+`observed_fail_on_enlarge`, followed by `observed_pass_on_shrink`.
+
+Cause verified in the code at the tested v0.0.4 source: both
+`pc_amiga_shell.c` and `pc_canvas_doc.c` rejected canvas dimensions
+exceeding **1024×768**, and the ReAction render hook painted a neutral
+grey fallback. This was an intentional preview ceiling but is below
+the physical screen/window size in the user's WinUAE configuration.
+
+The v0.0.5 code change lifts the unified, shared viewport ceiling to
+**1920×1200** with the existing caller-owned 8-row RGBA8 scratch
+buffer, preserving overflow/capacity rejection and avoiding a full
+RGBA8 document framebuffer. It still uses M2's existing ARGB32
+full-size staging plus offscreen bitmap (~17.6 MiB combined at
+1920×1200, excluding device/allocator overhead). This is a bounded
+preview accommodation, not an unrestricted canvas or proven
+32-MiB-RAM minimum. The C99 regression test exercises
+1600×900 -> 320×256 -> 1920×1200 -> 1450×700, verifies document
+pixels and destination-buffer guards, and rejects out-of-limit sizes.
+
+**Status:** `GUI-04_previous_build: observed_fail_enlarge`;
+`fix_code: implemented_in_PR18`;
+`v0.0.5_manual_winuae_retest: not_run`;
+`PF_SP_010_011_done: not_authorized`.
+
+Retest with the *newly generated v0.0.5 HUNK*: open a small window,
+resize past 1024 pixels width, enlarge to the previous failing
+screen size, shrink again, and repeat several times. Note if the
+image remains centered with mask/alpha preserved and no grey fallback.

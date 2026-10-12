@@ -34,3 +34,7 @@ A second screenshot shows Shell RC 0 after closing the same window.
 - `Pixel_exact_screen_capture: not_run`.
 - `Actual_WinUAE_screenmode_and_P96_details: not_recorded`.
 - No blanket PF-SP-010 story `done` or full target acceptance claim.
+
+### Window-growth regression and bounded fix (2026-10-12)
+
+The user-provided WinUAE screenshots demonstrate **failure** at approximately 1450px window width: a uniform grey fallback, while reduced window widths draw correctly. Direct source inspection identified hard-coded 1024x768 guards both in the shell and the portable document band renderer. PR #18 changes the shared maximum to 1920x1200 and adds C99 large/small/large regression checks. The old screenshot is valid evidence of the failure, **not** evidence that the new code passes. `GUI-04_old: observed_failure`; `GUI-04_new_v0.0.5: not_run`; normal host, m68k and manual screen evidence required.

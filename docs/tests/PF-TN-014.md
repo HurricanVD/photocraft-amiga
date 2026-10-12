@@ -61,3 +61,7 @@
   emulator settings have not been independently captured.
 - **Status: partial target manual PASS only**.
   All acceptance criteria of PF-SP-011 and story `done` remain open.
+
+### ReAction resize regression (2026-10-12)
+
+The user observed: downsized window renders; enlarged width ~1450 becomes grey; downsizing restores the image. This is consistent with explicit 1024x768 preview guards, **not** a StackSwap failure. The single-source 1920x1200 canvas cap is now shared by ReAction and the C99 portable rendering function. Regression fixtures test large -> small -> large render bands. `GUI-04_old: observed_fail`; `GUI-04_new: not_run`, pending corrected HUNK WinUAE manual retest. StackSwap normal startup remains `observed_pass` in v0.0.4.
