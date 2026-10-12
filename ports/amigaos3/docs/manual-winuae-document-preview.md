@@ -371,3 +371,58 @@ They do **not** appear at all for Workbench starts.
 - `Fast_Chip_memory_change_v0.0.5: observed`, `leak_root_cause: unconfirmed`.
 - `v0.0.6_mem_probe: not_run`.
 - `release_acceptance: no`; `PF-SP-011_done: not_authorized`.
+
+## v0.0.6 owner acceptance: no Workbench CON: window; shell memory trend (2026-10-12)
+
+The project owner supplied two new WinUAE screenshots:
+
+- `grafik(20261012-085249).png`: Workbench directory window and PhotoCraft
+  ReAction document viewport visible; **no additional Shell/CON: output
+  window** is opened by the Workbench launch. Owner explicitly confirmed
+  "Shell-Fenster bleibt bei Workbench-Start geschlossen".
+- `grafik(20261012-085157).png`: Three successive ordinary AmigaShell
+  v0.0.6 launches, each printing `Window closed normally (RC 0)` and
+  the newly added before/after Fast/Chip AvailMem readings.
+
+These are **conversation-only user screenshots**, not GitHub-uploaded
+screenshots or headless test output. The result confirms that suppression
+of stdout on Workbench entry fixes the reported orphaned console behavior,
+for the tested GUI session.
+
+### Extracted shell memory measurements
+
+| v0.0.6 run | Fast before | Fast after | Delta | Chip before | Chip after | Delta |
+|---|---:|---:|---:|---:|---:|---:|
+| 1 | 127492168 | 127363760 | -128408 | 2025320 | 2023736 | -1584 |
+| 2 | 127368144 | 127363680 | -4464 | 2023736 | 2023736 | 0 |
+| 3 | 127367000 | 127362616 | -4384 | 2023736 | 2023736 | 0 |
+
+The later two *per-invocation* decreases around 4.4 KiB do **not**
+accumulate one-for-one in consecutive post-shutdown snapshots:
+post-run Fast RAM changes by only **-80 B** between runs 1 and 2,
+then **-1064 B** between 2 and 3, a net **-1144 B** across runs 1..3.
+The pre-invocation Fast availability rebounds between sessions.
+These readings are consistent with process/runtime allocations being
+freed at final task exit, first-use library/RTG caches, and small
+allocator/system fluctuations; the snapshots **cannot conclusively
+exclude** a leak of some other size or verify exact ownership of every
+allocation. No systematic monotone ~4.4 KiB per-launch leak is shown.
+
+The first-run ~128 KiB drop is noteworthy but also may reflect
+one-time system component initialization; do not classify it as
+PhotoCraft-owned leaked bytes without additional evidence.
+
+### Current manual acceptance disposition
+
+- `GUI-07_Workbench_no_orphan_CON_v0.0.6: observed_pass`.
+- `GUI-01_Workbench_document_visible: observed_pass`.
+- `GUI-05_Shell_close_v0.0.6: observed_pass_three_cycles`.
+- `available_memory_trend_v0.0.6: inspected_no_clear_linear_leak`.
+- `heap_leak_free_certification: not_proven`, and a measured 1,144 B
+  difference between later post-run samples remains without root-cause.
+- `WinUAE_exact_RAM_and_driver_configuration: not_recorded`.
+- `GUI-06_low_Fast_RAM: skipped_by_owner_preview_only`; not a pass.
+- `full_story_done_or_release: not_authorized`.
+
+The earlier v0.0.5 observations and v0.0.6 pending notes above
+remain historical, superseded by this latest user evidence.

@@ -279,3 +279,19 @@ caches can affect Amiga memory. The new Shell-only
 measurements make per-run trends visible. No low-Fast-RAM stress test
 is requested. The manual [WinUAE acceptance document](docs/manual-winuae-document-preview.md)
 defines exact Workbench and warmed-up Shell checks.
+
+### v0.0.6 WinUAE user retest (2026-10-12)
+
+The owner confirms that Workbench starts PhotoCraft without creating
+or leaving any auxiliary output-console window. Three successive
+AmigaShell invocations return RC 0. The diagnostic Fast availability
+after these runs is 127,363,760 / 127,363,680 / 127,362,616 bytes:
+only 1,144 B decline between the first and last *post-exit* samples.
+This does **not** show a cumulative ~4.4KiB leak per launch, even
+though the within-process before/after figures for the later two
+sessions read -4,464 B and -4,384 B. The first-run -128,408 B
+should be treated as **unattributed** (potential OS first-use
+caches); the exact residual resource/allocator behavior has not been
+proven leak-free. No low-Fast-RAM stress test is planned per owner
+waiver for this preview. See the detailed
+[WinUAE manual test log](docs/manual-winuae-document-preview.md).

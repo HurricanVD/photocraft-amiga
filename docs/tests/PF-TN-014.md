@@ -151,3 +151,27 @@ for the tested window size. Direct owner confirmation:
   `Measured_memory_trend_v0.0.6: not_run`;
   `underlying_memory_leak_proven: no`.
   Low-Fast-RAM manual stress remains `skipped_by_owner_preview_only`.
+
+## v0.0.6 Workbench quiet-mode manual acceptance (2026-10-12)
+
+- Owner screenshot `grafik(20261012-085249).png`: Workbench icon
+  starts the native ReAction PhotoCraft viewport without creating
+  an additional AmigaShell/CON: diagnostic window.
+- Owner confirms: "Shell-Fenster bleibt bei Workbench-Start geschlossen".
+  `GUI-07_no_orphan_CON: observed_pass`.
+- Owner screenshot `grafik(20261012-085157).png`: 3 CLI launches,
+  each cleanly returning `Window closed normally (RC 0)`.
+- Fast RAM per-run availability: `-128408 B`, `-4464 B`,
+  `-4384 B`; Chip: `-1584 B`, `0 B`, `0 B`.
+  Post-run Fast RAM: `127363760`, `127363680`, `127362616 B`;
+  only `-1144 B` total between first and third post-run samples.
+- This does **not** support a persistent ~4.4KiB-per-session loss,
+  but does not prove the absence of any leak. Initial ~128KiB change
+  may include once-only OS/RTG/ReAction startup caches.
+- `memory_leak_proven: no`, `memory_leak_excluded: no`,
+  `normal_memory_trend: no_clear_linear_loss`.
+- Low-Fast-RAM manual test remains `skipped_by_owner_preview_only`
+  under the explicit owner instruction, not `pass`.
+- User screenshots remain in the conversation and are **not copied
+  into the public repository**. Target screenshot and lifecycle
+  notes only; no complete product release authorization.
