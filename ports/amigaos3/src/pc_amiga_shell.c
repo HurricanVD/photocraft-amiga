@@ -171,7 +171,7 @@ static void pc_shutdown(void)
     if (GfxBase) { CloseLibrary((struct Library *)GfxBase);GfxBase=0; }
     if (IntuitionBase) { CloseLibrary((struct Library *)IntuitionBase);IntuitionBase=0; }
 }
-static int pc_main_body(void)
+static int __attribute__((noinline)) pc_main_body(void)
 {
     Object *area=0;
     struct TagItem lt[]={{LAYOUT_Orientation,LAYOUT_ORIENT_VERT},
