@@ -18,6 +18,13 @@
  * No function returns an internal tile pointer; caller owns every buffer.
  */
 typedef struct PcRaster PcRaster;
+#ifdef PC_RASTER_TEST_ALLOC
+typedef struct PcMemoryStats {
+    size_t current_bytes, peak_bytes, allocation_count, failed_allocations;
+} PcMemoryStats;
+void pc_raster_test_fail_after(long successful_allocations);
+void pc_raster_test_stats(PcMemoryStats *out);
+#endif
 PcRaster *pc_raster_new(PcPixelFormat format, const uint8_t *default_bytes);
 PcRaster *pc_raster_clone(const PcRaster *raster);
 void pc_raster_destroy(PcRaster *raster);
