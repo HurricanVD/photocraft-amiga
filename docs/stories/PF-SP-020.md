@@ -64,3 +64,9 @@ Als Nutzer/Maintainer moechte ich PhotoCraft ohne Host und Netzwerk auf AmigaOS 
 - `review_report`: `pending`
 - `test_evidence`: `not_run`
 - `done`: `not_authorized`
+
+## Review-Priorisierung / Bestandsabgleich 2026-10-12
+
+- **Prioritaet bleibt P1 (Reihenfolge C, End-to-End nach Abhaengigkeiten).** Es gibt keinen bestaetigten P0-Defekt aus der Review-Beobachtung allein.
+- Der Open/Edit/Undo/Export-MVP bleibt P1 nach PF-TD-001, den nativen Integrations-Gates und PF-SP-017/018/019. Keine Vorziehung der Abnahme vor belegte Full-Story-Gates.
+- Review 2026-10-12 ist Planungs-/Evidence-Abgleich, kein neuer Implementierungs-, DoR-, Runtime-PASS- oder Release-Beschluss.
