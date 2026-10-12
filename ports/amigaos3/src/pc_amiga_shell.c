@@ -52,7 +52,7 @@ static unsigned long pc_band_w=0;
 static int pc_cached=0;
 static unsigned long pc_cached_w=0,pc_cached_h=0;
 static int pc_root_owned=0;
-static const char pc_version[]="\0$VER: PhotoCraft AmigaOS Document Preview 0.0.5 (12.10.2026)";
+static const char pc_version[]="\0$VER: PhotoCraft AmigaOS Document Preview 0.0.6 (12.10.2026)";
 /*
  * PF-SP-011 / Dunkelkammer MIT startup pattern.
  * ReAction and C99 raster rendering must not run on the tiny inherited
@@ -68,6 +68,10 @@ static const char pc_version[]="\0$VER: PhotoCraft AmigaOS Document Preview 0.0.
 static struct StackSwapStruct pc_stack_swap;
 static APTR pc_app_stack=0;
 static int pc_app_result=20;
+/* Amiga Workbench invokes main with argc==0. Avoid stdout on that path:
+ * the C runtime otherwise opens a persistent CON: output window. */
+static int pc_is_workbench=0;
+static ULONG pc_before_fast=0, pc_before_chip=0;
 
 /* Limit the viewport to a bounded preview until scrolling/large zoom
  * arrive in PF-SP-014. The frame scratch is ONLY eight RGBA8 rows.
@@ -146,6 +150,20 @@ static ULONG pc_canvas_render(struct Hook *hook,Object *object,
  * Return code 20 is failure; code 0 is clean user-triggered window exit. */
 static void pc_startup_error(const char *component, unsigned version)
 {
+    if (pc_is_workbench) {
+        /* A native requester, NEVER printf/puts: Workbench stdio would
+         * create a CON: diagnostic window that outlives the program. */
+        if (IntuitionBase) {
+            struct EasyStruct e;
+            e.es_StructSize=sizeof(e);
+            e.es_Flags=0;
+            e.es_Title=(STRPTR)"PhotoCraft startup failed";
+            e.es_TextFormat=(STRPTR)component;
+            e.es_GadgetFormat=(STRPTR)"OK";
+            EasyRequestArgs(NULL,&e,NULL,NULL);
+        }
+        return;
+    }
     if (version)
         printf("PhotoCraft: STARTUP FAILED: cannot open %s (minimum V%u).\n",
                component,version);
@@ -187,8 +205,10 @@ static int __attribute__((noinline)) pc_main_body(void)
     int status=20,done=0;
     ULONG sigmask=0,code=0,msg;
     (void)pc_version[1];
-    puts("PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.5 (StackSwap 200 KiB, extended viewport)");
-    fflush(stdout);
+    if (!pc_is_workbench) {
+        puts("PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.6 (StackSwap 200 KiB, extended viewport, Workbench quiet)");
+        fflush(stdout);
+    }
     IntuitionBase=(struct IntuitionBase *)OpenLibrary((STRPTR)"intuition.library",39);
     if (!IntuitionBase) { pc_startup_error("intuition.library",39); goto finish; }
     GfxBase=(struct GfxBase *)OpenLibrary((STRPTR)"graphics.library",39);
@@ -201,7 +221,7 @@ static int __attribute__((noinline)) pc_main_body(void)
     if (!SpaceBase) { pc_startup_error("gadgets/space.gadget",44); goto finish; }
     pc_document=pc_canvas_example_document();
     if (!pc_document) { pc_startup_error("PcDocument (RAM/allocator)",0); goto finish; }
-    if (!pc_m2_open()) {
+    if (!pc_m2_open() && !pc_is_workbench) {
         puts("PhotoCraft: cybergraphics.library V40 unavailable; starting without RTG.");
         puts("PhotoCraft: RTG is required for colour image preview; showing canvas fallback.");
         fflush(stdout);
@@ -241,9 +261,11 @@ static int __attribute__((noinline)) pc_main_body(void)
     }
 finish:
     pc_shutdown();
-    if (status != 0) puts("PhotoCraft: exited with failure code 20.");
-    else puts("PhotoCraft: window closed normally (RC 0).");
-    fflush(stdout);
+    if (!pc_is_workbench) {
+        if (status != 0) puts("PhotoCraft: exited with failure code 20.");
+        else puts("PhotoCraft: window closed normally (RC 0).");
+        fflush(stdout);
+    }
     return status;
 }
 
@@ -252,12 +274,20 @@ finish:
  * If AllocMem fails, abort before executing the nested raster/ReAction
  * code: falling back to the inherited stack could corrupt memory.
  */
-int main(void)
+int main(int argc, char **argv)
 {
+    (void)argv;
+    pc_is_workbench=(argc==0);
+    pc_before_fast=AvailMem(MEMF_FAST);
+    pc_before_chip=AvailMem(MEMF_CHIP);
     pc_app_stack=AllocMem(PC_APP_STACK_SIZE,MEMF_ANY);
     if (!pc_app_stack) {
-        puts("PhotoCraft: STARTUP FAILED: cannot allocate 200 KiB private stack.");
-        fflush(stdout);
+        /* Before opening Intuition no requester exists; never generate
+         * an orphaned Workbench console on the allocation failure path. */
+        if (!pc_is_workbench) {
+            puts("PhotoCraft: STARTUP FAILED: cannot allocate 200 KiB private stack.");
+            fflush(stdout);
+        }
         return 20;
     }
     pc_stack_swap.stk_Lower=pc_app_stack;
@@ -270,5 +300,16 @@ int main(void)
 
     FreeMem(pc_app_stack,PC_APP_STACK_SIZE);
     pc_app_stack=0;
+    if (!pc_is_workbench) {
+        ULONG after_fast=AvailMem(MEMF_FAST);
+        ULONG after_chip=AvailMem(MEMF_CHIP);
+        printf("PhotoCraft: post-shutdown available Fast %lu -> %lu (delta %+ld B), Chip %lu -> %lu (delta %+ld B).\n",
+               (unsigned long)pc_before_fast,(unsigned long)after_fast,
+               (long)after_fast-(long)pc_before_fast,
+               (unsigned long)pc_before_chip,(unsigned long)after_chip,
+               (long)after_chip-(long)pc_before_chip);
+        puts("PhotoCraft: AvailMem deltas can include OS caches; a trend over repeated launches is required to confirm a leak.");
+        fflush(stdout);
+    }
     return pc_app_result;
 }
