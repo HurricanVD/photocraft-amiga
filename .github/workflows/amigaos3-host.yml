@@ -175,9 +175,10 @@ jobs:
             /bin/sh -ec '
               compiler="$(command -v m68k-amigaos-gcc)"
               root="$(dirname "$(dirname "$(realpath "$compiler")")")"
-              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed gcc13-build-compose gcc13-build-canvas-document gcc13-m2-compile gcc13-native-shell GCC_BEBBO_ROOT="$root"
+              make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed gcc13-build-compose gcc13-build-canvas-document gcc13-build-raster-atomic gcc13-m2-compile gcc13-native-shell GCC_BEBBO_ROOT="$root"
             '
           make -C ports/amigaos3 gcc13-check-hunks
+          python3 ports/amigaos3/scripts/check-hunk.py ports/amigaos3/build/m68k-gcc13/O0/pc_raster_atomic_test ports/amigaos3/build/m68k-gcc13/O2/pc_raster_atomic_test
       - name: Stage native document preview with redistributable notices
         shell: bash
         run: |
@@ -220,6 +221,7 @@ jobs:
             RUST_ORACLE_TYPED=build/oracle-rust-typed.txt
           make -C ports/amigaos3 gcc13-vamos-compose RUST_COMPOSE_ORACLE=build/oracle-rust-compose.txt
           make -C ports/amigaos3 gcc13-vamos-canvas-document
+          make -C ports/amigaos3 gcc13-vamos-raster-atomic
       - name: Upload GCC13 target evidence
         if: always()
         uses: actions/upload-artifact@v4
