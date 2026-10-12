@@ -10,7 +10,7 @@ int main(void)
 {
     PcPixelFormat fmt={PC_COLOR_GRAY,PC_SAMPLE_U8,0};
     PcRaster *r=pc_raster_new(fmt,NULL);
-    const unsigned side=64, count=side*side, reads=120000;
+    const unsigned side=16, count=side*side, reads=120000;
     unsigned i;
     uint8_t value=7, out=0;
     clock_t begin,end;
