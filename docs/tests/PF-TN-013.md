@@ -75,3 +75,14 @@ or heap release.
   **not a PASS**. Keep allocation guards.
 - No change to `GUI-04_v0.0.5_enlarge: observed_pass`.
 - `full_presenter_release_acceptance: pending`; no `done` claim.
+
+## Historischer RTG-M2-Testnachweis aus PR #14 (2026-10-12)
+
+Die nachfolgende Dokumentation beschreibt ausschliesslich den damals isolierten Stand von PR #14. Spaetere manuelle WinUAE-Ergebnisse (Initialbild, Vergroesserung, wiederholtes Schliessen) sind oben bereits separat erfasst; das hier zitierte `manual_target: not_run` gilt nur fuer die fruehere isolierte Version. Dieser Nachtrag fuegt keinen Programmcode hinzu und bestaetigt weder Speicherleckfreiheit noch eine Produktfreigabe.
+
+## Implementierungs-Nachweis 2026-10-12 (PR #14; eingeschraenkt)
+
+- C99 Host RGBA8 -> numerisches ARGB32: PASS auf CI [AmigaOS 3.2 Host Core #38182485235](https://github.com/HurricanVD/photocraft-amiga/actions/runs/38182485235), inkludiert Host- und ASan/UBSan-Gates fuer den Konverter.
+- GCC/Bebbo 13.3 RTG-M2-Module `pc_present_convert.c` / `pc_present_m2.c`: Cross-Compile PASS (gleicher CI-Workflow), SHA `664c4932f537f1c8c24a1ebef7245e2a0f6fed59`. **Compile-only**: noch kein PhotoCraft-HUNK-Fenster in dieser Story.
+- MIT/Provenienz: `NOTICE-DUNKELKAMMER-MIT.txt`, Original `HurricanVD/dunkelkammer@26295506`, MIT-Merge `70897e91`; keine Fremdassets oder DkDocument.
+- Fehlend: echter WinUAE/P96/CGX-Grafiklauf, Pixelvergleich auf RTG, Failover ohne RTG und reale 32 MiB-Peakmessung. `manual_target: not_run`; Story nicht `done`.
