@@ -57,3 +57,13 @@
 - `/usr/bin/time -v` fuer den **Benchmark-Prozess**: maximaler residenter Host-Speicher `18156 KiB` (Linux, nicht AmigaOS Fast RAM). Die Compiler-RSS ist nicht Teil dieser Messung.
 - Keine Vergleichsmessung mit gleicher Fixture auf linearem Vorgaenger-Index; kein belastbarer relativer Speedup.
 - 32-MiB-Fast-RAM-Target incl. transaktionaler grosser Region-Writes bleibt **nicht nachgewiesen** und ist kein PASS.
+
+## RAM-01 bis RAM-06: Instrumentierung und Teststand (2026-10-12)
+
+- `PC_RASTER_TEST_ALLOC` aktiviert einen C99-Testallocator mit pro Allokation gespeichertem Payload-Umfang und bilanzierter Header-Groesse: `current_bytes`, `peak_bytes`, `allocation_count`, `failed_allocations`. Geltungsbereich **nur** Allokationen aus `pc_raster.c`, nicht Betriebssystem, Document, ReAction, Presenter oder andere Komponenten.
+- RAM-01: deterministischer Sparse-Tile-Lookup-Benchmark (256 Gray8-Tiles) mit Linux-RSS-Evidenz aus frueherem CI.
+- RAM-02/RAM-03/RAM-05: neuer Test `check_ram_cycles` mit 16 RGBA8-Tiles, separatem COW-Snapshot, drei Schreibzyklen, Pixelvergleich, bounded live raster-heap und `current_bytes==0` nach Freigabe. Test-PASS nur nach CI.
+- RAM-04: vorhandene deterministische Fault-Matrix, unveraenderter Originalinhalt und jetzt Tracker-Pruefung auf `current_bytes==0` nach allen Faellen sowie nachgewiesene Allocation-Failures.
+- RAM-06: separater manueller Testplan [WinUAE 32 MiB](../../ports/amigaos3/docs/manual-winuae-pf-td-001-ram.md). **Nicht ausgefuehrt**; kein Zielsystem-Peak, kein 32-MiB-PASS.
+- CI-Gates pruefen Host/ASan+UBSan, Rust-Originaldifferenz und GCC13/vamos O0/O2. Die hier neu genannten Instrumentierungs-/RAM-Test-PASSe sind bis zum Abschluss der zugehoerigen CI-Runs `pending`.
+- Offen bleiben ein fairer Zeitvergleich zur linearen Vorgängerversion sowie eine instrumentierte vollstaendige Amiga-Process-/Fast-RAM-Peak-Messung. Keine automatische WinUAE-UI-Steuerung.
