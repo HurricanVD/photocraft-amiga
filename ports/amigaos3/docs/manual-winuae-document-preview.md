@@ -60,3 +60,45 @@
   PF-SP-020 end-to-end native editor acceptance.
 - `manual_target_result: not_run`; `image_screenshots: none`;
   `story_done: not_authorized`.
+
+## Startup failure regression / diagnostic build v0.0.3 (2026-10-12)
+
+A manual report showed that the first HUNK returned immediately to
+`AmigaShell` without opening a window. The code review identified two
+incorrect ReAction library names in the previous `pc_amiga_shell.c`:
+`layout.gadget` and `space.gadget`. The supported AmigaOS ReAction
+library locations (also used by MIT Dunkelkammer) are
+`gadgets/layout.gadget` and `gadgets/space.gadget`.
+The old shell also lacked explicit Intuition/Graphics library opening and
+gave no error diagnostics when a prerequisite failed.
+
+For the next build, the corrected start path writes its stage errors to
+the Shell (starting with `PhotoCraft AmigaOS Document Preview - startup
+diagnostic v0.0.3`). It now prints the failed component, required version,
+and a final exit code 20 on failure; a user-triggered close prints exit 0.
+Missing `cybergraphics.library` is a **warning**, not a reason to suppress
+the ReAction window: the window may show only a neutral canvas fallback
+on a planar screen.
+
+Use the *new* build, **not** the previous
+`e8a7dd29f41850d1...` executable. Transfer the new CI artifact
+`photocraft-amiga-document-preview-hunk` after it has passed GCC13 HUNK
+compilation. In AmigaShell:
+
+```text
+Stack 50000
+photocraft-amiga-document-preview
+Echo $RC
+```
+
+Capture and send **all PhotoCraft diagnostic lines**.
+If the new build still returns without a window, the log should identify
+`intuition.library`, `graphics.library`, `window.class`,
+`gadgets/layout.gadget`, `gadgets/space.gadget`,
+`LAYOUT_GetClass/NewObjectA`, `SPACE_GetClass/NewObjectA`,
+`WINDOW_GetClass/NewObjectA`, `RA_OpenWindow` or
+`WINDOW_SigMask`, or an error in the local `PcDocument` fixture.
+
+- `visual_result: not_run` for the corrected build; report needed.
+- This log-only fix does NOT establish graphics parity nor GUI lifecycle
+  pass; manual WinUAE/AmigaOS 3.2 target evidence required.
