@@ -342,3 +342,15 @@ host-raster-compare: | $(BUILD)
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -Isrc -o $(RASTER_COMPARE_LINEAR) tests/pc_raster_compare_bench.c "$(BASELINE_RASTER)" src/pc_core.c
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -Isrc -o $(RASTER_COMPARE_INDEXED) tests/pc_raster_compare_bench.c src/pc_raster.c src/pc_core.c
 	python3 scripts/compare-raster-benchmark.py ./$(RASTER_COMPARE_LINEAR) ./$(RASTER_COMPARE_INDEXED) $(BUILD)/pf-td-001-compare.csv $(BUILD)/pf-td-001-compare.md $(RASTER_BASE_SHA)
+
+# RAM-06 preparatory native Amiga HUNK: measures Fast/free-largest at every
+# tracked raster allocation. No GUI and no automated WinUAE execution.
+.PHONY: gcc13-build-winuae-ram-probe gcc13-check-winuae-ram-probe
+gcc13-build-winuae-ram-probe: gcc13-preflight
+	@set -eu; for opt in O0 O2; do \
+	  mkdir -p "$(GCC13_BUILD)/$$opt"; \
+	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -DPC_RASTER_TEST_ALLOC -Iinclude $(GCC13_LDFLAGS) \
+	    src/pc_ram_winuae_probe.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/pc_ram_winuae_probe"; \
+	done
+gcc13-check-winuae-ram-probe:
+	@python3 scripts/check-hunk.py $(GCC13_BUILD)/O0/pc_ram_winuae_probe $(GCC13_BUILD)/O2/pc_ram_winuae_probe
