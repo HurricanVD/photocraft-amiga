@@ -312,13 +312,13 @@ gcc13-build-raster-atomic: gcc13-preflight
 RASTER_VAMOS_KIB ?= 32768
 gcc13-vamos-raster-atomic:
 	@set -eu; for opt in O0 O2; do \
-	  log="$(GCC13_BUILD)/$opt/raster-atomic.log"; \
-	  if "$(VAMOS)" -S -C 20 -m $(RASTER_VAMOS_KIB) -s 128 "$(GCC13_BUILD)/$opt/pc_raster_atomic_test" > "$log" 2>&1; then \
-	    cat "$log"; \
+	  log="$(GCC13_BUILD)/$$opt/raster-atomic.log"; \
+	  if "$(VAMOS)" -S -C 20 -m $(RASTER_VAMOS_KIB) -s 128 "$(GCC13_BUILD)/$$opt/pc_raster_atomic_test" > "$$log" 2>&1; then \
+	    cat "$$log"; \
 	  else \
-	    rc=$?; cat "$log"; echo "FAIL: vamos $opt exit $rc"; exit $rc; \
+	    rc=$$?; cat "$$log"; echo "FAIL: vamos $$opt exit $$rc"; exit "$$rc"; \
 	  fi; \
-	  grep -q '^PASS: PF-TD-001 sorted lookup and fault-atomic COW region$' "$log"; \
+	  grep -q '^PASS: PF-TD-001 sorted lookup and fault-atomic COW region$$' "$$log"; \
 	done
 
 # Explicit host benchmark; timings depend on runner and are not pass thresholds.
