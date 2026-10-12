@@ -52,7 +52,23 @@ static unsigned long pc_band_w=0;
 static int pc_cached=0;
 static unsigned long pc_cached_w=0,pc_cached_h=0;
 static int pc_root_owned=0;
-static const char pc_version[]="\0$VER: PhotoCraft AmigaOS Document Preview 0.0.2 (12.10.2026)";
+static const char pc_version[]="\0$VER: PhotoCraft AmigaOS Document Preview 0.0.4 (12.10.2026)";
+/*
+ * PF-SP-011 / Dunkelkammer MIT startup pattern.
+ * ReAction and C99 raster rendering must not run on the tiny inherited
+ * Workbench/Shell stack. Exec StackSwap() swaps task stack bounds and SP;
+ * its StackSwapStruct and all objects touched across the two swaps must be
+ * static, not locals on the old stack. The entire GUI runs in
+ * pc_main_body() on this independent 200 KiB AllocMem() stack.
+ *
+ * Source: HurricanVD/dunkelkammer@26295506 (src/app/main.c), MIT grant
+ * at 70897e91. See ../NOTICE-DUNKELKAMMER-MIT.txt.
+ */
+#define PC_APP_STACK_SIZE (200UL * 1024UL)
+static struct StackSwapStruct pc_stack_swap;
+static APTR pc_app_stack=0;
+static int pc_app_result=20;
+
 /* Limit the viewport to a bounded preview until scrolling/large zoom
  * arrive in PF-SP-014. The frame scratch is ONLY eight RGBA8 rows.
  * The M2 present module owns the persistent offscreen bitmap/cache. */
@@ -155,7 +171,7 @@ static void pc_shutdown(void)
     if (GfxBase) { CloseLibrary((struct Library *)GfxBase);GfxBase=0; }
     if (IntuitionBase) { CloseLibrary((struct Library *)IntuitionBase);IntuitionBase=0; }
 }
-int main(void)
+static int pc_main_body(void)
 {
     Object *area=0;
     struct TagItem lt[]={{LAYOUT_Orientation,LAYOUT_ORIENT_VERT},
@@ -173,7 +189,7 @@ int main(void)
     int status=20,done=0;
     ULONG sigmask=0,code=0,msg;
     (void)pc_version[1];
-    puts("PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.3");
+    puts("PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.4 (StackSwap 200 KiB)");
     fflush(stdout);
     IntuitionBase=(struct IntuitionBase *)OpenLibrary((STRPTR)"intuition.library",39);
     if (!IntuitionBase) { pc_startup_error("intuition.library",39); goto finish; }
@@ -231,4 +247,30 @@ finish:
     else puts("PhotoCraft: window closed normally (RC 0).");
     fflush(stdout);
     return status;
+}
+
+/*
+ * The outer main() keeps no automatic variables live across StackSwap().
+ * If AllocMem fails, abort before executing the nested raster/ReAction
+ * code: falling back to the inherited stack could corrupt memory.
+ */
+int main(void)
+{
+    pc_app_stack=AllocMem(PC_APP_STACK_SIZE,MEMF_ANY);
+    if (!pc_app_stack) {
+        puts("PhotoCraft: STARTUP FAILED: cannot allocate 200 KiB private stack.");
+        fflush(stdout);
+        return 20;
+    }
+    pc_stack_swap.stk_Lower=pc_app_stack;
+    pc_stack_swap.stk_Upper=(ULONG)((UBYTE *)pc_app_stack+PC_APP_STACK_SIZE);
+    pc_stack_swap.stk_Pointer=(APTR)((UBYTE *)pc_app_stack+PC_APP_STACK_SIZE);
+
+    StackSwap(&pc_stack_swap);   /* Execute on our allocated stack */
+    pc_app_result=pc_main_body();
+    StackSwap(&pc_stack_swap);   /* Restore original Workbench/Shell stack */
+
+    FreeMem(pc_app_stack,PC_APP_STACK_SIZE);
+    pc_app_stack=0;
+    return pc_app_result;
 }
