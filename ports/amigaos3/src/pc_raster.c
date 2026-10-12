@@ -16,6 +16,19 @@ typedef union PcAllocHeader {
 } PcAllocHeader;
 static PcMemoryStats pc_mem_stats;
 static long pc_alloc_remaining=-1;
+static PcRasterMemoryObserver pc_mem_observer;
+static void *pc_mem_observer_context;
+void pc_raster_test_set_observer(PcRasterMemoryObserver callback,void *context)
+{
+    pc_mem_observer=callback;
+    pc_mem_observer_context=context;
+}
+static void pc_notify_memory(void)
+{
+    /* Non-reentrant, test-only observer; the callback must not allocate
+     * through this PcRaster or mutate its lifetime. */
+    if(pc_mem_observer)pc_mem_observer(pc_mem_observer_context);
+}
 void pc_raster_test_fail_after(long n){pc_alloc_remaining=n;}
 void pc_raster_test_stats(PcMemoryStats *out){if(out)*out=pc_mem_stats;}
 static int pc_allowed(void)
@@ -36,6 +49,7 @@ static void *pc_alloc(size_t size)
     if(pc_mem_stats.current_bytes>pc_mem_stats.peak_bytes)
         pc_mem_stats.peak_bytes=pc_mem_stats.current_bytes;
     ++pc_mem_stats.allocation_count;
+    pc_notify_memory();
     return h+1;
 }
 static void pc_free(void *p)
@@ -45,6 +59,7 @@ static void pc_free(void *p)
     h=((PcAllocHeader *)p)-1;
     pc_mem_stats.current_bytes-=h->meta.size+sizeof(*h);
     free(h);
+    pc_notify_memory();
 }
 static void *pc_calloc(size_t n,size_t size)
 {
