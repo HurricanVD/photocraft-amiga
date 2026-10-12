@@ -309,11 +309,13 @@ gcc13-build-raster-atomic: gcc13-preflight
 
 # The RAM fixture retains both source and COW tiles; use an explicit
 # 32-MiB emulated memory profile, separate from true WinUAE target acceptance.
+# At this size memory crosses the CIA address range: vamos requires -H disable
+# (no hardware access detection) for a contiguous memory map above that range.
 RASTER_VAMOS_KIB ?= 32768
 gcc13-vamos-raster-atomic:
 	@set -eu; for opt in O0 O2; do \
 	  log="$(GCC13_BUILD)/$$opt/raster-atomic.log"; \
-	  if "$(VAMOS)" -S -C 20 -m $(RASTER_VAMOS_KIB) -s 128 "$(GCC13_BUILD)/$$opt/pc_raster_atomic_test" > "$$log" 2>&1; then \
+	  if "$(VAMOS)" -S -C 20 -m $(RASTER_VAMOS_KIB) -H disable -s 128 "$(GCC13_BUILD)/$$opt/pc_raster_atomic_test" > "$$log" 2>&1; then \
 	    cat "$$log"; \
 	  else \
 	    rc=$$?; cat "$$log"; echo "FAIL: vamos $$opt exit $$rc"; exit "$$rc"; \
