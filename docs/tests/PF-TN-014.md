@@ -65,3 +65,22 @@
 ### ReAction resize regression (2026-10-12)
 
 The user observed: downsized window renders; enlarged width ~1450 becomes grey; downsizing restores the image. This is consistent with explicit 1024x768 preview guards, **not** a StackSwap failure. The single-source 1920x1200 canvas cap is now shared by ReAction and the C99 portable rendering function. Regression fixtures test large -> small -> large render bands. `GUI-04_old: observed_fail`; `GUI-04_new: not_run`, pending corrected HUNK WinUAE manual retest. StackSwap normal startup remains `observed_pass` in v0.0.4.
+
+## v0.0.5 resize regression retest — owner evidence (2026-10-12)
+
+Owner's WinUAE screenshots `grafik(20261012-080717).png`
+(enlarged ReAction document canvas with correct checkerboard,
+gradient and overlay) and `grafik(20261012-080726).png`
+(normal close, RC 0) confirm that the prior v0.0.4 failure
+to render beyond the 1024px preview limit is repaired in v0.0.5
+for the tested window size. Direct owner confirmation:
+"Vergrößern klappt jetzt".
+
+- `GUI-04_enlarged_v0.0.5: observed_pass`.
+- `GUI-05_single_close_v0.0.5: observed_pass`.
+- `GUI-05_triple_relaunch: not_run`;
+  `GUI-06_low_RAM: not_run`;
+  `GUI-07_Workbench_launch: not_run`;
+  `resource_release_measurements: not_run`.
+- Screenshot files are in the current conversation, not public git.
+- `manual_review: partial_pass`, `story_done: not_authorized`.

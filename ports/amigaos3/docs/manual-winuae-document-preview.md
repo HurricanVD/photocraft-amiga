@@ -212,3 +212,44 @@ Retest with the *newly generated v0.0.5 HUNK*: open a small window,
 resize past 1024 pixels width, enlarge to the previous failing
 screen size, shrink again, and repeat several times. Note if the
 image remains centered with mask/alpha preserved and no grey fallback.
+
+## v0.0.5: user-confirmed larger viewport fix (2026-10-12)
+
+Two new project-owner screenshots were provided in the conversation:
+
+- `grafik(20261012-080717).png`: the native `PhotoCraft AmigaOS
+  (native layers)` window is enlarged substantially beyond the old
+  1024-pixel canvas-width guard. Its dark checkerboard and centered
+  blue/green PhotoCraft document with orange masked overlay **remain
+  visibly present and correctly positioned**, rather than becoming
+  uniformly grey.
+- `grafik(20261012-080726).png`: after close, the AmigaShell shows
+  `startup diagnostic v0.0.5 (StackSwap 200 KiB, extended viewport)`
+  and `PhotoCraft: Window closed normally (RC 0).`.
+
+Owner's direct report: **"Vergrößern klappt jetzt"**.
+
+These screenshots are user-provided conversational evidence, **not
+automated WinUAE/CI results**, and are not copied into the public
+GitHub repository. They do not certify a pixel-for-pixel screen oracle.
+The enlargement that previously failed in v0.0.4 now **visibly works**.
+
+Status changes relative to the older v0.0.4 observations above:
+
+- `GUI-04_v0.0.4_enlarged: observed_fail` (historical, retained).
+- `GUI-04_v0.0.5_enlarged: observed_pass` (image visible, centered).
+- `GUI-04_v0.0.5_full_shrink_enlarge_cycle: not_recorded`
+  (the uploaded images confirm enlargement, not every step of a
+  complete resize-cycle sequence).
+- `GUI-01_v0.0.5_window_open: observed_pass`.
+- `GUI-05_v0.0.5_single_close_RC0: observed_pass`;
+  `relaunch_three_times: not_run`; `leak_measurement: not_run`.
+- `WinUAE_version/driver/settings: not_recorded`;
+  `image_evidence_in_git: no`; `Workbench_icon_launch: not_run`;
+  `OOM_fallback: not_run`.
+- `manual_target_result: partial_pass_with_enlargement_confirmed`;
+  `story_done: not_authorized`.
+
+This evidence **closes the reported grey-on-enlarge regression
+for the tested viewport size**. The full GUI acceptance gate remains
+open for resource/low-memory and repeated-lifecycle tests.

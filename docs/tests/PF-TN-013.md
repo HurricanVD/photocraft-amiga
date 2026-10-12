@@ -38,3 +38,23 @@ A second screenshot shows Shell RC 0 after closing the same window.
 ### Window-growth regression and bounded fix (2026-10-12)
 
 The user-provided WinUAE screenshots demonstrate **failure** at approximately 1450px window width: a uniform grey fallback, while reduced window widths draw correctly. Direct source inspection identified hard-coded 1024x768 guards both in the shell and the portable document band renderer. PR #18 changes the shared maximum to 1920x1200 and adds C99 large/small/large regression checks. The old screenshot is valid evidence of the failure, **not** evidence that the new code passes. `GUI-04_old: observed_failure`; `GUI-04_new_v0.0.5: not_run`; normal host, m68k and manual screen evidence required.
+
+## v0.0.5 large-window visual retest — observed PASS (2026-10-12)
+
+The project owner reported "Vergrößern klappt jetzt" and supplied
+`grafik(20261012-080717).png` showing the dark checkerboard,
+centered document gradient and masked orange layer inside the
+enlarged native ReAction canvas. The v0.0.4 uniformly grey failure
+did **not** recur at the pictured width. The second screenshot
+`grafik(20261012-080726).png` shows v0.0.5 startup diagnostics
+and `Window closed normally (RC 0)`.
+
+- `GUI-04_v0.0.4_enlarge: observed_fail` (prior regression).
+- `GUI-04_v0.0.5_enlarge: observed_pass` (manual visual evidence).
+- `RTG_presenter_enlarged_screen: observed_pass`.
+- `full_resize_cycle_and_repaint: partially_observed`;
+  `pixel_exact_capture: not_run`;
+  `OOM_memory_leak: not_run`.
+- Screenshot images are available only in the conversation, **not
+  checked into git**. This is not an automated WinUAE PASS, full
+  presenter acceptance, or story `done` authorization.
