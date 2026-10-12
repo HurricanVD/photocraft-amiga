@@ -245,4 +245,5 @@ jobs:
           name: photocraft-gcc13-vamos
           path: |
             ports/amigaos3/build/m68k-gcc13/**/logs/*.log
+            ports/amigaos3/build/m68k-gcc13/**/raster-atomic.log
           if-no-files-found: warn
