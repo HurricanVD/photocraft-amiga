@@ -284,3 +284,32 @@ gcc13-vamos-canvas-document:
 	  grep -q '^PASS: PhotoCraft PcDocument native canvas bands, mask, visibility and bounds$$' "$(GCC13_BUILD)/$$opt/canvas-document.log"; \
 	  cat "$(GCC13_BUILD)/$$opt/canvas-document.log"; \
 	done
+
+# PF-TD-001: ordered tile index and allocation-fault-atomic region writes.
+ATOMIC_TEST := $(BUILD)/pc_raster_atomic_test
+$(ATOMIC_TEST): tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c include/pc_raster.h | $(BUILD)
+	$(HOST_CC) $(HOST_CFLAGS) -DPC_RASTER_TEST_ALLOC -Iinclude -o $@ tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c
+
+.PHONY: host-raster-atomic-test host-raster-atomic-sanitize gcc13-build-raster-atomic gcc13-vamos-raster-atomic
+host-raster-atomic-test: $(ATOMIC_TEST)
+	./$(ATOMIC_TEST)
+host-test: host-raster-atomic-test
+
+host-raster-atomic-sanitize: | $(BUILD)
+	$(HOST_CC) -std=c99 -g -O1 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -fno-omit-frame-pointer -DPC_RASTER_TEST_ALLOC -Iinclude -o $(BUILD)/pc_raster_atomic_test_san tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c
+	./$(BUILD)/pc_raster_atomic_test_san
+host-core-sanitize: host-raster-atomic-sanitize
+
+gcc13-build-raster-atomic: gcc13-preflight
+	@set -eu; for opt in O0 O2; do \
+	  mkdir -p "$(GCC13_BUILD)/$$opt"; \
+	  "$(GCC13_CC)" $(GCC13_CFLAGS) $(GCC13_CPU) $(GCC13_FPU) -$$opt -DPC_RASTER_TEST_ALLOC -Iinclude $(GCC13_LDFLAGS) \
+	    tests/pc_raster_atomic_test.c src/pc_raster.c src/pc_core.c -o "$(GCC13_BUILD)/$$opt/pc_raster_atomic_test"; \
+	done
+
+gcc13-vamos-raster-atomic:
+	@set -eu; for opt in O0 O2; do \
+	  "$(VAMOS)" -S -C 20 -m 8192 -s 128 "$(GCC13_BUILD)/$$opt/pc_raster_atomic_test" > "$(GCC13_BUILD)/$$opt/raster-atomic.log" 2>&1; \
+	  grep -q '^PASS: PF-TD-001 sorted lookup and fault-atomic COW region$$' "$(GCC13_BUILD)/$$opt/raster-atomic.log"; \
+	  cat "$(GCC13_BUILD)/$$opt/raster-atomic.log"; \
+	done
