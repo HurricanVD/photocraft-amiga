@@ -69,6 +69,17 @@ int main(void)
 {
     check_order_and_clone();
     check_fault_rollback();
+    {
+        PcMemoryStats stats;
+        pc_raster_test_stats(&stats);
+        assert(stats.current_bytes==0);
+        assert(stats.peak_bytes>0);
+        assert(stats.failed_allocations>0);
+        printf("PF-TD-001 tracked peak %lu bytes, allocations %lu, failures %lu\\n",
+               (unsigned long)stats.peak_bytes,
+               (unsigned long)stats.allocation_count,
+               (unsigned long)stats.failed_allocations);
+    }
     puts("PASS: PF-TD-001 sorted lookup and fault-atomic COW region");
     return 0;
 }
