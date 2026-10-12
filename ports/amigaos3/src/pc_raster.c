@@ -56,7 +56,7 @@ static size_t pc_lower_bound(const PcRaster *r, PcTileCoord c, int *found)
     while(lo<hi){
         size_t mid=lo+(hi-lo)/2;
         PcTileCoord m=r->entries[mid].coord;
-        if(m.y<c.y || (m.y==c.y && m.x<c.x))lo=mid+1;
+        if(m.ty<c.ty || (m.ty==c.ty && m.tx<c.tx))lo=mid+1;
         else hi=mid;
     }
     if(found)*found=(lo<r->count &&
