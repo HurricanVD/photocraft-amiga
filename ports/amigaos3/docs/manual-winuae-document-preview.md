@@ -3,7 +3,7 @@
 - Date: 2026-10-12
 - Related: PF-SP-007 / PF-SP-010 / PF-SP-011, integration PR #18
 - Classification: **manual target acceptance procedure**
-- Current status: `partial_manual_pass` based on two user-provided WinUAE/AmigaOS screenshots dated 2026-10-12; remaining interactive checks are `not_run`. The assistant's environment cannot independently launch the GUI.
+- Current status: `partial_manual_pass` with four user-observed v0.0.5 shell launch/close cycles, correct enlarged viewport and a user-waived low-Fast-RAM manual test (2026-10-12). Workbench icon startup, refresh and measured memory cleanup remain unverified. The assistant's environment cannot independently launch the GUI.
 - This document is not evidence that the test was performed. Native
   HUNK linking and headless `vamos` are separate CI stages.
 
@@ -30,8 +30,8 @@
 | GUI-02 | Examine initial canvas | An approximately 192x144 centered multi-colour gradient image, orange translucent/masked rectangle and neutral checkerboard outside document; **not** the prior full-canvas synthetic test tile | `observed_pass` (checkerboard, gradient, masked orange layer all visible) |
 | GUI-03 | Expose/refresh repeatedly | Canvas restored from offscreen bitmap, controls/gadgets unaffected | `not_run` |
 | GUI-04 | Resize down then up | Image recenters and redraws correctly, no stale out-of-bounds pixels, no corrupted gadgets | `not_run` |
-| GUI-05 | Close, relaunch 3 times | All Window/Offscreen/Library resources released, Shell returns without an alert | `partial`: one normal close and Shell RC=0 observed; 3x relaunch and memory-release checks `not_run` |
-| GUI-06 | Low Fast RAM or missing RTG capability | Controlled error/neutral canvas fallback; no hangs or document corruption | `not_run` |
+| GUI-05 | Close, relaunch 3 times | All Window/Offscreen/Library resources released, Shell returns without an alert | `observed_pass_four_cycles` for Shell launch/close without visible alert, each RC 0; memory leak measurements `not_run` |
+| GUI-06 | Low Fast RAM or missing RTG capability | Controlled error/neutral canvas fallback; no hangs or document corruption | `skipped_by_owner` for low-Fast-RAM manual stress in this preview only; missing-RTG fallback still `not_run`; not a PASS |
 | GUI-07 | Launch from Workbench where supported | No CLI/Workbench startup crash and window can be closed | `not_run` |
 
 ## Evidence to record
@@ -253,3 +253,49 @@ Status changes relative to the older v0.0.4 observations above:
 This evidence **closes the reported grey-on-enlarge regression
 for the tested viewport size**. The full GUI acceptance gate remains
 open for resource/low-memory and repeated-lifecycle tests.
+
+## v0.0.5: four successful Shell start/close cycles — owner evidence (2026-10-12)
+
+The project owner supplied a screenshot named
+`grafik(20261012-081120).png` and stated:
+"Mehrfaches öffnen und schließen ok, den Test mit wenig Fast ram überspringen wir."
+
+The AmigaShell screenshot displays **four** consecutive invocations of
+`photocraft-amiga-document-preview`. Each invocation prints
+`PhotoCraft AmigaOS Document Preview - startup diagnostic v0.0.5
+(StackSwap 200 KiB, extended viewport)` and ends with
+`PhotoCraft: Window closed normally (RC 0).`
+No crash or Guru alert is visible, and the AmigaShell prompt
+returns after the fourth close.
+
+This screenshot is a *conversation-only user attachment*; it is
+not copied into this public repository. The user-observed lifecycle
+result is distinct from actual allocation tracing: it cannot
+prove that each ReAction object, RTG bitmap or allocated stack
+was released without a leak.
+
+**Owner-directed test exclusion:** low-Fast-RAM stress is
+`skipped_by_owner_preview_only`. The absence of a test is not
+an OOM pass. The application still must maintain controlled
+allocation-failure handling; a later final-release, robustness
+or fault-injection acceptance may reopen this check. No request
+for another low-RAM manual test is pending from the owner.
+
+### Latest authoritative status for this preview
+
+- `GUI-01_shell_startup: observed_pass`.
+- `GUI-02_document_visible: observed_pass` (earlier screenshots).
+- `GUI-04_resize_enlarge: observed_pass_v0.0.5` (earlier screenshots).
+- `GUI-05_4x_launch_close_RC0: observed_pass`.
+- `GUI-05_resource_leak_measurement: not_run`.
+- `GUI-06_low_fast_ram_manual: skipped_by_owner_preview_only`.
+- `GUI-06_no_RTG_fallback: not_run`.
+- `GUI-03_expose_refresh_stress: not_run`.
+- `GUI-07_Workbench_icon_launch: not_run`.
+- `runtime_4x_shell_lifecycle: observed_pass`;
+  `overall_preview_manual_acceptance: partial_pass`;
+  `story_done: not_authorized`.
+
+The older provisional status values earlier in this file are
+chronological snapshots, superseded by this section. There is
+no claim of complete WinUAE, release or memory-lifetime approval.

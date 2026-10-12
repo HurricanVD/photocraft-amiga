@@ -84,3 +84,21 @@ for the tested window size. Direct owner confirmation:
   `resource_release_measurements: not_run`.
 - Screenshot files are in the current conversation, not public git.
 - `manual_review: partial_pass`, `story_done: not_authorized`.
+
+## v0.0.5 four-cycle native ReAction lifecycle — owner verified (2026-10-12)
+
+- User screenshot `grafik(20261012-081120).png`, conversation only:
+  **four** `photocraft-amiga-document-preview` Shell invocations,
+  each with the v0.0.5 `StackSwap 200 KiB` diagnostic and
+  `Window closed normally (RC 0)`.
+- Owner explicitly confirms repeated open/close works.
+- `GUI-05_four_sequential_launch_close: observed_pass`.
+- `GUI-05_no_visible_Guru_or_alert: observed_pass`.
+- `GUI-05_heap_or_RTG_leak_free: not_measured` — normal
+  RC 0 is not a proof of no leaks.
+- Owner explicitly excludes the low-Fast-RAM stress test from
+  the current preview: `GUI-06_low_ram: skipped_by_owner_preview_only`
+  and **not** `pass`. No outstanding request to the owner
+  to perform that manual stress scenario.
+- `GUI-07_Workbench_launch: not_run`, `GUI-03_expose_stress: not_run`.
+- `preview_target_result: partial_pass`, `PF-SP-011_done: not_authorized`.

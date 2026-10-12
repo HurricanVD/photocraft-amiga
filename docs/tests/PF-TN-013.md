@@ -58,3 +58,20 @@ and `Window closed normally (RC 0)`.
 - Screenshot images are available only in the conversation, **not
   checked into git**. This is not an automated WinUAE PASS, full
   presenter acceptance, or story `done` authorization.
+
+## Four start/close cycles — v0.0.5 evidence (2026-10-12)
+
+The owner supplied one more AmigaShell screenshot
+(`grafik(20261012-081120).png`, chat attachment, not in git)
+showing **four** complete native Shell start/close cycles,
+each with `Window closed normally (RC 0)`. This supports the
+basic joint ReAction/M2 lifecycle but does not measure bitmap
+or heap release.
+
+- `GUI-05_four_start_close_RC0: observed_pass`;
+  `RTG_bitmap_leak_measured: not_run`.
+- Owner opts out of low-Fast-RAM stress for current preview:
+  `GUI-06_low_fast_ram: skipped_by_owner_preview_only`,
+  **not a PASS**. Keep allocation guards.
+- No change to `GUI-04_v0.0.5_enlarge: observed_pass`.
+- `full_presenter_release_acceptance: pending`; no `done` claim.
