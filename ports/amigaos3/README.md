@@ -247,3 +247,16 @@ For exact manual WinUAE acceptance steps, see
 A signed-off target result must include tested artifact SHA,
 WinUAE configuration, screenshot(s), resource/lifecycle observations,
 and a failure/rollback report. Until then the GUI status is `not_run`.
+
+### Self-managed Amiga stack (v0.0.4)
+
+The native ReAction entry point now uses the same Exec `StackSwap()`
+technique as MIT-licensed Dunkelkammer: allocate 200 KiB with
+`AllocMem(MEMF_ANY)`, switch to that stack for the entire GUI/document
+session, restore the inherited Workbench/Shell stack on exit, then
+`FreeMem`. The GUI body is explicitly `noinline`.
+No `Stack 50000` prerequisite remains for the new binary.
+If the private stack cannot be allocated, startup fails with RC 20
+rather than risking an overflow of the inherited tiny task stack.
+Full manual AmigaOS 3.2/WinUAE startup and low-RAM lifecycle tests
+remain open; the pinned GCC13 HUNK build is the compile gate.
