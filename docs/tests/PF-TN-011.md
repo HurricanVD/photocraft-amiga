@@ -35,3 +35,10 @@
 - Im Host-Joblog explizit nachgewiesen: `PASS: PF-TD-001 sorted lookup and fault-atomic COW region` fuer `host-test` und `host-core-sanitize` (neuer Regressionstest mit Fault-Injection).
 - Die **neuen** dedizierten `gcc13-build-raster-atomic` / `gcc13-vamos-raster-atomic` Targets sind nicht in den CI-Standardjob eingebunden: deren Ausfuehrung bleibt `not_run`. Die bestehenden GCC13/vamos-Jobs sind `success`, aber kein Ersatz fuer das dedizierte Target.
 - Ein Index-/Write-Benchmark und ein gemessener <=32 MiB Fast-RAM-Peak liegen noch nicht vor; Gesamtstory bleibt offen. Diese Evidenz ersetzt keine Implementation-/Final-Review-Gates.
+
+## Zusatz-Gates im PR #20 (2026-10-12)
+
+- Die bestehende Workflow-Datei `.github/workflows/amigaos3-host.yml` baut jetzt `gcc13-build-raster-atomic`, prueft beide HUNK-Dateien und fuehrt `gcc13-vamos-raster-atomic` unter O0/O2 aus. PASS gilt erst nach neuer CI-Evidenz, nicht aufgrund der Konfigurationsaenderung.
+- `make -C ports/amigaos3 host-raster-benchmark` fuehrt 4096 Reverse-Order-Tile-Inserts und 120000 deterministische Pixel-Lookups aus. Ausgabe sind CPU-Zeiten ohne voreiliges Performanz-Gate; noch kein Vergleich mit einem identischen Baseline-Binary.
+- Hinweis fuer die RAM-Analyse: bei 256x256 U8-RGBA benoetigt ein vollstaendig allokiertes Tile 262144 Byte Pixel-Bytes, plus Referenzzaehler/Allocator-Overhead. Der clone-and-swap-Rollback kann betroffene Tiles duplizieren; ein 32-MiB-Peak muss mit Workload und Target-Allocator separat nachgewiesen werden.
+- `RAM_budget_32MiB: not_measured`; `dedicated_m68k_fault_test: pending_CI`; `benchmark: added_not_run`.
