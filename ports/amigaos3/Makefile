@@ -328,3 +328,17 @@ gcc13-vamos-raster-atomic:
 host-raster-benchmark: | $(BUILD)
 	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -o $(BUILD)/pc_raster_bench tests/pc_raster_bench.c src/pc_raster.c src/pc_core.c
 	./$(BUILD)/pc_raster_bench
+
+# PF-TD-001: exactly pinned historical linear source, provided by CI through
+# git show. No baseline source copy is committed into this fork.
+BASELINE_RASTER ?= $(BUILD)/pc_raster_linear_baseline.c
+RASTER_COMPARE_LINEAR := $(BUILD)/pc_raster_compare_linear
+RASTER_COMPARE_INDEXED := $(BUILD)/pc_raster_compare_indexed
+RASTER_BASE_SHA := 132bc32338ba5e35379f083674857a382cd888c0
+
+.PHONY: host-raster-compare
+host-raster-compare: | $(BUILD)
+	@test -f "$(BASELINE_RASTER)" || { echo "BLOCKED: fetch pinned original into $(BASELINE_RASTER)"; exit 2; }
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -Isrc -o $(RASTER_COMPARE_LINEAR) tests/pc_raster_compare_bench.c "$(BASELINE_RASTER)" src/pc_core.c
+	$(HOST_CC) $(HOST_CFLAGS) -Iinclude -Isrc -o $(RASTER_COMPARE_INDEXED) tests/pc_raster_compare_bench.c src/pc_raster.c src/pc_core.c
+	python3 scripts/compare-raster-benchmark.py ./$(RASTER_COMPARE_LINEAR) ./$(RASTER_COMPARE_INDEXED) $(BUILD)/pf-td-001-compare.csv $(BUILD)/pf-td-001-compare.md $(RASTER_BASE_SHA)
