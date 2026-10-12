@@ -260,3 +260,22 @@ If the private stack cannot be allocated, startup fails with RC 20
 rather than risking an overflow of the inherited tiny task stack.
 Full manual AmigaOS 3.2/WinUAE startup and low-RAM lifecycle tests
 remain open; the pinned GCC13 HUNK build is the compile gate.
+
+### Workbench launch and normal-memory diagnostics (v0.0.6)
+
+AmigaOS Workbench launches a binary with `argc == 0`. The previous
+Preview printed to stdout even in Workbench mode, and the owner
+observed an unexpected persistent AmigaShell/CON: window after the
+GUI closed. The native entry point now **never writes to stdout**
+in Workbench mode. It uses Intuition's `EasyRequestArgs()` for
+component startup failures. Shell invocation retains readable
+diagnostics.
+
+An initial `Avail` snapshot fell by 126,752 B after four
+starts (125,056 B Fast, 1,696 B Chip). That is a measured available
+memory change, **not yet a proven heap leak**: first-run ReAction/CGX
+caches can affect Amiga memory. The new Shell-only
+`AvailMem(MEMF_FAST/MEMF_CHIP)` before/after private-stack lifetime
+measurements make per-run trends visible. No low-Fast-RAM stress test
+is requested. The manual [WinUAE acceptance document](docs/manual-winuae-document-preview.md)
+defines exact Workbench and warmed-up Shell checks.

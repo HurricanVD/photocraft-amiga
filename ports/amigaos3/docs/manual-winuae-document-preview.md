@@ -299,3 +299,75 @@ for another low-RAM manual test is pending from the owner.
 The older provisional status values earlier in this file are
 chronological snapshots, superseded by this section. There is
 no claim of complete WinUAE, release or memory-lifetime approval.
+
+## Workbench stdout and AvailMem differential — v0.0.6 (2026-10-12)
+
+A project-owner WinUAE screenshot demonstrates that **Workbench icon launch
+works**: the native ReAction window and document are visible; after closing,
+the GUI exits with RC 0. A separate, unexpected AmigaShell/CON: window remains
+open and contains the `v0.0.5` startup diagnostics. Previous code
+unconditionally called `puts()/printf()/fflush(stdout)` in GUI startup,
+shutdown and error paths. On a Workbench task, the C runtime may allocate a
+CON: output window when writing to stdout.
+
+The v0.0.6 fix changes `main` to `main(int argc, char **argv)`:
+AmigaOS Workbench startup uses `argc == 0` (as in the existing MIT
+Dunkelkammer startup flow), and `pc_is_workbench` is stored in static BSS.
+**All** normal/diagnostic stdout output is suppressed in that mode.
+If Intuition has already opened and a required component cannot start,
+`EasyRequestArgs()` displays a native error requester instead of writing
+to a console. For Shell launches the diagnostics remain available, and
+the application continues to use an internal 200 KiB Exec `StackSwap()`.
+
+### Memory observation and investigation
+
+The same user supplied an AmigaShell `Avail` comparison before and
+after four successful start/close cycles:
+
+| Area | Available before | Available after | Delta |
+|---|---:|---:|---:|
+| Chip | 2,025,320 B | 2,023,624 B | -1,696 B |
+| Fast | 127,536,184 B | 127,411,128 B | -125,056 B |
+| Total | 129,561,504 B | 129,434,752 B | -126,752 B |
+
+The difference is **observed**; its cause is not yet established.
+AmigaOS/CGX/ReAction may lazily retain class, font, RTG or runtime
+allocations when first used, even after the application frees its own
+resources. A single pre/post four-run snapshot cannot distinguish
+system warm-up/caching from a linear, per-invocation leak. The existing
+source calls `FreeVec`, `FreeBitMap`, `CloseLibrary`,
+`pc_document_destroy`, `RA_CloseWindow`, `DisposeObject`
+and `FreeMem` on the ordinary close path; none proves the absence
+of other leaks or cached system allocations.
+
+**New Shell-only diagnostics:** v0.0.6 measures
+`AvailMem(MEMF_FAST)` and `AvailMem(MEMF_CHIP)` immediately
+before private-stack allocation and after it is freed. Per-run
+signed differences are printed after normal close. These readings
+remain advisory (OS cache/allocator/libraries may affect the counts).
+They do **not** appear at all for Workbench starts.
+
+### Next manual tests — no low-Fast-RAM stress requested
+
+1. Launch from the Workbench icon with v0.0.6 and close the application.
+   The previously unexpected `AmigaShell` output window **must not**
+   be created or left open. Confirm that the ReAction viewport still
+   displays PhotoCraft pixels.
+2. In a regular Shell, run the v0.0.6 program **five** times, normally
+   closing each window. Record each
+   `PhotoCraft: post-shutdown available Fast ... Chip ...` line.
+   Compare runs after the first warmed-up invocation. Consistent
+   progressively negative deltas require a true resource leak
+   investigation; first-run-only changes may indicate caches.
+3. If relevant, run the command `Avail` once before and after the
+   five cycles, **without other applications opening/closing**.
+   Report the figures and emulator/RTG setup.
+4. Do **not** perform the previously excluded low-Fast-RAM stress
+   test; this is a normal-memory baseline investigation.
+
+- `GUI-07_Workbench_icon_launch_v0.0.5: observed_pass`.
+- `Workbench_console_orphan_v0.0.5: observed_fail`.
+- `GUI-07_Workbench_no_console_v0.0.6: not_run`.
+- `Fast_Chip_memory_change_v0.0.5: observed`, `leak_root_cause: unconfirmed`.
+- `v0.0.6_mem_probe: not_run`.
+- `release_acceptance: no`; `PF-SP-011_done: not_authorized`.

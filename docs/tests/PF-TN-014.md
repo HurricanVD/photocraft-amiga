@@ -102,3 +102,28 @@ for the tested window size. Direct owner confirmation:
   to perform that manual stress scenario.
 - `GUI-07_Workbench_launch: not_run`, `GUI-03_expose_stress: not_run`.
 - `preview_target_result: partial_pass`, `PF-SP-011_done: not_authorized`.
+
+## Owner WinUAE Workbench launch and normal-memory investigation — v0.0.6
+
+- User screenshot `grafik(20261012-083211).png` (conversation attachment)
+  shows a genuine double-click Workbench icon start with the document
+  visible in a native ReAction window.
+- `grafik(20261012-083217).png` shows the application closed normally
+  while the output-console window persists. This is a **regression**
+  in Workbench-mode output/lifecycle, not a clean full GUI closure.
+- `grafik(20261012-083120).png` shows AmigaShell `Avail`
+  before/after four closes: available total fell by 126,752 B
+  (Fast -125,056 B; Chip -1,696 B). This does **not** by itself
+  diagnose an unreleased allocation versus OS cache warm-up.
+- Fix: process startup determines `pc_is_workbench=(argc==0)`;
+  Workbench normal/failure console output suppressed, error requester
+  via `EasyRequestArgs` when Intuition is available. Shell output
+  remains and additionally prints before/after Fast/Chip
+  `AvailMem` sample after the private 200KiB stack is freed.
+- `GUI_07_v0.0.5_icon_launch: observed_pass`.
+- `GUI_07_v0.0.5_no_orphan_console: observed_fail`.
+- `GUI_07_v0.0.6_no_orphan_console: not_run`.
+- `available_memory_delta: observed_minus_126752_B_after_four`.
+- `true_memory_leak: unproven`, `new_probe: pending_manual_retest`.
+- Owner's low-Fast-RAM stress waiver remains `skipped_by_owner_preview_only`.
+- See [manual test](../../ports/amigaos3/docs/manual-winuae-document-preview.md).
