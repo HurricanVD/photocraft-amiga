@@ -16,3 +16,14 @@
 - `test_evidence: not_run`
 - `runtime_evidence: none`
 - `release_authorization: no`
+
+## PF-TD-001 implementation evidence checkpoint (2026-10-12)
+
+- Implementation branch: `implementation/pf-td-001-raster-atomic-index`.
+- Code: sorted entries / binary-search tile lookup; COW clone-and-swap region write; compile-time-only deterministic allocator fault injection `PC_RASTER_TEST_ALLOC`.
+- Test added: `ports/amigaos3/tests/pc_raster_atomic_test.c` (unordered tile coordinates, readback, COW isolation, allocation failure positions, all-or-nothing pixel content and tile count).
+- Build targets added: `host-raster-atomic-test`, `host-raster-atomic-sanitize`, `gcc13-build-raster-atomic`, `gcc13-vamos-raster-atomic`.
+- Test status: `not_run` in this review session. Source has been submitted, but CI, host compiler, sanitizers and m68k/vamos have not been executed or attested here.
+- Performance: indexed lookup is O(log N), insertion remains O(N) from ordered vector shifts. No wall-clock benchmark yet; cannot assert throughput improvement for write-heavy workloads.
+- Peak memory: clone-and-swap retains old COW tiles and a second entry vector; copying changed tiles raises transient peak. No verified <=32 MiB RAM budget / low-memory target pass.
+- Scope status: `partial_implementation`, not `done`; pending independent implementation/review gates and measured PF-TN-011 acceptance.
