@@ -96,3 +96,9 @@ Als AmigaOS-3.2-Nutzer moechte ich gerenderte PhotoCraft-Pixel auch ohne MiniGL 
 - Evidence: [PF-all-open-ready-review](../reviews/PF-all-open-ready-review-2026-10-12.md). Initial architecture / scope refinement / separate final pre-ready review and DoR pass are **planning checks**, not product runtime results.
 - IP: original PhotoCraft semantics are reference-only; any reused Dunkelkammer source is MIT for owner material (merge PR #9), retain each copyright and third-party notice.
 - Next stage: individual `implementation_gate_report` before work, unmet dependency verification as applicable. All actual native tests and target GUI checks still `not_run`.
+
+## Review-Priorisierung / Bestandsabgleich 2026-10-12
+
+- **Prioritaet bleibt P1 (Reihenfolge B, native Integration).** Es gibt keinen bestaetigten P0-Defekt aus der Review-Beobachtung allein.
+- PR #18 liefert den begrenzten M2-Preview-Subset. Der bestehende Presenter-Vertrag und die vollstaendige Fehlerpfad-/Target-Abnahme bleiben offen; \`ready\` ist kein \`done\`.
+- Review 2026-10-12 ist Planungs-/Evidence-Abgleich, kein neuer Implementierungs-, DoR-, Runtime-PASS- oder Release-Beschluss.
