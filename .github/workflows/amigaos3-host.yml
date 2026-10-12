@@ -178,6 +178,24 @@ jobs:
               make -C ports/amigaos3 gcc13-build-tests gcc13-build-typed gcc13-build-compose gcc13-build-canvas-document gcc13-m2-compile gcc13-native-shell GCC_BEBBO_ROOT="$root"
             '
           make -C ports/amigaos3 gcc13-check-hunks
+      - name: Stage native document preview with redistributable notices
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="ports/amigaos3/build/document-preview-bundle"
+          mkdir -p "$out"
+          cp ports/amigaos3/build/m68k-gcc13/shell/photocraft-amiga-document-preview "$out/"
+          cp ports/amigaos3/NOTICE-DUNKELKAMMER-MIT.txt "$out/"
+          cp LICENSE-MIT LICENSE-APACHE "$out/"
+          cp ports/amigaos3/docs/manual-winuae-document-preview.md "$out/MANUAL-WINuae.md"
+          ( cd "$out" && sha256sum photocraft-amiga-document-preview > SHA256SUMS.txt )
+          file "$out/photocraft-amiga-document-preview"
+      - name: Upload native Document preview test HUNK and MIT notices
+        uses: actions/upload-artifact@v4
+        with:
+          name: photocraft-amiga-document-preview-hunk
+          path: ports/amigaos3/build/document-preview-bundle/
+          if-no-files-found: error
       - name: Install pinned vamos and machine68k
         uses: actions/setup-python@v5
         with:
@@ -202,13 +220,6 @@ jobs:
             RUST_ORACLE_TYPED=build/oracle-rust-typed.txt
           make -C ports/amigaos3 gcc13-vamos-compose RUST_COMPOSE_ORACLE=build/oracle-rust-compose.txt
           make -C ports/amigaos3 gcc13-vamos-canvas-document
-      - name: Upload native PhotoCraft Document preview HUNK
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: photocraft-amiga-document-preview-hunk
-          path: ports/amigaos3/build/m68k-gcc13/shell/photocraft-amiga-document-preview
-          if-no-files-found: warn
       - name: Upload GCC13 target evidence
         if: always()
         uses: actions/upload-artifact@v4
